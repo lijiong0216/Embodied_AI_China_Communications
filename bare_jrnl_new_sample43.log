@@ -1,0 +1,1001 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2026.7.23)  18 AUG 2026 00:33
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./bare_jrnl_new_sample43.tex
+(bare_jrnl_new_sample43.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-04>
+(IEEEtran.cls
+Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+\@IEEEtrantmpdimenA=\dimen140
+\@IEEEtrantmpdimenB=\dimen141
+\@IEEEtrantmpdimenC=\dimen142
+\@IEEEtrantmpcountA=\count187
+\@IEEEtrantmpcountB=\count188
+\@IEEEtrantmpcountC=\count189
+\@IEEEtrantmptoksA=\toks17
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 5
+03.
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+\@IEEEnormalsizeunitybaselineskip=\dimen143
+-- This is a 10 point document.
+\CLASSINFOnormalsizebaselineskip=\dimen144
+\CLASSINFOnormalsizeunitybaselineskip=\dimen145
+\IEEEnormaljot=\dimen146
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <18> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <18> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
+
+\IEEEquantizedlength=\dimen147
+\IEEEquantizedlengthdiff=\dimen148
+\IEEEquantizedtextheightdiff=\dimen149
+\IEEEilabelindentA=\dimen150
+\IEEEilabelindentB=\dimen151
+\IEEEilabelindent=\dimen152
+\IEEEelabelindent=\dimen153
+\IEEEdlabelindent=\dimen154
+\IEEElabelindent=\dimen155
+\IEEEiednormlabelsep=\dimen156
+\IEEEiedmathlabelsep=\dimen157
+\IEEEiedtopsep=\skip48
+\c@section=\count190
+\c@subsection=\count191
+\c@subsubsection=\count192
+\c@paragraph=\count193
+\c@IEEEsubequation=\count194
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\c@figure=\count195
+\c@table=\count196
+\@IEEEeqnnumcols=\count197
+\@IEEEeqncolcnt=\count198
+\@IEEEsubeqnnumrollback=\count199
+\@IEEEquantizeheightA=\dimen158
+\@IEEEquantizeheightB=\dimen159
+\@IEEEquantizeheightC=\dimen160
+\@IEEEquantizeprevdepth=\dimen161
+\@IEEEquantizemultiple=\count266
+\@IEEEquantizeboxA=\box51
+\@IEEEtmpitemindent=\dimen162
+\IEEEPARstartletwidth=\dimen163
+\c@IEEEbiography=\count267
+\@IEEEtranrubishbin=\box52
+) (C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+Package: amsmath 2023/05/13 v2.17o AMS math features
+\@mathmargin=\skip51
+
+For additional information on amsmath, use the `?' option.
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks18
+\ex@=\dimen164
+))
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen165
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count268
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count269
+\leftroot@=\count270
+LaTeX Info: Redefining \overline on input line 399.
+LaTeX Info: Redefining \colon on input line 410.
+\classnum@=\count271
+\DOTSCASE@=\count272
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box53
+\strutbox@=\box54
+LaTeX Info: Redefining \big on input line 722.
+LaTeX Info: Redefining \Big on input line 723.
+LaTeX Info: Redefining \bigg on input line 724.
+LaTeX Info: Redefining \Bigg on input line 725.
+\big@size=\dimen166
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count273
+LaTeX Info: Redefining \bmod on input line 905.
+LaTeX Info: Redefining \pmod on input line 910.
+LaTeX Info: Redefining \smash on input line 940.
+LaTeX Info: Redefining \relbar on input line 970.
+LaTeX Info: Redefining \Relbar on input line 971.
+\c@MaxMatrixCols=\count274
+\dotsspace@=\muskip16
+\c@parentequation=\count275
+\dspbrk@lvl=\count276
+\tag@help=\toks19
+\row@=\count277
+\column@=\count278
+\maxfields@=\count279
+\andhelp@=\toks20
+\eqnshift@=\dimen167
+\alignsep@=\dimen168
+\tagshift@=\dimen169
+\tagwidth@=\dimen170
+\totwidth@=\dimen171
+\lineht@=\dimen172
+\@envbody=\toks21
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
+\col@sep=\dimen173
+\ar@mcellbox=\box55
+\extrarowheight=\dimen174
+\NC@list=\toks23
+\extratabsurround=\skip54
+\backup@length=\skip55
+\ar@cellbox=\box56
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks24
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen175
+\Gin@req@width=\dimen176
+) (C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/cite\cite.sty
+LaTeX Info: Redefining \cite on input line 302.
+LaTeX Info: Redefining \nocite on input line 332.
+Package: cite 2015/02/27  v 5.5
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1350.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1354.
+Package xcolor Info: Model `RGB' extended on input line 1366.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1368.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
+tex.def
+File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count280
+\l__pdf_internal_box=\box57
+) (bare_jrnl_new_sample43.aux)
+\openout1 = `bare_jrnl_new_sample43.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+
+-- Lines per column: 58 (exact).
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
+ii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count281
+\scratchdimen=\dimen177
+\scratchbox=\box58
+\nofMPsegments=\count282
+\nofMParguments=\count283
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count284
+\MPscratchDim=\dimen178
+\MPnumerator=\count285
+\makeMPintoPDFobject=\count286
+\everyMPtoPDFconversion=\toks26
+)
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
+ase.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.c
+fg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
+
+pdfTeX warning: pdflatex.exe (file ./Fig3_Survey_Roadmap.pdf): PDF inclusion: f
+ound PDF version <1.7>, but at most version <1.5> allowed
+<Fig3_Survey_Roadmap.pdf, id=1, 1204.5pt x 1580.90625pt>
+File: Fig3_Survey_Roadmap.pdf Graphic file (type pdf)
+<use Fig3_Survey_Roadmap.pdf>
+Package pdftex.def Info: Fig3_Survey_Roadmap.pdf  used on input line 203.
+(pdftex.def)             Requested size: 387.0pt x 507.92665pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 212
+.
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 212
+.
+
+(C:\Users\23880\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+[1{C:/Users/23880/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/23
+880/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+
+
+]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2 <./Fig3_Survey_Roadmap.pdf>]
+Underfull \hbox (badness 1931) in paragraph at lines 289--300
+\OT1/ptm/m/n/10 knowledge-graph, gam-ing, house-hold, web-shopping, and
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 383--383
+[]|\OT1/ptm/b/n/8 Representative
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 383--384
+[]|\OT1/ptm/b/n/8 Interaction/workload
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 387--388
+[]|\OT1/ptm/m/n/8 Subwords, im-age/video
+ []
+
+
+Underfull \hbox (badness 7796) in paragraph at lines 387--388
+\OT1/ptm/m/n/8 patches, au-dio or codec
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 389--389
+[]|\OT1/ptm/m/n/8 Perplexity, ac-cu-racy,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 389--389
+\OT1/ptm/m/n/8 MMLU, BIG-bench,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 389--389
+\OT1/ptm/m/n/8 BLEU/ROUGE,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 390--391
+[]|\OT1/ptm/m/n/8 Prompt/context
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 390--391
+\OT1/ptm/m/n/8 pre-fill fol-lowed by
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 390--391
+\OT1/ptm/m/n/8 modality-dependent
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 390--391
+\OT1/ptm/m/n/8 to-ken count; one/few-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 392--393
+[]|\OT1/ptm/m/n/8 Hallucinated or
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 392--393
+\OT1/ptm/m/n/8 de-tectable, retryable,
+ []
+
+
+Underfull \hbox (badness 1571) in paragraph at lines 396--397
+[]|\OT1/ptm/m/n/8 Generated to-kens plus UI
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 400--401
+[]|\OT1/ptm/m/n/8 Stateful multi-round
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 400--401
+\OT1/ptm/m/n/8 graph with fan-out,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 402--403
+[]|\OT1/ptm/m/n/8 Wrong ex-ter-nal
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 402--403
+\OT1/ptm/m/n/8 op-er-a-tion or
+ []
+
+
+Underfull \hbox (badness 1584) in paragraph at lines 402--403
+\OT1/ptm/m/n/8 com-pen-sa-tion may be
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 406--407
+[]|\OT1/ptm/m/n/8 Multiview/multimodal
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 406--407
+\OT1/ptm/m/n/8 per-cep-tion, world-state
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
+[]|\OT1/ptm/m/n/8 Task suc-cess,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
+\OT1/ptm/m/n/8 ac-tion/trajectory er-ror,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
+\OT1/ptm/m/n/8 col-li-sion/safety, world-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
+\OT1/ptm/m/n/8 model er-ror, plan-ning
+ []
+
+
+Underfull \hbox (badness 6792) in paragraph at lines 408--409
+\OT1/ptm/m/n/8 qual-ity, sim-to-real gap,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 410--411
+[]|\OT1/ptm/m/n/8 Continuous,
+ []
+
+
+Underfull \hbox (badness 3219) in paragraph at lines 410--411
+\OT1/ptm/m/n/8 loops at het-ero-ge-neous
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 410--411
+\OT1/ptm/m/n/8 pe-ri-ods; scene
+ []
+
+
+
+pdfTeX warning: pdflatex.exe (file ./Fig1_LAM_Evolution.pdf): PDF inclusion: fo
+und PDF version <1.7>, but at most version <1.5> allowed
+<Fig1_LAM_Evolution.pdf, id=33, 1204.5pt x 376.40625pt>
+File: Fig1_LAM_Evolution.pdf Graphic file (type pdf)
+<use Fig1_LAM_Evolution.pdf>
+Package pdftex.def Info: Fig1_LAM_Evolution.pdf  used on input line 502.
+(pdftex.def)             Requested size: 516.0pt x 135.45346pt.
+[4]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 3068) in paragraph at lines 635--640
+\OT1/ptm/m/n/10 where $\OT1/cmr/m/n/10 [\OML/cmm/m/it/10 z\OT1/cmr/m/n/10 ][] =
+ [](\OML/cmm/m/it/10 z; \OT1/cmr/m/n/10 0)$\OT1/ptm/m/n/10 . In-ter-ac-tive tex
+t em-pha-sizes
+ []
+
+[5] [6 <./Fig1_LAM_Evolution.pdf>]
+
+pdfTeX warning: pdflatex.exe (file ./Fig2_LAM_Architecture.pdf): PDF inclusion:
+ found PDF version <1.7>, but at most version <1.5> allowed
+<Fig2_LAM_Architecture.pdf, id=87, 1204.5pt x 376.40625pt>
+File: Fig2_LAM_Architecture.pdf Graphic file (type pdf)
+<use Fig2_LAM_Architecture.pdf>
+Package pdftex.def Info: Fig2_LAM_Architecture.pdf  used on input line 828.
+(pdftex.def)             Requested size: 516.0pt x 144.05371pt.
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 900--901
+\OT1/ptm/m/n/8 di-rect agent co-op-er-a-tion:
+ []
+
+
+Underfull \hbox (badness 3364) in paragraph at lines 900--901
+\OT1/ptm/m/n/8 aware rout-ing, and ex-pert
+ []
+
+
+Underfull \hbox (badness 2608) in paragraph at lines 901--902
+\OT1/ptm/m/n/8 sion, KV cache, queue and
+ []
+
+
+Underfull \hbox (badness 3009) in paragraph at lines 903--903
+[]|\OT1/ptm/m/n/8 Request and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 905--906
+[]|\OT1/ptm/m/n/8 Device su-per-vi-sor; edge
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 905--906
+\OT1/ptm/m/n/8 ses-sion/state bro-ker;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 905--906
+\OT1/ptm/m/n/8 dis-tributed cloud/edge
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 906--907
+[]|\OT1/ptm/m/n/8 One-to-many plan-ner
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 906--907
+\OT1/ptm/m/n/8 dis-patch, many-to-one
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 906--907
+\OT1/ptm/m/n/8 vote/fusion, peer de-bate,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 907--909
+[]|\OT1/ptm/m/n/8 Collaboration fol-lows
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 907--909
+\OT1/ptm/m/n/8 the task graph; cen-tral
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 907--909
+\OT1/ptm/m/n/8 or-ches-tra-tion gives way
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 907--909
+\OT1/ptm/m/n/8 to de-cen-tral-ized/hybrid
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 909--910
+[]|\OT1/ptm/m/n/8 Goal, de-pen-den-cies,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 909--910
+\OT1/ptm/m/n/8 mem-ory/context ver-sion,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 909--910
+\OT1/ptm/m/n/8 network--compute--storage
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 911--911
+[]|\OT1/ptm/m/n/8 Step and
+ []
+
+
+Underfull \hbox (badness 6658) in paragraph at lines 913--914
+[]|\OT1/ptm/m/n/8 Local re-flex/safety; edge
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 913--914
+\OT1/ptm/m/n/8 VLA/world-model fu-sion;
+ []
+
+
+Underfull \hbox (badness 4266) in paragraph at lines 913--914
+\OT1/ptm/m/n/8 cloud fleet learn-ing and
+ []
+
+
+Underfull \hbox (badness 3590) in paragraph at lines 914--915
+\OT1/ptm/m/n/8 links and tem-po-rary edge-
+ []
+
+
+Underfull \hbox (badness 2564) in paragraph at lines 915--917
+\OT1/ptm/m/n/8 lo-cal safety per-sists while
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 917--918
+[]|\OT1/ptm/m/n/8 Multimodal time/age,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 917--918
+\OT1/ptm/m/n/8 ac-tion his-tory, un-cer-tainty,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 917--918
+\OT1/ptm/m/n/8 safety en-ve-lope; sensing--
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 917--918
+\OT1/ptm/m/n/8 communication--computing--
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 919--919
+[]|\OT1/ptm/m/n/8 Sub-ms--
+ []
+
+[8 <./Fig2_LAM_Architecture.pdf>]
+Underfull \hbox (badness 1796) in paragraph at lines 1031--1044
+ \OT1/ptm/m/it/10 1) Com-pres-sion and to-ken com-mu-ni-ca-tions: [][] \OT1/ptm
+/m/n/10 Quan-ti-za-
+ []
+
+[9]
+Underfull \hbox (badness 4543) in paragraph at lines 1145--1153
+[]\OT1/ptm/m/n/10 A prac-ti-cal es-ti-ma-tor can com-bine at-ten-tion/gradient
+ []
+
+
+Underfull \hbox (badness 2932) in paragraph at lines 1163--1169
+\OT1/ptm/m/n/10 where $\OML/cmm/m/it/10 C$ \OT1/ptm/m/n/10 and $\OML/cmm/m/it/1
+0 V$ \OT1/ptm/m/n/10 are chan-nel ca-pac-ity and dis-per-sion
+ []
+
+
+Underfull \hbox (badness 3240) in paragraph at lines 1190--1200
+ \OT1/ptm/m/it/10 3) Se-man-tic and goal-oriented com-mu-ni-ca-tion: [][] \OT1/
+ptm/m/n/10 Goal-
+ []
+
+
+Underfull \hbox (badness 3291) in paragraph at lines 1209--1219
+\OT1/ptm/m/n/10 con-trol pol-icy jointly. Re-cent work con-sid-ers sensing--
+ []
+
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 1258--1258
+[]|$\OT1/cmr/m/n/7 100$\OT1/ptm/m/n/7 -ms/$\OT1/cmr/m/n/7 10[]$\OT1/ptm/m/n/7 -
+token/s
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1258--1258
+\OT1/ptm/m/n/7 an-chor; con-tent fi-delity,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1259--1259
+\OT1/ptm/m/n/7 ac-cess over many-to-one
+ []
+
+
+Underfull \hbox (badness 5622) in paragraph at lines 1260--1261
+[]|\OT1/ptm/m/n/7 Adaptive to-k-eniza-tion; to-ken
+ []
+
+
+Underfull \hbox (badness 2941) in paragraph at lines 1260--1261
+\OT1/ptm/m/n/7 prun-ing/quantization; Tok-Com
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1262--1263
+\OT1/ptm/m/n/7 split/progressive in-fer-ence;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1267--1268
+[]|$\OT1/cmr/m/n/7 10$\OT1/ptm/m/n/7 -ms/$\OT1/cmr/m/n/7 5  \OMS/cmsy/m/n/7 ^^B
+  \OT1/cmr/m/n/7 10[]$\OT1/ptm/m/n/7 -
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1267--1268
+\OT1/ptm/m/n/7 token/s/$\OT1/cmr/m/n/7 99\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 9%$ \O
+T1/ptm/m/n/7 an-chors;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1267--1268
+\OT1/ptm/m/n/7 task good-put, mem-ory
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1270--1271
+[]|\OT1/ptm/m/n/7 KV quan-ti-za-tion/selection,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1270--1271
+\OT1/ptm/m/n/7 se-man-tic cache reuse,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1270--1271
+\OT1/ptm/m/n/7 machine/latent-state ex-change
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1272--1273
+\OT1/ptm/m/n/7 cache affin-ity; early exit,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1272--1273
+\OT1/ptm/m/n/7 network--compute--storage
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1278--1279
+[]|$\OT1/cmr/m/n/7 1$\OT1/ptm/m/n/7 -ms/$\OT1/cmr/m/n/7 10[]$\OT1/ptm/m/n/7 -
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1278--1279
+\OT1/ptm/m/n/7 token/s/$\OT1/cmr/m/n/7 99\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 999%$
+ []
+
+
+Underfull \hbox (badness 1960) in paragraph at lines 1278--1279
+\OT1/ptm/m/n/7 an-chors; loop tail, jit-ter,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1278--1279
+\OT1/ptm/m/n/7 syn-chro-nized good-put,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1282--1283
+[]|\OT1/ptm/m/n/7 Control-loss-aware
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1282--1283
+\OT1/ptm/m/n/7 to-ken/channel se-lec-tion,
+ []
+
+
+Underfull \hbox (badness 5756) in paragraph at lines 1282--1283
+\OT1/ptm/m/n/7 task-conditioned com-pres-sion,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1284--1285
+[]|\OT1/ptm/m/n/7 Finite-blocklength cod-ing,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1284--1285
+\OT1/ptm/m/n/7 di-ver-sity/HARQ, slic-ing,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1284--1285
+\OT1/ptm/m/n/7 de-ter-min-is-tic radio--compute
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1284--1285
+\OT1/ptm/m/n/7 schedul-ing, and safe lo-cal
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1286--1288
+[]|\OT1/ptm/m/n/7 Interaction-graph clus-ter-ing,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1286--1288
+\OT1/ptm/m/n/7 multi-rate model shar-ing, and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1336--1337
+[]|\OT1/ptm/m/n/8 Request/response ID,
+ []
+
+
+Underfull \hbox (badness 1983) in paragraph at lines 1337--1338
+\OT1/ptm/m/n/8 by asym-met-ric au-tore-gres-sive
+ []
+
+
+Underfull \hbox (badness 2671) in paragraph at lines 1337--1338
+\OT1/ptm/m/n/8 or me-dia down-link; one/few
+ []
+
+
+Underfull \hbox (badness 2582) in paragraph at lines 1339--1341
+\OT1/ptm/m/n/8 ing and elas-tic rate; on miss-
+ []
+
+
+Underfull \hbox (badness 2875) in paragraph at lines 1343--1344
+[]|\OT1/ptm/m/n/8 Session plus parent-step ID,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1343--1344
+\OT1/ptm/m/n/8 ex-piry, idem-po-tence/commit
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1344--1345
+[]|\OT1/ptm/m/n/8 Multi-round fan-out/fan-in
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1344--1345
+\OT1/ptm/m/n/8 among model, tool, and
+ []
+
+
+Underfull \hbox (badness 1939) in paragraph at lines 1345--1347
+\OT1/cmr/m/n/8 99\OML/cmm/m/it/8 :\OT1/cmr/m/n/8 9%$ \OT1/ptm/m/n/8 an-chors; q
+ual-ify by
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1345--1347
+\OT1/ptm/m/n/8 complete-task suc-cess, job
+ []
+
+
+Underfull \hbox (badness 1436) in paragraph at lines 1351--1352
+[]|\OT1/ptm/m/n/8 Loop ID, mea-sure-ment/action
+ []
+
+
+Underfull \hbox (badness 5954) in paragraph at lines 1352--1353
+\OT1/ptm/m/n/8 down-link; cor-re-lated sources
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1353--1355
+[]|$\OT1/cmr/m/n/8 1$\OT1/ptm/m/n/8 -ms, $\OT1/cmr/m/n/8 10[]$\OT1/ptm/m/n/8 -t
+oken/s, and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1353--1355
+\OT1/ptm/m/n/8 good-put, and application-
+ []
+
+
+Underfull \hbox (badness 5359) in paragraph at lines 1355--1357
+[]|\OT1/ptm/m/n/8 Align ra-dio and edge-compute
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1355--1357
+\OT1/ptm/m/n/8 slots, re-serve/duplicate crit-i-cal
+ []
+
+
+Underfull \hbox (badness 6893) in paragraph at lines 1355--1357
+\OT1/ptm/m/n/8 chunks, and keep sta-bi-liza-tion
+ []
+
+
+Underfull \hbox (badness 2142) in paragraph at lines 1355--1357
+\OT1/ptm/m/n/8 lo-cal; un-ver-i-fied $\OML/cmm/m/it/8 E$ \OT1/ptm/m/n/8 dec-la-
+ra-tions
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1367--1378
+[]\OT1/ptm/m/n/10 Recognition op-er-ates at three gran-u-lar-i-ties. First,
+ []
+
+
+Underfull \hbox (badness 6608) in paragraph at lines 1367--1378
+\OT1/ptm/m/n/10 ten-ant au-tho-riza-tion, end-point at-tes-ta-tion, and al-lowe
+d
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1367--1378
+\OT1/ptm/m/n/10 en-force-able: the op-er-a-tor sells re-served net-work/edge
+ []
+
+
+Underfull \hbox (badness 1448) in paragraph at lines 1367--1378
+\OT1/ptm/m/it/10 level recog-ni-tion \OT1/ptm/m/n/10 com-bines the signed class
+ with traf-fic
+ []
+
+[11] [12]
+Underfull \hbox (badness 1881) in paragraph at lines 1453--1455
+[]\OT1/ptm/m/it/10 behavioral\OT1/ptm/m/n/10 : equiv-a-lent down-stream ac-tion
+ within a
+ []
+
+
+Underfull \hbox (badness 5417) in paragraph at lines 1484--1493
+[]\OT1/ptm/m/n/10 An endpoint-side shim may bind rich task/session,
+ []
+
+
+Underfull \hbox (badness 6978) in paragraph at lines 1484--1493
+\OT1/ptm/m/n/10 model/tokenizer, modal-ity, de-pen-dency, and un-cer-tainty
+ []
+
+[13]
+Underfull \hbox (badness 2837) in paragraph at lines 1769--1771
+[]\OT1/ptm/m/n/8 Y. Zheng, Z. Zhao, Z. Li, Y. Xie, M. Gao, L. Zhang, and
+ []
+
+
+Underfull \hbox (badness 1708) in paragraph at lines 1769--1771
+\OT1/ptm/m/n/8 K. Zhang, ``Thought com-mu-ni-ca-tion in mul-ti-a-gent col-lab-o
+-ra-tion,''
+ []
+
+[14] [15
+
+] (bare_jrnl_new_sample43.aux)
+ ***********
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-04>
+ ***********
+ ) 
+Here is how much of TeX's memory you used:
+ 4272 strings out of 474486
+ 67676 string characters out of 5743755
+ 1958542 words of memory out of 5000000
+ 26512 multiletter control sequences out of 15000+600000
+ 599002 words of font info for 111 fonts, out of 8000000 for 9000
+ 1147 hyphenation exceptions out of 8191
+ 57i,17n,65p,583b,292s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
+cmbx10.pfb><C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmbx7.pfb><C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmex10.pfb><C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/23880/AppData/Local/Programs/MiK
+TeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/23880/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/23880/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/23880/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/
+23880/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:
+/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.
+pfb><C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
+m/cmr7.pfb><C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmr8.pfb><C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/amsfonts/cm/cmsy10.pfb><C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/amsfonts/cm/cmsy5.pfb><C:/Users/23880/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/23880/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/23880/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam7.pfb><C:/Users/23880
+/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><
+C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><
+C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb>
+<C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb>
+<C:/Users/23880/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb
+>
+Output written on bare_jrnl_new_sample43.pdf (15 pages, 566034 bytes).
+PDF statistics:
+ 269 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 34 words of extra memory for PDF output out of 10000 (max. 10000000)
+

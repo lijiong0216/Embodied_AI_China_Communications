@@ -1,0 +1,1786 @@
+\documentclass[letterpaper,journal]{IEEEtran}
+
+\usepackage{amsmath,amsfonts}
+\usepackage{array}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{cite}
+
+\hyphenation{op-tical net-works semi-conduc-tor multi-modal token-izer token-izers}
+
+\newcommand{\LAM}{large AI model}
+\newcommand{\LAMs}{large AI models}
+\newcommand{\GenAI}{generative AI}
+\newcommand{\etal}{\emph{et al.}}
+\newcommand{\etalspace}{\emph{et al.}\ }
+
+\begin{document}
+
+\title{From Generative to Embodied Intelligence: Network Evolution for Distributed Large-AI-Model Agents}
+
+\author{Jihong Li, Bo Li,~\IEEEmembership{Student Member,~IEEE,}
+Qingqing Wu,~\IEEEmembership{Senior Member,~IEEE,}
+and Shunqing Zhang,~\IEEEmembership{Senior Member,~IEEE}%
+\thanks{J. Li, B. Li, and S. Zhang are with the School of Communication and
+Information Engineering, Shanghai University, Shanghai 200444, China.
+Q. Wu is with the Department of Electronic Engineering, Shanghai Jiao Tong
+University, Shanghai 200240, China. (Corresponding author: Shunqing Zhang.)}}
+
+\markboth{IEEE Communications Surveys \& Tutorials,~Preprint}%
+{Li \MakeLowercase{\textit{et al.}}: From Generative to Embodied Intelligence}
+
+\maketitle
+
+\begin{abstract}
+Large AI models are evolving from generators that return digital content, to
+agents that execute multi-step workflows, and further to embodied agents that
+perceive, decide, and act in the physical world. This evolution changes not
+only the volume but also the meaning, timing, and consequence of network
+traffic. A generative request tolerates best-effort delivery if response
+quality is preserved; an agentic workflow accumulates failure probability over
+tool calls; and an embodied loop can become unsafe when multimodal observations
+or action tokens are late, asynchronous, or distorted. This survey develops a
+network-centric taxonomy across these three stages. It first aligns model
+benchmarks with communication metrics, showing a progression from content
+fidelity and token throughput, through end-to-end task reliability, to
+closed-loop control cost, tail latency, and jitter. It then traces the
+architecture evolution from cloud-centric inference to stateful edge
+orchestration and hierarchical, multi-agent control. Enabling technologies are
+organized into a token plane, a transport plane, and a coordination plane,
+covering token compression and reuse, split and speculative inference,
+finite-blocklength transmission, deterministic scheduling, semantic
+communications, communication--control co-design, and dynamic model sharing.
+A collaborative robotic-rescue case study demonstrates how the taxonomy
+translates task and physical coupling into differentiated service-level
+objectives. Finally, the paper identifies token recognition, tokenizer
+compatibility, and token-native protocols as three prerequisites for networks
+that connect intelligence rather than merely transport bits.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Agentic AI, embodied AI, edge intelligence, large AI models, multi-agent
+systems, networked control, semantic communications, token communications,
+ultra-reliable low-latency communications.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\label{sec:introduction}
+\IEEEPARstart{L}{arge} AI models are moving beyond a single prompt--response
+exchange. Generative models synthesize text, images, audio, and video;
+agentic models decompose goals, invoke tools, retrieve memory, and cooperate
+with other models; embodied models close the loop between multimodal sensing
+and physical actuation. We use \emph{\LAM} (LAM) as an umbrella term for these
+foundation-model-based systems, including large language models (LLMs),
+multimodal large language models (MLLMs), world models, and
+vision--language--action (VLA) models. The three stages are not mutually
+exclusive model families. Rather, they represent increasingly stringent
+interaction contracts between intelligence, a network, and an environment.
+
+Mobile and edge networks are therefore changing roles. In the generative
+stage, a network primarily transports prompts, context, and output tokens to a
+remote accelerator. In the agentic stage, it also binds tools, model context,
+persistent memory, and multiple expert models into a reliable transaction.
+In the embodied stage, the network becomes part of the plant: it carries
+camera, depth, point-cloud, inertial, joint-state, and action streams whose age
+and synchronization affect the next physical state. The ongoing 3GPP study on
+6G use cases explicitly includes AI-agent communication and network-supported
+AI/ML training and inference, illustrating this shift from generic
+connectivity toward AI, data, and computing service exposure
+\cite{3gpp22870}.
+
+This transition exposes a mismatch between conventional communication
+objectives and application value. Maximizing throughput or minimizing average
+packet delay does not specify whether a missing visual patch hides a grasp
+point, whether a stale tool response invalidates the remaining plan, or
+whether jitter destabilizes a fast control loop. Conversely, transmitting all
+raw data with uniform reliability is often infeasible: an embodied platform
+may contain multiple cameras and range sensors, tens of joints, and more than
+one control timescale. The central design question is consequently:
+\emph{which information must be delivered, to which model or actuator, by
+what deadline, and with what task-level loss when resources are limited?}
+
+\begin{figure*}[t]
+\centering
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{c@{\hspace{4pt}$\Longrightarrow$\hspace{4pt}}c@{\hspace{4pt}$\Longrightarrow$\hspace{4pt}}c}
+\fbox{\parbox[c][1.08in][c]{0.275\textwidth}{\centering
+\textbf{Generative LAM}\\[2pt]
+Prompt $\rightarrow$ content\\
+one/few-shot interaction\\
+quality, TTFT, token goodput\\[2pt]
+\emph{dominant bottleneck: throughput}}}
+&
+\fbox{\parbox[c][1.08in][c]{0.275\textwidth}{\centering
+\textbf{Agentic LAM}\\[2pt]
+Goal $\rightarrow$ plan/tools/memory\\
+multi-step and stateful\\
+task success, tail job time\\[2pt]
+\emph{dominant bottleneck: reliability}}}
+&
+\fbox{\parbox[c][1.08in][c]{0.275\textwidth}{\centering
+\textbf{Embodied LAM}\\[2pt]
+Sense $\rightarrow$ predict $\rightarrow$ act\\
+continuous closed loop\\
+control cost, jitter, safety\\[2pt]
+\emph{bottleneck: delay--reliability}}}
+\\[5pt]
+\multicolumn{3}{c}{\small Increasing interaction frequency, source coupling,
+physical consequence, and network--compute--control interdependence}
+\end{tabular}
+\caption{Evolution of LAM services and their dominant network operating
+bottlenecks. Requirements accumulate rather than replace one another:
+embodied systems still need throughput and semantic reliability, but must
+add deterministic closed-loop behavior.}
+\label{fig:evolution}
+\end{figure*}
+
+\subsection{Scope and Survey Method}
+This paper is a structured technical survey at the intersection of four
+literatures that are often treated separately: (i) model evaluation and
+efficient inference, (ii) edge intelligence and semantic communications,
+(iii) ultra-reliable low-latency communications (URLLC), and (iv) wireless
+networked control. We prioritize peer-reviewed papers, archival preprints for
+rapidly emerging VLA techniques, and active standards. Studies are compared
+along a common chain:
+\[
+\text{model}\rightarrow\text{token traffic}\rightarrow
+\text{network SLO}\rightarrow\text{physical task}.
+\]
+The goal is not to rank model leaderboards or to repeat a general edge-AI
+survey. It is to reveal where a metric, architecture, or mechanism developed
+for one stage fails when it is transferred to the next.
+
+\subsection{Positioning Relative to Adjacent Surveys}
+The topic is adjacent to, but broader than, several established survey areas.
+Edge-LLM studies primarily ask where a model should execute and how model,
+tensor, pipeline, or expert parallelism reduces inference cost. They usually
+treat the model output as the terminal objective. Semantic-communication
+studies replace bit fidelity with meaning or task fidelity, and recent token
+communication makes foundation-model tokens the exchanged representation
+\cite{semanticclassic,tokcom}. Integrated sensing and edge AI extends the
+objective to perception tasks and systematically co-designs sensing,
+communication, and inference \cite{isea}. URLLC and deterministic networking
+provide reliability and tail-delay tools, while wireless networked control
+directly optimizes stability, identification, or linear-quadratic cost.
+
+Each area solves one part of the embodied problem, but their boundary
+assumptions differ. Efficient LLM inference generally assumes that additional
+latency reduces user experience but not plant stability. Semantic
+communications commonly evaluates a reconstructed signal or a downstream
+classifier, for which occasional errors do not change the next source state.
+URLLC abstracts a packet source and deadline without asking which physical
+state generated the packet. Networked-control theory closes the loop but
+usually starts with an explicit low-dimensional dynamical model rather than a
+VLA policy and multimodal token stream.
+
+This survey uses model evolution to connect the areas. Its distinctive object
+is the \emph{distributed LAM agent service}: model execution, network
+transport, memory/tool interaction, and physical control are all parts of one
+service graph. Table~\ref{tab:positioning} makes the boundary explicit. The
+comparison is important because merely combining the mechanisms in adjacent
+columns does not ensure end-to-end validity. For example, a token-pruning
+method can preserve perception accuracy, and a URLLC link can deliver the
+retained tokens reliably, while the closed loop still fails because the
+pruned token marks a contact transition or the accelerator queue introduces
+jitter.
+
+\begin{table*}[t]
+\caption{Position of This Survey Relative to Adjacent Research Areas}
+\label{tab:positioning}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.17}
+\setlength{\tabcolsep}{3.1pt}
+\begin{tabular}{|p{0.15\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.21\textwidth}|}
+\hline
+\textbf{Area} & \textbf{Terminal objective} & \textbf{Traffic abstraction}
+& \textbf{Typical system boundary} & \textbf{What remains outside that
+boundary} \\ \hline
+Edge LLM inference &
+Inference latency, energy, accuracy, or cost &
+Requests, tensors, features, experts, and output tokens &
+Device--edge--cloud model serving &
+Tool transactions, control dynamics, task-dependent physical consequence
+\\ \hline
+Semantic/token communications &
+Semantic reconstruction or downstream inference quality &
+Meaning-bearing features or model tokens &
+Semantic encoder, channel, and semantic decoder &
+Long-horizon task dependency, actuator timing, and closed-loop stability
+\\ \hline
+Integrated sensing and edge AI &
+End sensing/perception task performance &
+Sensor signals and task-oriented features &
+Sensing--communication--edge inference &
+Agentic tools/memory and multi-rate action execution \\ \hline
+URLLC/deterministic networking &
+Packet error, hard deadline, delay tail, and jitter &
+Short packets and queues with service classes &
+Radio/access and sometimes edge-compute queue &
+Source semantics, cross-modal dependence, and physical-state evolution
+\\ \hline
+Wireless networked control &
+Stability, estimation/identification error, or control cost &
+State estimates, measurements, and control packets &
+Communication link plus an explicit dynamical plant/controller &
+Foundation-model uncertainty, tokenization, and implicit learned dynamics
+\\ \hline
+\textbf{This survey} &
+Content quality $\rightarrow$ task success $\rightarrow$ safe physical
+control &
+Tokens, transactions, multimodal observations, actions, and dependencies &
+Model--memory/tool--network--compute--physical service graph &
+Develops the interfaces and open problems needed to optimize the graph
+end-to-end \\ \hline
+\end{tabular}
+\end{table*}
+
+\subsection{Contributions}
+The survey makes four contributions.
+
+\begin{itemize}
+\item It proposes a three-stage taxonomy that jointly classifies model
+objectives, token sources, interaction patterns, benchmarks, failure
+consequences, and network operating bottlenecks.
+\item It maps AI-side evaluation to network-side quality of service (QoS).
+The resulting metric ladder progresses from time to first token and content
+quality, to transaction success and long-horizon tail latency, and finally to
+task distortion, robust loop period, and control cost.
+\item It organizes enabling technologies into token, transport, and
+coordination planes, and explains their cross-layer coupling. This highlights
+two gaps in current work: compression is commonly perception-oriented rather
+than control-oriented, and deterministic transmission is commonly
+source-independent rather than task-coupled.
+\item It translates the taxonomy into an embodied multi-agent rescue case
+study and derives research directions for token-aware service classification,
+interoperability, and protocol design.
+\end{itemize}
+
+Section~\ref{sec:model_evolution} reviews model evolution and benchmarks.
+Sections~\ref{sec:qos} and~\ref{sec:architecture} study metric and architecture
+evolution, respectively. Section~\ref{sec:enablers} surveys enabling
+technologies, Section~\ref{sec:case} presents the case study, and
+Section~\ref{sec:future} discusses open challenges.
+
+\section{From Generative to Embodied LAMs: Performance Metrics, Benchmarks, and Model Evolution}
+\label{sec:model_evolution}
+
+\subsection{Generative LAMs}
+Generative LAMs learn a conditional distribution over token sequences.
+Text is represented by subword tokens; images and video by spatial or
+spatiotemporal patches or discrete latent codes; and audio by waveform,
+spectral, or codec tokens. Transformer attention supplies a shared processing
+interface, but it does not make these tokens equivalent from a networking
+perspective. A text token may represent a word fragment, whereas the loss of a
+visual token can remove localized geometry and the loss of an audio token can
+corrupt a time interval.
+
+Model-side evaluation in this stage is largely \emph{content-centric}.
+Perplexity measures predictive fit, exact-match or multiple-choice accuracy
+measures knowledge and reasoning, and BLEU/ROUGE-like scores compare generated
+and reference text. MMLU spans 57 subjects and tests broad academic knowledge
+\cite{mmlu}; BIG-bench uses more than 200 heterogeneous tasks to probe
+capabilities and scaling behavior \cite{bigbench}. For open-ended and
+multimodal generation, human preference, learned reward, semantic similarity,
+factuality, and safety are required because surface-form overlap is
+insufficient.
+
+The corresponding traffic is asymmetric and elastic. Prompts and retrieved
+context form a relatively bursty uplink; autoregressive output creates a
+streaming downlink. A request can often tolerate a longer queue if the result
+remains useful. Thus cloud serving, request batching, key--value cache
+management, model placement, and output-token scheduling dominate. Edge
+inference reduces backhaul and privacy exposure but introduces memory,
+compute, and wireless partitioning constraints
+\cite{beyondcloud,modeloffload}. The
+fundamental network tradeoff is \emph{quality--latency--cost}: compression,
+quantization, or lossy semantic delivery is acceptable when the generated
+content meets the user's intent.
+
+\subsection{Agentic LAMs}
+An agentic LAM places a generative model inside a feedback loop with a planner,
+tool interfaces, memory, verification, and sometimes other agents. The unit of
+work is no longer one output sequence but a trajectory
+\[
+\tau=(o_0,a_0,o_1,a_1,\ldots,o_K),
+\]
+where observations $o_k$ may be web pages, application screenshots, database
+results, code-execution logs, or messages from peer agents, and $a_k$ may call
+an API or change external state. Reasoning techniques such as chain-of-thought
+and tree/graph search, retrieval-augmented generation, model context
+protocols, and multi-agent debate increase capability by introducing more
+rounds and more state.
+
+Consequently, evaluation shifts from answer similarity to
+\emph{process-grounded task completion}. AgentBench, for example, evaluates
+LLM agents across operating-system, database, knowledge-graph, gaming,
+household, web-shopping, and web-browsing environments
+\cite{agentbench}. Relevant metrics include task success rate, number of tool
+calls, constraint violations, plan length, recovery from tool failure,
+long-horizon consistency, and cost per completed task. An agent that produces
+fluent intermediate text but executes the wrong transaction has failed.
+
+Network reliability compounds over the trajectory. If step $k$ succeeds with
+conditional probability $p_k$, a simplified serial workflow has
+\begin{equation}
+P_{\rm task}=\prod_{k=1}^{K}p_k,\qquad
+P_{\rm fail}\leq\sum_{k=1}^{K}(1-p_k),
+\label{eq:agent_reliability}
+\end{equation}
+where the equality assumes that each $p_k$ already conditions on prior
+success. Even modest per-call error becomes material for large $K$.
+Retries improve reliability but expand context, consume tokens, and create a
+heavy tail in job completion time. Heterogeneous model collaboration and
+adaptive repeat-query mechanisms can trade extra inference rounds for higher
+task reliability \cite{garq}. Agentic networks must therefore expose
+transaction identifiers, tool semantics, memory freshness, idempotence, and
+provenance rather than treating every model call as an independent flow.
+
+\subsection{Embodied LAMs}
+Embodied LAMs ground language and vision in state estimation, world
+prediction, planning, and action. Architectures include VLA models, latent
+world models, bird's-eye-view transformers, and joint-embedding predictive
+architectures. The observation $o_t$ can combine RGB/depth images, point
+clouds, force/torque, inertial measurements, joint encoders, and messages from
+other robots. The output $u_t$ can contain waypoints, discrete skills, joint
+targets, or continuous control actions. Generalist humanoid models such as
+GR00T N1 illustrate a trend toward shared representations across embodiments
+and tasks \cite{groot}.
+
+The benchmark moves into a physical or high-fidelity simulated loop.
+Meta-World contains 50 robotic manipulation tasks and evaluates multi-task
+generalization \cite{metaworld}; modern VLA evaluations additionally report
+task success, trajectory efficiency, collision rate, action error, robustness
+to scene perturbation, and sim-to-real degradation. World models are judged
+by predictive consistency and planning quality, not merely reconstruction.
+Because a small perception error is harmless in one state and catastrophic
+near a contact transition, average token distortion alone is inadequate.
+
+The control-oriented objective can be written as
+\begin{equation}
+J_{\rm c}=\mathbb{E}\!\left[\sum_{t=0}^{H}
+\gamma^t\!\left(
+\|x_t-x_t^\star\|_{\mathbf Q}^{2}
++\|u_t\|_{\mathbf R}^{2}
++\lambda_{\rm s}{\bf 1}\{\text{unsafe at }t\}
+\right)\right],
+\label{eq:control_cost}
+\end{equation}
+where $x_t$ is the physical state, $x_t^\star$ the task-dependent target,
+$u_t$ the action, and ${\bf 1}\{\cdot\}$ is an indicator that penalizes safety
+constraint violation. The important point is that communication changes
+$J_{\rm c}$ through delayed, missing, or distorted observations and actions.
+
+Embodied traffic also has structure unavailable in generic Internet flows.
+Visual tokens often contain \emph{spatial} redundancy because only a subset
+describes task-relevant objects. Action tokens often contain \emph{temporal}
+redundancy during stable motion but become highly sensitive near transitions.
+FlashVLA exploits both visual-token pruning and action reuse, reporting
+substantial compute and latency savings with a small success-rate reduction
+on LIBERO \cite{flashvla}. Yet temporal redundancy must not be confused with
+permission to drop small controls: near an unstable equilibrium, small
+corrective actions can be essential.
+
+\begin{table*}[t]
+\caption{Model and Traffic Evolution Across LAM Stages}
+\label{tab:modeltaxonomy}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{|p{0.085\textwidth}|p{0.17\textwidth}|p{0.18\textwidth}|p{0.17\textwidth}|p{0.16\textwidth}|p{0.15\textwidth}|}
+\hline
+\textbf{Stage} & \textbf{Primary objective} & \textbf{Token/source structure}
+& \textbf{Representative evaluation} & \textbf{Traffic pattern}
+& \textbf{Failure consequence} \\ \hline
+Generative &
+Produce useful and faithful digital content &
+Subwords, image/video patches, audio or codec tokens; statistical and
+cross-modal redundancy &
+Perplexity, accuracy, MMLU, BIG-bench, BLEU/ROUGE, preference, factuality &
+Bursty prompt/context uplink and streaming output; one/few-shot; elastic
+deadline &
+Hallucinated or degraded content; often detectable, retryable, and
+non-physical \\ \hline
+Agentic &
+Complete a goal through reasoning, tools, memory, and collaboration &
+Generated tokens plus UI frames, logs, API objects, retrieved memory, and
+inter-agent messages; workflow-induced redundancy &
+Task success, tool correctness, constraint violations, calls/steps, recovery,
+cost per completed job &
+Stateful multi-round graph with fan-out, retries, persistent context, and
+long-tail completion time &
+Wrong external operation or cascading plan failure; compensation may be
+expensive or impossible \\ \hline
+Embodied &
+Perceive, predict, and act safely in the physical world &
+Multiview/multimodal perception, world-state and action tokens; spatial,
+temporal, task, and physical coupling &
+Task success, action/trajectory error, collision/safety, world-model error,
+planning quality, sim-to-real gap, control cost &
+Continuous, bidirectional, multisource loops at heterogeneous periods;
+synchronization- and jitter-sensitive &
+Unstable motion, equipment damage, or injury; late information can be worse
+than missing information \\ \hline
+\end{tabular}
+\end{table*}
+
+\subsection{Cross-Stage Synthesis}
+Table~\ref{tab:modeltaxonomy} reveals three trends. First, evaluation moves
+from \emph{relative content accuracy}, to \emph{practical process success}, to
+\emph{physical closed-loop performance}. Second, interaction frequency and
+coupling increase: a prompt is weakly coupled to the next request, an agent
+trajectory is logically coupled across steps, and an embodied trajectory is
+both logically and dynamically coupled through the environment. Third, the
+consequence of failure changes from a correctable response to an external
+state change and finally to a potentially irreversible physical event.
+
+The increasing regularity of traffic creates an opportunity as well as a
+burden. Generative tokens mainly expose statistical redundancy; agentic tokens
+add workflow and protocol redundancy; embodied tokens add constraints induced
+by geometry, kinematics, and task relations. A network that can recognize
+these structures can avoid transporting semantically predictable tokens.
+However, it must evaluate prediction errors in the task domain. This motivates
+the QoS evolution in the next section.
+
+\subsection{Benchmark--Network Co-Design}
+A benchmark becomes a useful network workload only when its execution
+semantics are preserved. Three mappings are required. First, the benchmark
+unit must be declared. For generation it may be a prompt and response; for an
+agent it is a complete trajectory including tool side effects; for a robot it
+is an episode with initial state, perturbations, and termination criteria.
+Reporting per-call latency for an agent or per-frame accuracy for a robot
+silently changes the evaluation unit and can reverse conclusions.
+
+Second, perturbations must be injected at the layer where a proposed mechanism
+acts. A radio study should vary loss bursts, rate, queuing, handover, and clock
+skew; a split-inference study should additionally vary feature quantization,
+device stragglers, and accelerator queues. These perturbations must retain
+their temporal structure. Independently dropping 1\% of packets is not
+equivalent to a short outage during grasp contact, and randomly shuffling a
+mean-delay trace destroys the jitter and burst correlations that a controller
+experiences.
+
+Third, the benchmark must propagate the perturbation to the terminal metric.
+For a generative model this requires decoding the received representation and
+scoring the output, not only measuring feature mean-square error. For an agent
+it requires replaying the remaining task graph, because a delayed observation
+can alter later tool calls. For an embodied agent it requires closing the
+physics loop. DaDu-Corki's algorithm--architecture analysis exemplifies how
+embodied-model inference latency must be studied together with robotic
+execution rather than as an isolated transformer kernel \cite{dadu}.
+
+The mapping also reveals a reproducibility hierarchy. A \emph{trace replay}
+uses fixed model and network traces and is inexpensive, but cannot represent
+feedback. A \emph{co-simulation} couples real model inference and network
+emulation to simulated tools or physics. A \emph{hardware-in-the-loop} setup
+adds real sensors, radio, or actuators and captures release-time and clock
+effects. A \emph{field trial} tests distribution shift and safety procedures.
+Claims should match the highest validated level. In particular, a simulation
+gain in task success is evidence for an orchestration principle, not proof of
+real-world safety.
+
+Finally, benchmark scores should be reported as a surface rather than a
+single operating point. The surface relates model scale, token budget,
+wireless resources, compute load, and task quality. It exposes Pareto fronts
+and phase transitions---for example, a stable range in which action reuse is
+safe followed by a sharp loss near contact. Such a surface is the empirical
+counterpart of the task-conditioned rate--distortion and robust-loop
+formulations developed later in this paper.
+
+\section{From Generative to Embodied Networks for LAMs: QoS Metric Evolution}
+\label{sec:qos}
+
+\subsection{QoS for Generative-LAM Networks}
+Generative serving decomposes user-perceived delay into request admission,
+prefill, and decode. The most useful operational metrics are time to first
+token (TTFT), time per output token (TPOT), end-to-end response time, token
+goodput, and deadline attainment. Token goodput counts tokens that satisfy a
+service-level objective (SLO), rather than raw decoded tokens. It prevents a
+server from appearing efficient by admitting too many requests and violating
+their latency targets.
+
+Quality and cost must accompany latency. Let $q_i$ be a task-specific response
+quality, $T_i^{\rm f}$ the TTFT, $r_i^{\rm tok}$ the output rate, and $e_i$ the
+energy or monetary cost for request $i$. A generic utility is
+\begin{equation}
+U_i^{\rm gen}=w_q q_i-w_f[T_i^{\rm f}-d_i^{\rm f}]^+
++w_r\log r_i^{\rm tok}-w_e e_i,
+\label{eq:gen_utility}
+\end{equation}
+where $[z]^+=\max(z,0)$. The weights represent a service tier. Interactive
+chat emphasizes TTFT and TPOT; offline generation emphasizes completion time
+and energy; high-fidelity media emphasizes semantic quality and sustained
+throughput. Byte throughput alone cannot represent these differences.
+
+\subsection{QoS for Agentic-LAM Networks}
+For an agentic service, each model response is an intermediate event. QoS must
+be measured at the transaction boundary: end-to-end job completion time,
+success probability, recovery probability, number of unnecessary calls,
+context freshness, and resource cost. Percentiles matter because branching,
+tool timeouts, and retries generate a long-tailed latency distribution.
+
+The network should distinguish \emph{semantic reliability} from packet
+reliability. A packet can be delivered correctly while a stale observation,
+duplicated non-idempotent tool call, incompatible schema, or poisoned memory
+causes task failure. Conversely, a lost low-value rationale token need not
+trigger retransmission if a verified tool result is intact. A useful
+agentic-SLO tuple is
+\[
+{\cal S}_{\rm ag}=(P_{\rm task},T_{95}^{\rm job},A_{\rm mem},
+C_{\rm job},P_{\rm unsafe}),
+\]
+where $A_{\rm mem}$ is the age of task-relevant memory and $C_{\rm job}$
+accounts for communication, inference, storage, and tool access. Network-aware
+model-context platforms are beginning to make capability discovery and
+network state visible to an agent \cite{netmcp}; a complete design must also
+support admission, rollback, and audit across the full task graph.
+
+\subsection{QoS for Embodied-LAM Networks}
+An embodied loop adds sensing, computation, communication, and actuation:
+\begin{equation}
+T_t^{\rm loop}=T_t^{\rm sense}+T_t^{\rm enc}+T_t^{\rm ul}
++T_t^{\rm queue}+T_t^{\rm inf}+T_t^{\rm dl}+T_t^{\rm act}.
+\label{eq:loop_delay}
+\end{equation}
+Optimizing one component without accounting for the others can be
+counterproductive. For example, stronger visual compression may reduce
+$T^{\rm ul}$ but increase $T^{\rm enc}$ and action error; offloading can
+reduce $T^{\rm inf}$ but add queue and radio tails.
+
+Average delay is insufficient. For a loop period $h_i$, tolerance
+$\epsilon_i$, and violation probability $\delta_i$, a robust closed-loop SLO
+can be expressed as
+\begin{equation}
+\Pr\!\left\{T_{i,t}^{\rm loop}\le h_i,\,
+\left|T_{i,t}^{\rm loop}-\mathbb{E}T_{i,t}^{\rm loop}\right|
+\le\epsilon_i h_i\right\}\ge 1-\delta_i.
+\label{eq:robust_slo}
+\end{equation}
+The first condition controls deadline reliability; the second limits jitter.
+For asynchronous multi-rate systems, relative age and skew among modalities
+must also be bounded. A perfectly delivered camera frame timestamped before a
+rapid contact change can be less useful than a lower-resolution but current
+frame.
+
+The proper distortion is task-conditional. For a retained token set
+${\cal K}$, define
+\begin{equation}
+D_{\rm task}({\cal K}\mid g,x)
+=J_{\rm c}({\cal K}\mid g,x)-J_{\rm c}({\cal K}_{\rm full}\mid g,x),
+\label{eq:task_distortion}
+\end{equation}
+where $g$ is the goal and $x$ the current physical state. The same token can
+have low distortion while navigating free space and high distortion near an
+obstacle. This state dependence explains why static top-$k$ selection or
+feature-reconstruction error does not directly optimize embodied performance.
+
+Finally, the economic metric should be \emph{control utility per resource
+cost}, not bits per joule alone:
+\begin{equation}
+\eta_{\rm EAI}=
+\frac{J_{\rm c}^{\rm baseline}-J_{\rm c}^{\rm scheme}}
+{\alpha B+\beta E+\chi F+\zeta S},
+\label{eq:cost_effectiveness}
+\end{equation}
+where $B,E,F,S$ denote bandwidth, energy, computing cycles, and storage.
+Equation~\eqref{eq:cost_effectiveness} discourages spending large resources on
+tokens that do not improve the physical task.
+
+\begin{table*}[t]
+\caption{QoS Ladder and Representative Observability}
+\label{tab:qos}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{|p{0.09\textwidth}|p{0.21\textwidth}|p{0.19\textwidth}|p{0.19\textwidth}|p{0.22\textwidth}|}
+\hline
+\textbf{Stage} & \textbf{Primary SLOs} & \textbf{Useful secondary metrics}
+& \textbf{Insufficient legacy proxy} & \textbf{Required cross-layer
+observability} \\ \hline
+Generative &
+TTFT, TPOT, completion deadline, semantic quality, token goodput &
+Batch efficiency, cache hit ratio, energy/token, price/request &
+Average throughput without response-quality or deadline qualification &
+Prompt/output length, model and quantization, cache state, queue, radio rate
+\\ \hline
+Agentic &
+Task success, $T_{95/99}^{\rm job}$, unsafe-operation probability, cost/job &
+Tool-call count, retry depth, memory age, recovery and rollback time &
+Per-call packet success or average model latency &
+Task graph, dependency and idempotence, tool status, context version,
+model confidence/provenance \\ \hline
+Embodied &
+Control cost, task success, loop deadline reliability, jitter, modality skew,
+safety violation &
+Action error, age/value of information, sim-to-real gap, energy/task,
+cost-effectiveness &
+Average one-way latency, raw PSNR, or independent per-flow reliability &
+Goal and control phase, token modality, physical/task coupling, timestamps,
+uncertainty, compute/radio/actuation state \\ \hline
+\end{tabular}
+\end{table*}
+
+\subsection{Why the Metrics Cannot Be Collapsed into One KPI}
+A single scalar ``AI QoS'' hides operationally important tradeoffs.
+Generative quality is often evaluated after a response is complete; agentic
+reliability is path-dependent; embodied value changes at the control
+timescale. Network optimization should therefore maintain a vector SLO and
+apply a task-specific scalarization only at admission or scheduling time.
+Table~\ref{tab:qos} summarizes the necessary observability. The progression is
+from flow state, to transaction state, to physical state. This is also the
+progression in how much application information a network must obtain,
+creating privacy and layering challenges discussed in
+Section~\ref{sec:future}.
+
+\subsection{An End-to-End Measurement Contract}
+Cross-layer optimization is impossible without a common clock and causal
+identifiers. We propose a measurement contract with four linked records:
+\emph{information}, \emph{execution}, \emph{transport}, and \emph{outcome}.
+An information record identifies a modality or token chunk, its generation
+time, model/tokenizer version, uncertainty, dependency, and declared
+deadline. An execution record captures model placement, queue entry/exit,
+batch, cache status, and accelerator time. A transport record captures packet
+size, path, coding/retransmission, radio service, and receiver timestamp. An
+outcome record closes the chain with response quality, tool commit, action,
+task state, or control loss.
+
+The records need a shared \emph{causal identifier}, not merely synchronized
+timestamps. A single observation can generate several candidate actions; an
+agent retry can reuse an earlier observation; and a batched accelerator can
+serve chunks from different tasks. Without parent--child identifiers, one
+cannot distinguish whether a late action resulted from radio congestion,
+batch waiting, a model escalation, or a tool retry. This matters both for
+optimization and for accountability.
+
+Measurement overhead should scale with service risk. Best-effort generation
+can aggregate telemetry per request. Agentic services require per-step spans
+and tool-commit records. Embodied services require per-loop timing and
+phase-transition markers, but do not need to expose raw sensory content to the
+network. Endpoint-generated value classes and confidential telemetry
+aggregation can preserve layering and privacy.
+
+Four rules prevent misleading QoS results.
+\begin{enumerate}
+\item \emph{Use percentiles and violation runs, not only a mean.} The length
+of consecutive deadline misses can be more damaging than the same number of
+isolated misses.
+\item \emph{Condition results on load and task phase.} A low unloaded TTFT or
+loop delay says little about a shared edge at admission saturation.
+\item \emph{Separate offered, decoded, and useful goodput.} Tokens delivered
+after their deadline or rejected by a version mismatch are not useful
+goodput.
+\item \emph{Report joint events.} For multimodal fusion, individual
+reliability does not reveal the probability that all necessary modalities are
+fresh and mutually aligned.
+\end{enumerate}
+
+For modalities $m\in{\cal M}_i$ required by task $i$, define synchronized
+useful goodput over interval ${\cal T}$ as
+\begin{equation}
+G_i^{\rm sync}=
+\frac{1}{|{\cal T}|}
+\sum_{k\in{\cal K}_i}
+v_k{\bf 1}\!\left\{
+t_k^{\rm rx}\le d_k,\,
+\max_{m,n\in{\cal M}_i}|a_m-a_n|\le s_i
+\right\},
+\label{eq:syncgoodput}
+\end{equation}
+where $v_k$ is a normalized task-value weight, $a_m$ is information age, and
+$s_i$ is the permitted modality skew. This metric does not replace physical
+task evaluation, but it is a more faithful online proxy than raw bit or token
+rate.
+
+Root-cause attribution can then use the delay budget in
+\eqref{eq:loop_delay}. The network should report both the total distribution
+and conditional components: radio delay given channel state, compute delay
+given selected model and batch, and control loss given task phase. The
+conditional view helps transfer a result across deployments. A resource
+policy that succeeds only because one simulator has a fast encoder will
+otherwise appear universal.
+
+The measurement contract also enables service assurance. Admission uses
+predicted distributions and dependency graphs; runtime monitoring compares
+observed joint violations with the SLO; adaptation changes compression,
+placement, or period; post-mission audit reconstructs the causal chain. This
+closed assurance loop is a prerequisite for meaningful service-level
+agreements (SLAs) for distributed LAM agents.
+
+\section{From Generative to Embodied Networks for LAMs: Architecture Evolution}
+\label{sec:architecture}
+
+\subsection{Architecture for Generative-LAM Networks}
+A generative-LAM network is commonly cloud-centric. User equipment performs
+tokenization and lightweight preprocessing; an edge gateway provides
+admission, caching, privacy filtering, or small-model inference; and a cloud
+cluster hosts the full model. Model, tensor, pipeline, and expert parallelism
+distribute inference inside or across clusters. Wireless distributed
+mixture-of-experts systems additionally make expert routing dependent on
+channel and compute heterogeneity \cite{wdmoe}. Pipeline parallelism and
+batching trade communication bubbles against accelerator utilization
+\cite{pipeline}.
+
+The main control loop is a slow resource-management loop: predict request and
+token lengths, place models, reserve accelerators and backhaul, batch
+compatible requests, and route overflow. Split inference places early layers
+on the device and later layers at the edge, transmitting intermediate
+features. Progressive feature transmission allows a receiver to stop once
+confidence is sufficient \cite{progressive}. This architecture is effective
+when the user transaction is largely independent and deadlines are elastic.
+It becomes inefficient when every intermediate action depends on fresh tool
+or environment state.
+
+\subsection{Architecture for Agentic-LAM Networks}
+Agentic architecture adds a stateful orchestration plane. A planner or
+supervisor discovers capabilities, selects models and tools, maintains a task
+graph, and commits results to short- and long-term memory. Executors can be
+distributed over devices, edge sites, enterprise services, and clouds.
+Messages carry not only tokens but role, goal, schema, provenance, confidence,
+and dependency. Multi-agent systems use debate, vote, expert routing, or
+hierarchical decomposition; the best topology depends on task structure and
+the correlation of model errors \cite{agentsmobile}.
+
+This design resembles a distributed transaction system but has probabilistic
+components. It requires:
+\begin{enumerate}
+\item capability and context discovery before routing;
+\item session affinity for key--value caches and private memory;
+\item checkpoint, retry, and idempotence semantics for tool calls;
+\item verification paths for high-impact actions; and
+\item joint compute--network--storage admission for the complete task rather
+than each RPC.
+\end{enumerate}
+The architecture may keep a small model on-device for privacy and rapid
+screening, escalate uncertain inputs to a remote large model, and invoke
+specialists only when their expected information gain exceeds their latency
+and cost. Uncertainty-aware hybrid inference is one realization of this
+principle \cite{hybrid}.
+
+\subsection{Architecture for Embodied-LAM Networks}
+Embodied systems require a hierarchy of loops (Fig.~\ref{fig:architecture}).
+A local reflex/control plane executes high-rate stabilization and safety
+interlocks. An edge cognition plane performs multimodal fusion, VLA inference,
+local mapping, and coordination with deterministic access. A cloud learning
+plane provides large-model reasoning, fleet memory, simulation, and
+non-real-time model updates. A slow cloud model should not directly occupy a
+hard real-time loop; it supplies goals, policies, latent plans, or verified
+skill updates to an edge/local controller.
+
+\begin{figure*}[t]
+\centering
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c}
+\fbox{\parbox{0.88\textwidth}{\centering
+\textbf{Cloud learning and global intelligence (seconds--hours)}\\
+foundation-model training/updates $\mid$ fleet memory $\mid$ simulation and
+digital twins $\mid$ global task planning}}\\[-1pt]
+$\Updownarrow$ \small model/skill updates, compressed context, audit traces\\[-1pt]
+\fbox{\parbox{0.88\textwidth}{\centering
+\textbf{Edge cognition and multi-agent coordination (milliseconds--seconds)}\\
+multimodal fusion $\mid$ VLA/world-model inference $\mid$ model/expert sharing
+$\mid$ task/physical interaction graph $\mid$ deterministic radio scheduling}}\\[-1pt]
+$\Updownarrow$ \small synchronized features, state/action tokens, deadlines,
+uncertainty\\[-1pt]
+\fbox{\parbox{0.88\textwidth}{\centering
+\textbf{On-device reflex, control, and safety (sub-ms--milliseconds)}\\
+sensor acquisition $\mid$ state estimation $\mid$ servo control $\mid$
+collision avoidance $\mid$ fail-safe fallback}}\\[3pt]
+\multicolumn{1}{c}{\small
+\textit{Cross-layer orchestrator: token value + radio state + compute queues +
+control phase}}
+\end{tabular}
+\caption{Hierarchical architecture for embodied LAM agents. Hard safety and
+stabilization remain local; the edge closes latency-critical cognition and
+coordination loops; the cloud supplies global reasoning and learning.}
+\label{fig:architecture}
+\end{figure*}
+
+The architecture is also \emph{partially centralized}. If two robots have
+neither task dependence nor physical interference, merging their observations
+in one model can add quadratic attention cost without useful information.
+When they jointly carry an object or occupy the same collision region,
+shared inference can improve consistency and reduce duplicated sensing. Let
+${\cal G}_t=({\cal V},{\cal E}_t)$ be a time-varying interaction graph with
+\begin{equation}
+w_{ij}(t)=\rho_{\rm task} I_{ij}^{\rm task}(t)
++\rho_{\rm phy} I_{ij}^{\rm phy}(t)
++\rho_{\rm info} I_{ij}^{\rm info}(t),
+\label{eq:interaction}
+\end{equation}
+where the three terms quantify task dependency, physical interference, and
+complementary information. Clustering or sparsifying ${\cal G}_t$ determines
+which agents share a model or exchange tokens. The resulting groups can run
+at different loop periods, producing an asynchronous, multi-rate networked
+control system.
+
+\begin{table*}[t]
+\caption{Architecture Evolution and the New State Introduced at Each Stage}
+\label{tab:architecture}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{|p{0.09\textwidth}|p{0.18\textwidth}|p{0.17\textwidth}|p{0.18\textwidth}|p{0.19\textwidth}|p{0.11\textwidth}|}
+\hline
+\textbf{Stage} & \textbf{Typical placement} & \textbf{Control/orchestration}
+& \textbf{State that must persist} & \textbf{Dominant cross-domain coupling}
+& \textbf{Timescale} \\ \hline
+Generative &
+Device front end; edge gateway/cache; cloud accelerator cluster &
+Admission, batching, cache-aware routing, model/expert placement &
+Request, model version, KV cache, queue and accelerator state &
+Wireless/backhaul rate with memory and compute utilization &
+Request and decode-step \\ \hline
+Agentic &
+Device supervisor; distributed edge/cloud models, tools, and stores &
+Task-graph scheduling, capability discovery, verification, retry/rollback &
+Goal, plan dependencies, context/memory version, tool side effects,
+provenance &
+Network--compute--storage--tool transaction &
+Step, workflow, and session \\ \hline
+Embodied &
+Local reflex/safety; edge VLA/world model; cloud fleet learning &
+Interaction-graph formation, multi-rate loop scheduling, model sharing,
+fail-safe switching &
+Physical state, modality timestamps, uncertainty, action history, safety
+envelope &
+Sensing--communication--computing--control and inter-agent dynamics &
+Sub-ms reflex to long-term learning \\ \hline
+\end{tabular}
+\end{table*}
+
+\subsection{Architecture Design Principles}
+Three principles follow. First, \emph{place deadlines before models}: determine
+which loop can tolerate cloud, edge, or only local execution before selecting
+model size. Second, \emph{centralize only useful mutual information}: shared
+models should be activated by task or physical coupling rather than by agent
+density alone. Third, \emph{retain a safe degraded mode}: if the edge model,
+radio link, or clock synchronization fails, the device must fall back to a
+local controller that maintains a safe set, even if task progress stops.
+
+\subsection{Service Lifecycle and Timescale Separation}
+Architecture must cover the service lifecycle, not only the inference data
+path. Fig.~\ref{fig:lifecycle} separates five stages. During
+\emph{registration}, endpoints advertise model/tokenizer versions, sensor and
+actuator capabilities, compute envelopes, safety fallbacks, and trust
+attestation. During \emph{admission}, the orchestrator maps a requested task
+to a service graph, predicts complete resource demand, selects placements,
+and rejects or degrades a task whose robust SLO is infeasible. During
+\emph{execution}, fast schedulers allocate token, radio, and compute resources
+under the admitted envelope. During \emph{recovery}, endpoints switch models,
+paths, or controllers and preserve transaction semantics. During
+\emph{learning}, traces update workload, token-value, channel, and physical
+interaction models.
+
+\begin{figure*}[t]
+\centering
+\setlength{\tabcolsep}{2.2pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c}
+\fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Register}\\
+capability\\version/trust\\fallback}}
+&
+\fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Admit}\\
+service graph\\placement\\risk budget}}
+&
+\fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Execute}\\
+token value\\radio/compute\\loop monitor}}
+&
+\fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Recover}\\
+reroute/retry\\safe mode\\rollback}}
+&
+\fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Learn}\\
+causal trace\\model update\\SLO revision}}
+\end{tabular}
+\caption{Lifecycle of a distributed LAM-agent service. Execution is only one
+stage; safe operation depends on versioned registration, end-to-end admission,
+explicit recovery, and trace-driven learning.}
+\label{fig:lifecycle}
+\end{figure*}
+
+The lifecycle contains at least three control timescales.
+\begin{itemize}
+\item At a \emph{planning timescale} (minutes to hours), models and adapters
+are placed, capacity and slices are reserved, and fleet-wide policies are
+updated. Forecast error dominates.
+\item At a \emph{task timescale} (hundreds of milliseconds to minutes),
+agents/tools are selected, model-sharing groups and loop periods change, and
+context migrates. Task and physical topology dominate.
+\item At a \emph{loop/slot timescale} (sub-millisecond to tens of
+milliseconds), features and actions are scheduled, short packets are coded,
+and compute slots are aligned. Channel, queue, and release-time uncertainty
+dominate.
+\end{itemize}
+Optimizing every variable at the fastest timescale is neither feasible nor
+stable. Slow decisions should pass resource and risk budgets downward; fast
+controllers should return feasibility margins and violation statistics.
+When fast scheduling cannot maintain an admitted envelope, it should trigger
+a defined degradation---smaller model, fewer views, slower noncritical loop,
+or local safe mode---rather than silently accumulating queue.
+
+Mobility makes state migration a first-class operation. A generative session
+can move after transferring a key--value cache, subject to a short pause. An
+agentic session also needs memory and tool-transaction state. An embodied
+session cannot pause an unsafe plant while a large cache migrates. Predictive
+handover should replicate only the state needed to continue the near-term
+loop, keep stabilization local, and transfer large context in the background.
+Multi-tier computation offloading \cite{multitier} and ultra-low-latency edge
+inference \cite{edgeinference}, together with reliability-aware edge
+offloading \cite{offloading}, provide resource-allocation foundations, but
+embodied migration adds continuity of action and safety state.
+
+Finally, administrative and physical trust domains need not coincide. A
+warehouse owner, robot vendor, network operator, and cloud-model provider may
+control different lifecycle stages. The architecture therefore needs signed
+capability manifests, explicit data-use policy, model provenance, and
+auditable responsibility at every boundary. These controls cannot be added
+only at the application layer if network scheduling depends on declared token
+value.
+
+\section{Improving Networks for LAMs: Key Enabling Technologies}
+\label{sec:enablers}
+
+We group mechanisms into three interacting planes. The \emph{token plane}
+decides what representation to compute and communicate. The
+\emph{transport plane} decides how to deliver it by a deadline. The
+\emph{coordination plane} decides which agents/models should share
+information and how network and compute resources close the loop.
+
+\subsection{Enablers for Generative-LAM Networks}
+\subsubsection{Compression and token communications}
+Quantization, structured pruning, low-rank adaptation, key--value-cache
+compression, and top-$k$/top-$p$ decoding reduce memory, computation, or
+output entropy. Token communications elevates tokens to semantic
+communication units and uses cross-modal context to reconstruct masked or
+corrupted content \cite{tokcom}. Compared with conventional source coding, a
+receiver equipped with a compatible foundation model can exploit learned
+priors. This can reduce payload but transfers burden to shared model state,
+tokenizer agreement, uncertainty calibration, and semantic error detection.
+
+For sources $Z_1,\ldots,Z_M$ and task goal $g$, the relevant multi-source
+rate--distortion function is conceptually
+\begin{equation}
+\begin{split}
+R_g(D)&=\min_{p(\hat z|z_1,\ldots,z_M)}
+I(Z_1,\ldots,Z_M;\hat Z\mid g),\\[-2pt]
+&\hspace{8pt}\text{s.t.}\quad
+\mathbb{E}[D_{\rm task}(Z,\hat Z\mid g)]\le D.
+\end{split}
+\label{eq:rd}
+\end{equation}
+Unlike pixel mean-square error, $D_{\rm task}$ can be nonconvex and
+state-dependent. Cross-modal and multiview redundancy are not additive:
+removing a camera token may be harmless when lidar observes the same object
+but damaging when glare invalidates the lidar-camera correspondence.
+
+\subsubsection{Split, distributed, and speculative inference}
+Split inference selects a cut layer and transmits intermediate features.
+Tensor parallelism distributes layer operations and repeatedly aggregates
+partial results; over-the-air computation can exploit wireless superposition
+to accelerate aggregation \cite{distributedllm,aircompneural}. Sparse-feature
+over-the-air fusion similarly combines multiview features before
+reconstruction or inference \cite{airfusion}. These schemes are attractive
+when synchronized devices observe a common scene, but analog aggregation
+noise and stragglers must be evaluated at the task output. Intent-aware VLM
+split computing for disaster response is an early example of extending the
+placement decision toward embodied context \cite{avery}.
+
+Speculative decoding lets a small ``draft'' model propose tokens and a large
+model verify them, preserving the target model distribution while reducing
+serial decode cost \cite{specdecode}. Wireless implementations must jointly
+select the draft model, speculation length, offloading location, and radio
+resources. A low draft acceptance rate wastes both inference and
+communication. For generative services, the decision can be driven by
+expected decode speedup; for embodied services it must also account for action
+deviation and deadline risk \cite{actiondeviation}.
+
+\subsection{Enablers for Agentic-LAM Networks}
+\subsubsection{Reliable collaboration and model routing}
+Multi-model collaboration can improve coverage and verification through
+expert routing, debate, vote, or sequential refinement. The network problem
+is to choose the smallest collaboration graph that reaches a target task
+reliability before a deadline. Correlated models should not be treated as
+independent replicas: if they share training data or failure modes, majority
+vote offers less diversity than its communication cost suggests.
+
+Adaptive repeat-query systems learn whether another response is likely to
+move the latent solution toward a correct concept \cite{garq}. More generally,
+an agent should stop when the expected value of another message is lower than
+its marginal compute, token, and latency cost. Network schedulers can use
+confidence and disagreement as hints, but final verification must remain
+application-controlled because confidence is not a safety certificate.
+
+\subsubsection{State, freshness, and transactional transport}
+Agent traffic requires protocol support for a task identifier, parent step,
+model/tool version, context hash, timeout, and idempotence policy. Memory and
+retrieval should be scheduled by \emph{age of relevant information}, not
+storage age alone. A newer observation can be irrelevant while an older
+constraint remains binding. For irreversible tools, an ``exactly once''
+semantic cannot be inferred from transport acknowledgments; the tool and
+orchestrator need a commit protocol and audit log.
+
+Compute-aware admission is equally important. Reserving radio resources for a
+tool call without an available model replica merely shifts queuing delay.
+Conversely, prewarming a model without a feasible wireless path wastes
+accelerator memory. Joint admission can operate at two timescales: slow model
+placement and slice reservation, followed by fast task-graph scheduling and
+rerouting.
+
+\subsection{Enablers for Embodied-LAM Networks}
+\subsubsection{Control-loss-aware token selection}
+Embodied compression should estimate the marginal increase in control cost
+caused by removing, quantizing, delaying, or reusing token $z_k$:
+\begin{equation}
+s_k(t)=
+\frac{\mathbb{E}[\Delta J_{\rm c}\mid z_k,x_t,g_t]}
+{\Delta b_k+\alpha\Delta f_k+\beta\Delta e_k},
+\label{eq:token_value}
+\end{equation}
+where the denominator is saved communication, compute, and energy resource.
+Tokens with high $s_k$ receive stronger coding or earlier service. The score
+changes with control phase: background visual patches can be pruned during
+free motion, contact geometry becomes critical at grasp time, and action
+reuse is safest inside stable segments. Channel-wise VLA quantization studies
+also indicate that channels have unequal action sensitivity \cite{qvla}.
+
+A practical estimator can combine attention/gradient saliency, model
+uncertainty, object and contact semantics, and counterfactual rollouts in a
+world model. None alone is sufficient. Attention can be poorly calibrated to
+causal task value; gradients are local; and rollouts inherit model bias.
+Bregman divergences provide a family of representation losses, while
+task-conditioned rate--distortion analysis connects them to resource
+allocation. The open theoretical problem is to bound physical control loss
+when the VLA mapping is nonlinear and the source modalities are dependent.
+
+\subsubsection{Finite-blocklength and deterministic transport}
+URLLC techniques provide a foundation for short embodied messages.
+For blocklength $n$, signal-to-noise ratio $\gamma$, and error target
+$\varepsilon$, the finite-blocklength rate is approximated by
+\begin{equation}
+R(n,\varepsilon)\approx C(\gamma)
+-\sqrt{\frac{V(\gamma)}{n}}Q^{-1}(\varepsilon)
++\frac{\log_2 n}{2n},
+\label{eq:fbl}
+\end{equation}
+where $C$ and $V$ are channel capacity and dispersion
+\cite{polyanskiy}. Finite-blocklength cell-free transmission and joint
+uplink/downlink allocation further expose hard-deadline and energy tradeoffs
+for multiple devices \cite{cellfree,resourceurlcc}. This exposes the
+bandwidth--latency--reliability tradeoff hidden by asymptotic capacity.
+
+Interface diversity, multi-connectivity, packet duplication, and optimized
+HARQ reduce outage or retransmission delay \cite{interfacediversity,harq}.
+Preemptive puncturing allows urgent traffic to overwrite scheduled broadband
+resources, while slicing isolates service classes
+\cite{puncturing,ranslicing,mobileran}. Two-timescale QoS-aware multiplexing
+is useful when slow reservation must anticipate fast allocation under
+nonstationary demand \cite{unifiedqos}. Deterministic-delay work further
+optimizes jitter, hard-deadline violation, and high-order delay statistics
+under finite-blocklength transmission \cite{mixedjitter,deterministic}.
+
+However, direct transplantation to embodied traffic has two limitations.
+First, traditional models often assume independent sources and a fixed
+utility loss for punctured broadband packets. Multimodal embodied sources are
+coupled, so simultaneous degradation can remove all views of a critical
+object. Second, radio delay is only one term in
+\eqref{eq:loop_delay}. An end-to-end deterministic service must coordinate
+sensing release times, encoder and accelerator queues, radio slots, receiver
+inference, and actuation.
+
+\subsubsection{Semantic and goal-oriented communication}
+Goal-oriented communication schedules information by its effect on a task.
+Value and age of information have been applied to robotic waypoint delivery
+\cite{waypoint}. Integrated sensing and edge AI similarly co-designs sensing,
+communication, and inference around task performance \cite{isea}. For
+embodied LAMs, semantic communication should protect control objectives,
+cross-modal complementarity, and multiview complementarity. It should also
+report uncertainty: hallucinated recovery of a missing object is unacceptable
+when a safety controller interprets it as observation. Rate-limited
+closed-loop semantic communication offers a direct bridge from task
+representations to distributed sensing and control \cite{semanticclosedloop}.
+
+A useful design is \emph{loss-controlled non-orthogonal reuse}. Two sources
+may overlap in radio resources if their joint task distortion remains below a
+bound; sources covering the same hazard should instead receive diversity.
+This reverses a common heuristic: highly correlated data can be aggressively
+compressed for efficiency, but correlation alone does not justify common-mode
+failure.
+
+\subsubsection{Communication--control co-design and dynamic model sharing}
+Wireless networked control studies optimize bandwidth, power, uplink/downlink
+ratio, sampling period, and control policy jointly. Recent work considers
+sensing--communication--computing--control loops for robotic digital twins
+\cite{fang}, communication--control codesign for large-scale systems
+\cite{pang}, and communication allocation for system identification
+\cite{systemid}. Energy-aware wireless communication--control co-design
+further shows that loop performance and radio efficiency should be optimized
+together \cite{energywncs}. These results show that optimizing physical
+control or identification can produce allocations very different from
+throughput maximization.
+
+Most tractable theory assumes linear dynamics and a common period. Embodied
+LAM systems add black-box nonlinear policies, partial observability,
+asynchronous periods, and time-varying inter-agent coupling. A robust
+orchestrator must jointly choose model-sharing groups ${\cal C}_t$, periods
+$h_i$, token sets ${\cal K}_{i,t}$, bandwidth $b_{i,t}$, and compute
+$f_{i,t}$:
+\begin{subequations}
+\begin{align}
+\min\quad &\sum_i \omega_i J_{{\rm c},i}
++\lambda_B\sum_i b_i+\lambda_F\sum_i f_i+\lambda_E E,\\
+\text{s.t.}\quad&
+\Pr\{T_{i,t}^{\rm loop}\le h_i,\,
+|\Delta T_{i,t}|\le\epsilon_i h_i\}\ge1-\delta_i,\\
+&D_{{\rm task},i}({\cal K}_{i,t},{\cal C}_t)\le D_i^{\max},\\
+&\sum_i b_{i,t}\le B,\quad \sum_i f_{i,t}\le F,\\
+&{\cal C}_t\in{\cal C}_{\rm safe}.
+\end{align}
+\label{eq:joint_problem}
+\end{subequations}
+Slow graph clustering and model placement can be separated from fast token,
+radio, and compute scheduling, but the two timescales must exchange
+feasibility margins. Distributionally robust or risk-sensitive optimization
+is promising because empirical delay and control-loss distributions shift
+with scenes and tasks.
+
+\begin{table*}[t]
+\caption{Enabling Technologies, Benefits, and Transfer Gaps}
+\label{tab:enablers}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.17}
+\setlength{\tabcolsep}{3.1pt}
+\begin{tabular}{|p{0.14\textwidth}|p{0.17\textwidth}|p{0.19\textwidth}|p{0.19\textwidth}|p{0.21\textwidth}|}
+\hline
+\textbf{Technology} & \textbf{Primary decision} & \textbf{Benefit}
+& \textbf{Representative objective} & \textbf{Gap for embodied multi-agent
+LAMs} \\ \hline
+Token pruning, quantization, reuse &
+Which tokens/channels/steps to retain and at what precision &
+Lower payload, memory, and inference cost &
+Reconstruction, generation quality, success rate &
+Need state- and action-conditioned control-loss bounds; small actions can be
+stability-critical \\ \hline
+Split/distributed inference and AirComp &
+Cut, placement, participating devices, aggregation/transceiver &
+Parallel compute and reduced raw-data transfer &
+Feature error, latency, energy, inference accuracy &
+Stragglers and analog error must be related to asynchronous closed-loop cost
+\\ \hline
+Speculative/hybrid inference &
+Draft model, speculation length, local/remote escalation &
+Fewer serial large-model decoding steps &
+Acceptance rate, expected latency, generation fidelity &
+Action deviation and deadline-tail risk replace text-distribution fidelity
+as the decisive constraint \\ \hline
+Finite-blocklength, diversity, HARQ &
+Blocklength, coding, replicas, interfaces, retransmission &
+Reliable delivery under short deadlines &
+Packet error, energy, spectrum, one-way latency &
+Must include sensing, compute, and actuation tails and token-specific
+deadlines \\ \hline
+Puncturing, slicing, deterministic scheduling &
+Priority, reserved bandwidth, preemption, slot/queue schedule &
+Isolation and bounded delay/jitter for mixed traffic &
+Deadline violation and broadband utility loss &
+Utility loss is coupled across modalities, views, and agents rather than
+i.i.d. per packet \\ \hline
+Semantic/goal-oriented communication &
+What task-relevant representation and update to transmit &
+Lower rate for a target inference/control quality &
+Age/value of information, task distortion &
+Generative recovery can hallucinate; uncertainty and common-mode safety loss
+must be bounded \\ \hline
+Communication--control co-design and model sharing &
+Loop period, resources, controller/model group, collaboration graph &
+Direct optimization of physical task and fleet cost &
+LQR cost, identification error, long-term control utility &
+Nonlinear black-box policies, multi-rate loops, and time-varying
+task/physical coupling remain open \\ \hline
+\end{tabular}
+\end{table*}
+
+\subsection{Cross-Layer Synthesis: From ``Compress Then Protect'' to ``Value Then Coordinate''}
+The technologies in Table~\ref{tab:enablers} should not be composed as
+independent modules. Selecting tokens changes packet size and inference time;
+transport decisions change observation age; model sharing changes both source
+correlation and compute topology; all three change physical control cost.
+The appropriate workflow is:
+\begin{enumerate}
+\item infer the task phase, safety envelope, and interaction graph;
+\item estimate marginal token/action value and uncertainty;
+\item choose local, shared-edge, or cloud inference and a safe fallback;
+\item jointly schedule sensing, compute, and short-packet transmission; and
+\item observe task outcome and update the value and delay models.
+\end{enumerate}
+This ``value then coordinate'' loop is the network counterpart of embodied
+intelligence: resources are allocated according to how information changes
+action, not merely according to how many bytes it occupies.
+
+\section{Case Study: Multi-Agent Robotic Rescue}
+\label{sec:case}
+
+\subsection{Scenario and Service Graph}
+Consider a post-disaster site in which three robots must remove a beam that
+blocks access to an injured person, avoid a fragile temporary support, and
+then assist with first aid. The scenario, adapted from the project material
+underlying this survey, deliberately combines high-data-rate perception,
+physical coupling, and safety-critical manipulation. Each robot carries RGB
+and depth cameras, lidar, inertial sensing, and joint encoders. Local servo
+controllers maintain balance; an edge VLA/world model supplies manipulation
+actions; a cloud model supplies non-real-time semantic reasoning and fleet
+knowledge.
+
+The task has four phases:
+\begin{enumerate}
+\item \emph{search and mapping}: robots explore largely independently and
+exchange sparse map/object tokens;
+\item \emph{beam assessment}: multiview perception is fused to identify load,
+grasp points, and the temporary support;
+\item \emph{cooperative lift}: task and physical edges in
+${\cal G}_t$ become dense, activating shared edge inference and synchronized
+action delivery;
+\item \emph{first aid}: fine manipulation receives a strict loop SLO while
+background mapping is demoted.
+\end{enumerate}
+This is not a claim that one fixed delay target fits all robots. Rather, it
+shows why service classes must change within one mission.
+
+\begin{table*}[t]
+\caption{Task-Phase-Aware Orchestration in the Rescue Case Study}
+\label{tab:case}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{3.1pt}
+\begin{tabular}{|p{0.13\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.23\textwidth}|}
+\hline
+\textbf{Phase} & \textbf{Dominant information} & \textbf{Coordination mode}
+& \textbf{Differentiated SLO} & \textbf{Network action} \\ \hline
+Search/mapping &
+RGB/depth/lidar features, local pose, low-rate discoveries &
+Independent local control; sparse peer map exchange &
+Perception coverage and freshness; elastic cloud reasoning &
+Prune background visual tokens; cache maps at edge; opportunistic model/tool
+calls \\ \hline
+Beam assessment &
+Multiview geometry, support classification, grasp candidates, uncertainty &
+Edge fusion among robots with complementary views &
+Bound modality skew and common-object semantic distortion &
+Allocate view diversity; avoid jointly dropping tokens that observe the same
+hazard; verify recovered semantics \\ \hline
+Cooperative lift &
+Force/torque, joint state, beam pose, synchronized action/intent &
+Temporary shared VLA/world model plus local safety controllers &
+High loop-deadline reliability, bounded jitter and inter-robot skew &
+Reserve deterministic slice; duplicate critical state/action packets; align
+compute and radio slots; preempt background traffic \\ \hline
+First aid &
+Close-range vision, tool pose, contact state, fine actions &
+One precision group; other robots act as sensing/safety peers &
+Low action error and safety violation; moderate semantic planning latency &
+Prioritize contact-transition tokens; disable unsafe action reuse; preserve
+local fail-safe and audit trail \\ \hline
+\end{tabular}
+\end{table*}
+
+\subsection{Cross-Layer Orchestration}
+At mission start, the orchestrator builds ${\cal G}_t$ from task dependencies
+and predicted collision/interaction regions. Sparse components run separate
+models; the cooperative-lift component shares an edge model because each
+robot's action changes the others' observations and feasible actions. The
+model-sharing decision is recomputed at a slower timescale than radio
+scheduling to avoid oscillation.
+
+Within a group, token scores in \eqref{eq:token_value} separate three classes.
+\emph{Class A} contains safety constraints, contact transitions, force/torque
+events, and final actions; it receives deterministic scheduling and, when
+needed, path diversity. \emph{Class B} contains task-relevant visual and
+geometric features; it receives loss-controlled compression and synchronized
+fusion. \emph{Class C} contains background context, rationales, logs, and
+model updates; it uses best effort and can be deferred. Classification is
+revisited after every task-phase transition.
+
+The scheduler solves a practical approximation to
+\eqref{eq:joint_problem}. It first reserves local compute and radio capacity
+for Class A under the robust-loop constraint, then maximizes the marginal
+task value of Class B, and finally serves Class C. If the edge queue threatens
+the loop budget, the system shrinks the shared group, selects a smaller VLA,
+reduces visual-token density, or hands control to the local safe controller.
+Simply increasing transmit power cannot fix an overloaded inference queue.
+
+\subsection{Evaluation Protocol and Reproducibility}
+The project material reports an Isaac Sim--GR00T testbed connected through an
+RPC channel that can inject bandwidth limits, delay, jitter, and errors. A
+rigorous evaluation should publish the model checkpoint, tokenizer, scene and
+random seeds, sensor rates, compute hardware, channel traces, queueing
+discipline, clock synchronization, and controller fallback. Each network
+configuration should be evaluated over complete task episodes, not isolated
+frames.
+
+Four ablations identify causal gain:
+\begin{enumerate}
+\item byte-aware versus task/token-aware scheduling;
+\item independent versus task/physical-graph-based model sharing;
+\item mean-delay optimization versus robust delay--jitter constraints; and
+\item raw/full transmission versus spatial perception pruning plus
+phase-aware action reuse.
+\end{enumerate}
+Report task success with confidence intervals, collision/safety violations,
+trajectory and action error, $J_{\rm c}$, loop-delay percentiles, jitter,
+modality skew, bandwidth, energy, and accelerator utilization. Results must
+also include \emph{failure slices}: occlusion, a misleading view, burst
+wireless loss, edge straggler, clock drift, and an abrupt phase transition.
+This protocol prevents a bandwidth gain obtained by silently increasing
+physical risk from being presented as a network improvement.
+
+\section{Challenges and Future Directions}
+\label{sec:future}
+
+\subsection{Token Recognition and Sorting}
+Today's network typically observes encrypted packets, endpoints, and coarse
+application identifiers, not the task value of individual tokens. Yet the
+survey's proposed differentiation requires modality, deadline, dependency,
+uncertainty, and control phase. Deep packet inspection is neither scalable nor
+compatible with end-to-end confidentiality.
+
+A promising solution is an explicit, privacy-preserving token descriptor
+generated by the trusted endpoint. It can carry a compact class rather than
+content: service stage, modality, generation/measurement timestamp, deadline,
+dependency group, reliability tier, and uncertainty/value bin. The descriptor
+must be authenticated because an untrusted application could mark every token
+as safety-critical. Admission control should police declared value against a
+contract and observed traffic.
+
+Sorting is also a causal inference problem. Attention, activation magnitude,
+entropy, or gradient saliency can correlate with task value but fail under
+distribution shift. Future work should develop counterfactual estimators:
+what change in task or control cost results if this token is delayed,
+quantized, predicted, or omitted? World-model rollouts can approximate the
+answer, while conformal or distributionally robust bounds can express
+uncertainty. The difficult case is a rare but safety-critical token whose
+average value is low. Risk-sensitive sorting must preserve it.
+
+Three granularity levels are needed. Flow-level recognition supports backward
+compatibility but is coarse. Chunk-level recognition groups tokens with a
+common deadline and coding policy. Token-level recognition offers maximum
+efficiency but can introduce excessive header, scheduling, and privacy cost.
+An adaptive hierarchy should use token-level metadata only around task
+transitions or hazards.
+
+\subsection{Tokenizer Compatibility}
+Token communications assumes that sender and receiver agree on token
+boundaries, codebooks, embeddings, and model semantics. In practice,
+tokenizers differ by model, version, language, modality, and embodiment.
+Even identical token IDs are meaningless without a versioned vocabulary and
+embedding interpretation. Visual and action tokenizers are especially
+unstable because codebooks can change during fine-tuning.
+
+Compatibility has four layers:
+\begin{enumerate}
+\item \emph{syntactic}: vocabulary and token-ID mapping;
+\item \emph{representational}: embedding dimension, quantization, and feature
+normalization;
+\item \emph{semantic}: equivalent meaning or task effect across models; and
+\item \emph{behavioral}: equivalent downstream action within a safety
+tolerance.
+\end{enumerate}
+Only the first two can be solved by a schema registry. Semantic and behavioral
+compatibility require calibration data, adapters, or a shared latent
+interface. A universal tokenizer may simplify networking but can sacrifice
+model efficiency and lock the ecosystem to one representation.
+
+Future protocols should negotiate a tokenizer/model manifest containing a
+cryptographic version hash, modality, vocabulary or codebook identifier,
+embedding format, supported adapters, calibration range, and fallback codec.
+Gateways can translate tokens through learned adapters, but translation adds
+latency and an error that must be included in
+\eqref{eq:task_distortion}. For safety-critical actions, a receiver should
+reject an unknown or out-of-range codebook rather than guess.
+
+Model updates create a consistency problem similar to a rolling protocol
+upgrade. During a fleet update, old and new tokenizers may coexist. Dual
+encoding is robust but expensive; atomic migration is operationally hard.
+Version-aware routing and shadow validation can support a staged transition.
+A major research need is a formal bound connecting embedding alignment error
+to task and control degradation.
+
+\subsection{Token-Native Protocols}
+IP networks are byte- and packet-native; RPC frameworks are
+request-native. LAM services need a transaction and token/chunk abstraction
+without discarding the scalability and isolation of existing layers. A
+token-native protocol should expose only the information necessary for
+scheduling and recovery, and should remain usable when intermediate networks
+are unaware of tokens.
+
+The protocol data unit could include task/session and step/loop identifiers,
+model and tokenizer versions, modality, timestamp and deadline, dependency,
+value or reliability class, and uncertainty.
+It should support partial reliability, deadline-aware abandonment,
+application-level forward error correction, semantic acknowledgments, and
+multi-path duplication. A semantic acknowledgment confirms that a receiver
+obtained sufficient task information, not simply all bytes. It must not allow
+a generative model to acknowledge a hallucinated reconstruction as a verified
+sensor observation.
+
+Congestion control also changes. Retransmitting an expired action wastes
+capacity and can be unsafe; dropping a low-value context token may be optimal;
+and increasing the rate of observation tokens can overload the shared
+inference queue. Congestion feedback should therefore combine radio
+congestion, compute queue, cache pressure, and deadline miss risk. Scheduling
+must prevent value inflation from starving conventional traffic.
+
+Security is inseparable from protocol design. Token metadata leaks user
+intent, robot phase, and model identity. Attackers can manipulate value tags,
+inject stale actions, exploit tokenizer mismatch, or poison shared context.
+Required defenses include authenticated timestamps and manifests, replay
+protection, provenance, least-privilege tool tokens, confidential inference,
+and safety envelopes checked outside the generative model.
+
+\subsection{Benchmarking, Theory, and Standardization Gaps}
+Current benchmarks usually isolate model accuracy, network traces, or control
+dynamics. The community needs co-simulation and hardware testbeds that combine
+real model serving, wireless queues, clock drift, sensor release patterns, and
+physical episodes. Benchmarks should span generative, agentic, and embodied
+traffic on one infrastructure so that resource competition and backward
+compatibility can be studied. Shared datasets should include task/physical
+interaction graphs and time-aligned token-importance labels, while protecting
+private sensory content.
+
+Theory must move beyond independent sources, stationary delay, linear plants,
+and known dynamics. Promising tools include multi-terminal
+task-rate--distortion theory, risk-sensitive and distributionally robust
+optimization, event-triggered control, graph sparsification, and online
+learning with safety shields. The central missing bound connects four errors:
+token representation distortion, wireless delivery uncertainty, model
+prediction error, and long-horizon physical control loss.
+
+Standardization should proceed incrementally. Near-term systems can define
+LAM service descriptors and telemetry over existing QoS flows. A second step
+can standardize capability/tokenizer manifests and compute-aware admission.
+Only after interoperability and security experience should fine-grained
+token-native transport be exposed across domains. The active 3GPP 6G use-case
+study \cite{3gpp22870} provides a venue, but task semantics and safety policy
+must remain under application and vertical-domain governance.
+
+\subsection{A Staged Research Roadmap}
+The open problems should be attacked in an order that produces falsifiable
+interfaces rather than an all-at-once ``AI-native network.'' In the near term,
+research should establish \emph{measurement compatibility}. Model-serving,
+agent, radio, compute, and robotics platforms need the causal identifiers and
+outcome records described in Section~\ref{sec:qos}. A useful milestone is a
+public workload in which the same task episode can be replayed under multiple
+tokenizers, model placements, channel traces, and queueing policies, with
+every deadline miss attributable to one component. At this stage, endpoints
+can map rich private state to a small set of conventional QoS flows; no new
+over-the-air token format is required.
+
+The next stage is \emph{service and representation interoperability}.
+Capability manifests, version negotiation, chunk-level deadline/value
+classes, compute-aware admission, and semantic acknowledgments can be
+implemented above existing transport. Success should be judged by
+cross-vendor portability: an agent should discover a remote model or tool,
+verify its schema and tokenizer adapter, predict an end-to-end SLO, and fall
+back without corrupting task state. For embodied systems, the corresponding
+test is a rolling edge/model update in which local safety remains continuous
+and the task either progresses or enters a documented safe stop.
+
+A third stage can introduce \emph{token- and loop-native optimization} inside
+the network. Schedulers may use authenticated value/deadline bins, joint
+radio--compute congestion feedback, modality-skew constraints, and
+task-conditioned partial reliability. The key scientific milestone is not a
+higher token rate; it is a reproducible Pareto improvement in physical task
+utility per unit cost under distribution shift. Evaluation must include a
+strong byte-aware baseline with the same total resources, and must show that
+value signaling cannot be gamed to starve other tenants.
+
+Longer term, networks can support \emph{distributed embodied intelligence as a
+managed closed-loop service}. Interaction graphs, model-sharing groups, loop
+periods, and risk budgets would adapt jointly across a fleet. Achieving this
+requires theory that separates predictable learned dynamics from residual
+risk, plus certification interfaces between probabilistic models and
+deterministic safety controllers. The network should never be asked to infer
+an application's safety policy from raw tokens; it should enforce a
+machine-verifiable contract supplied by the responsible vertical.
+
+Across all stages, three negative results are as valuable as positive ones.
+Researchers should identify when semantic compression loses to conventional
+coding after model/adapter overhead, when shared inference loses to independent
+control after synchronization and attention cost, and when a tighter radio
+tail produces no control gain because compute or sensing dominates. These
+boundary conditions turn the taxonomy in this paper into engineering
+guidance, prevent token-aware networking from becoming a universal but
+unfalsifiable claim, and direct standardization toward mechanisms with
+measurable end-to-end value.
+
+\section{Conclusions}
+\label{sec:conclusion}
+The network evolution from generative to agentic and embodied LAMs is not a
+simple increase in traffic volume. It is a change in the unit of service:
+from a response, to a stateful task, to a physical closed loop. Accordingly,
+QoS progresses from content quality and token latency, through long-horizon
+task reliability, to control cost, tail delay, jitter, synchronization, and
+safety. Architectures progress from cloud-centric serving, through
+distributed transaction orchestration, to hierarchical local--edge--cloud
+control with dynamic model sharing.
+
+Existing foundations---efficient inference, semantic communications, URLLC,
+and wireless networked control---are necessary but individually insufficient.
+Embodied networks require control-loss-aware token selection,
+source-coupled deterministic transport, and task/physical-graph-driven
+coordination. The practical design rule is to evaluate information by the
+action it changes, coordinate radio and compute around the complete loop, and
+retain a local safe fallback. Token recognition, tokenizer interoperability,
+and token-native protocols are therefore not cosmetic optimizations; they are
+the interfaces through which future networks can connect distributed
+intelligence to the physical world.
+
+\begin{thebibliography}{50}
+
+\bibitem{3gpp22870}
+3GPP, ``Study on 6G use cases and service requirements,'' 3rd Generation
+Partnership Project (3GPP), Tech. Rep. 22.870, Rel. 20, 2026.
+
+\bibitem{mmlu}
+D. Hendrycks, C. Burns, S. Basart, A. Zou, M. Mazeika, D. Song, and
+J. Steinhardt, ``Measuring massive multitask language understanding,'' in
+\emph{Proc. ICLR}, 2021.
+
+\bibitem{bigbench}
+BIG-bench Authors, ``Beyond the imitation game: Quantifying and extrapolating
+the capabilities of language models,'' \emph{Trans. Mach. Learn. Res.}, 2023.
+
+\bibitem{agentbench}
+X. Liu \etal, ``AgentBench: Evaluating LLMs as agents,'' in \emph{Proc. ICLR},
+2024.
+
+\bibitem{metaworld}
+T. Yu \etal, ``Meta-World: A benchmark and evaluation for multi-task and
+meta reinforcement learning,'' in \emph{Proc. Conf. Robot Learn.}, 2020,
+pp. 1094--1100.
+
+\bibitem{groot}
+NVIDIA \etal, ``GR00T N1: An open foundation model for generalist humanoid
+robots,'' arXiv:2503.14734, Mar. 2025.
+
+\bibitem{flashvla}
+X. Tan, Y. Yang, P. Ye, J. Zheng, B. Bai, X. Wang, J. Hao, and T. Chen,
+``Think twice, act once: Token-aware compression and action reuse for
+efficient inference in vision-language-action models,'' arXiv:2505.21200,
+May 2025.
+
+\bibitem{beyondcloud}
+X. Zhang \etal, ``Beyond the cloud: Edge inference for generative large
+language models in wireless networks,'' \emph{IEEE Trans. Wireless Commun.},
+vol. 24, no. 1, pp. 643--658, Jan. 2025.
+
+\bibitem{garq}
+T. Yu, K. Huang, J. Li, H. Pervaiz, G. Zheng, and S. Zhang, ``Edge
+heterogeneous LLMs collaborative reliable inference based on adaptive repeat
+query,'' in \emph{Proc. IEEE ICC Workshops}, 2026, accepted.
+
+\bibitem{netmcp}
+E. Li, H. Du, and K. Huang, ``NetMCP: Network-aware model context protocol
+platform for LLM capability extension,'' arXiv:2510.13467, Oct. 2025.
+
+\bibitem{wdmoe}
+N. Xue \etal, ``WDMoE: Wireless distributed mixture of experts for large
+language models,'' \emph{IEEE Trans. Wireless Commun.}, vol. 25,
+pp. 559--572, 2026.
+
+\bibitem{pipeline}
+J. Jiang, Z. Chen, H. Shin, and A. Nallanathan, ``Edge inference for large
+language models with pipeline parallelism and batching,'' \emph{IEEE Trans.
+Commun.}, early access, 2026.
+
+\bibitem{progressive}
+Q. Lan, Q. Zeng, P. Popovski, D. G\"und\"uz, and K. Huang, ``Progressive
+feature transmission for split classification at the wireless edge,''
+\emph{IEEE Trans. Wireless Commun.}, vol. 22, no. 6, pp. 3837--3852,
+Jun. 2023.
+
+\bibitem{hybrid}
+S. Oh, J. Kim, J. Park, S.-W. Ko, T. Q. S. Quek, and S.-L. Kim,
+``Uncertainty-aware hybrid inference with on-device small and remote large
+language models,'' in \emph{Proc. IEEE ICMLCN}, 2025, pp. 1--7.
+
+\bibitem{tokcom}
+L. Qiao, M. B. Mashhadi, Z. Gao, R. Tafazolli, M. Bennis, and D. Niyato,
+``Token communications: A large model-driven framework for cross-modal
+context-aware semantic communications,'' \emph{IEEE Wireless Commun.},
+vol. 32, no. 5, pp. 80--88, Oct. 2025.
+
+\bibitem{distributedllm}
+K. Zhang, H. He, S. Song, J. Zhang, and K. B. Letaief,
+``Communication-efficient distributed on-device LLM inference over wireless
+networks,'' \emph{IEEE J. Sel. Topics Signal Process.}, vol. 19, no. 7,
+pp. 1301--1317, Oct. 2025.
+
+\bibitem{airfusion}
+Z. Liu, Q. Lan, and K. Huang, ``Over-the-air fusion of sparse spatial
+features for integrated sensing and edge AI over broadband channels,''
+\emph{IEEE Trans. Wireless Commun.}, vol. 24, no. 4, pp. 2999--3013,
+Apr. 2025.
+
+\bibitem{specdecode}
+Y. Leviathan, M. Kalman, and Y. Matias, ``Fast inference from transformers
+via speculative decoding,'' in \emph{Proc. ICML}, 2023, pp. 19274--19286.
+
+\bibitem{actiondeviation}
+J. Park, Y. Lim, S. Oh, J. Park, J. Choi, and S.-L. Kim, ``Action
+deviation-aware inference for low-latency wireless robots,''
+arXiv:2510.02851, Nov. 2025.
+
+\bibitem{qvla}
+Y. Xu \etal, ``QVLA: Not all channels are equal in vision-language-action
+model's quantization,'' arXiv:2602.03782, Feb. 2026.
+
+\bibitem{polyanskiy}
+Y. Polyanskiy, H. V. Poor, and S. Verd\'u, ``Channel coding rate in the finite
+blocklength regime,'' \emph{IEEE Trans. Inf. Theory}, vol. 56, no. 5,
+pp. 2307--2359, May 2010.
+
+\bibitem{interfacediversity}
+J. J. Nielsen, R. Liu, and P. Popovski, ``Ultra-reliable low latency
+communication using interface diversity,'' \emph{IEEE Trans. Commun.},
+vol. 66, no. 3, pp. 1322--1334, Mar. 2018.
+
+\bibitem{harq}
+A. Anand and G. de Veciana, ``Resource allocation and HARQ optimization for
+URLLC traffic in 5G wireless networks,'' \emph{IEEE J. Sel. Areas Commun.},
+vol. 36, no. 11, pp. 2411--2421, Nov. 2018.
+
+\bibitem{puncturing}
+A. Anand, G. de Veciana, and S. Shakkottai, ``Joint scheduling of URLLC and
+eMBB traffic in 5G wireless networks,'' \emph{IEEE/ACM Trans. Netw.},
+vol. 28, no. 2, pp. 477--490, Apr. 2020.
+
+\bibitem{ranslicing}
+P. Yang, X. Xi, T. Q. S. Quek, J. Chen, X. Cao, and D. Wu, ``RAN slicing
+for massive IoT and bursty URLLC service multiplexing: Analysis and
+optimization,'' \emph{IEEE Internet Things J.}, vol. 8, no. 18,
+pp. 14258--14275, Sep. 2021.
+
+\bibitem{mixedjitter}
+Z. Liu, K. Li, Y. Wang, and P. Zhu, ``Mixed traffic scheduling with latency
+and jitter analysis in URLLC industrial automation,'' \emph{IEEE Internet
+Things J.}, vol. 12, no. 12, pp. 18820--18835, Jun. 2025.
+
+\bibitem{deterministic}
+H. Ding, S. Xu, Z. Xu, R. Xu, and B. Ai, ``Achieving deterministic delay in
+industrial Internet of Things: Resource allocation schemes in the finite
+blocklength regime,'' \emph{IEEE Trans. Veh. Technol.}, vol. 74, no. 9,
+pp. 14192--14206, Sep. 2025.
+
+\bibitem{waypoint}
+W. Wu, Y. Yang, Y. Deng, and A. H. Aghvami, ``Goal-oriented semantic
+communications for robotic waypoint transmission: The value and age of
+information approach,'' \emph{IEEE Trans. Wireless Commun.}, vol. 23, no. 12,
+pp. 18903--18915, Dec. 2024.
+
+\bibitem{isea}
+Z. Liu \etal, ``Integrated sensing and edge AI: Realizing intelligent
+perception in 6G,'' \emph{IEEE Commun. Surveys Tuts.}, early access, 2025.
+
+\bibitem{fang}
+X. Fang \etal, ``Sensing-communication-computing-control closed-loop
+optimization for 6G digital twin-empowered robotic systems,'' \emph{IEEE J.
+Sel. Areas Commun.}, vol. 43, no. 10, pp. 3330--3346, Oct. 2025.
+
+\bibitem{pang}
+G. Pang, W. Liu, D. Niyato, B. Vucetic, and Y. Li,
+``Communication-control codesign for large-scale wireless networked control
+systems,'' \emph{IEEE J. Sel. Areas Commun.}, vol. 43, no. 10,
+pp. 3295--3312, Oct. 2025.
+
+\bibitem{systemid}
+Z. Han, X. Li, Z. Zhou, K. Huang, Y. Gong, and Q. Zhang, ``Wireless
+communication and control co-design for system identification,'' \emph{IEEE
+Trans. Wireless Commun.}, vol. 23, no. 5, pp. 4114--4126, May 2024.
+
+\bibitem{unifiedqos}
+J. Li \etal, ``A unified QoS-aware multiplexing framework for next-generation
+immersive communication with legacy wireless applications,'' \emph{IEEE
+Internet Things J.}, vol. 12, no. 14, pp. 28582--28597, Jul. 2025.
+
+\bibitem{cellfree}
+Z. Zhang \etal, ``Performance of multidevice downlink cell-free system under
+finite blocklength for URLLC with hard deadlines,'' \emph{IEEE J. Sel. Areas
+Commun.}, vol. 41, no. 7, pp. 2090--2106, Jul. 2023.
+
+\bibitem{offloading}
+C.-F. Liu, M. Bennis, M. Debbah, and H. V. Poor, ``Dynamic task offloading
+and resource allocation for ultra-reliable low-latency edge computing,''
+\emph{IEEE Trans. Commun.}, vol. 67, no. 6, pp. 4132--4150, Jun. 2019.
+
+\bibitem{multitier}
+D. V. Huynh, V.-D. Nguyen, S. Chatzinotas, S. R. Khosravirad, H. V. Poor,
+and T. Q. Duong, ``Joint communication and computation offloading for
+ultra-reliable and low-latency with multi-tier computing,'' \emph{IEEE J.
+Sel. Areas Commun.}, vol. 41, no. 2, pp. 521--537, Feb. 2023.
+
+\bibitem{edgeinference}
+Z. Wang, A. E. Kal{\o}r, Y. Zhou, P. Popovski, and K. Huang,
+``Ultra-low-latency edge inference for distributed sensing,'' \emph{IEEE
+Trans. Wireless Commun.}, early access, 2025.
+
+\bibitem{semanticclosedloop}
+G. Pan, A. \"Oz\c{c}elikkale, C. H\"ager, M. F. Keskin, and H. Wymeersch,
+``Semantic communication for rate-limited closed-loop distributed
+communication-sensing-control systems,'' arXiv:2512.19177, Dec. 2025.
+
+\bibitem{energywncs}
+Z. Han, X. Li, G. Zhu, K. Huang, Y. Gong, and Q. Zhang, ``An energy-efficient
+wireless communication and control co-design for WNCS,'' \emph{IEEE Trans.
+Wireless Commun.}, vol. 25, pp. 1798--1812, 2026.
+
+\bibitem{avery}
+R. Bhattacharjya \etal, ``AVERY: Intent-driven adaptive VLM split computing
+via embodied self-awareness for efficient disaster response systems,''
+arXiv:2511.18151, Mar. 2026.
+
+\bibitem{dadu}
+Y. Huang \etal, ``DaDu-Corki: Algorithm-architecture co-design for embodied
+AI-powered robotic manipulation,'' in \emph{Proc. ACM/IEEE ISCA}, 2025,
+pp. 327--343.
+
+\bibitem{mobileran}
+M. Alsenwi, N. H. Tran, M. Bennis, S. R. Pandey, A. K. Bairagi, and
+C. S. Hong, ``Intelligent resource slicing for eMBB and URLLC coexistence in
+5G and beyond: A deep reinforcement learning based approach,'' \emph{IEEE
+Trans. Wireless Commun.}, vol. 20, no. 7, pp. 4585--4600, Jul. 2021.
+
+\bibitem{semanticclassic}
+H. Xie, Z. Qin, G. Y. Li, and B.-H. Juang, ``Deep learning enabled semantic
+communication systems,'' \emph{IEEE Trans. Signal Process.}, vol. 69,
+pp. 2663--2675, 2021.
+
+\bibitem{aircompneural}
+Y. Cang, M. Chen, and K. Huang, ``Over-the-air computation for realizing
+neural link in in-network AI architectures,'' \emph{IEEE Trans. Wireless
+Commun.}, vol. 25, pp. 2373--2388, 2026.
+
+\bibitem{resourceurlcc}
+K. Li, P. Zhu, Y. Wang, F.-C. Zheng, and X. You, ``Joint uplink and downlink
+resource allocation toward energy-efficient transmission for URLLC,''
+\emph{IEEE J. Sel. Areas Commun.}, vol. 41, no. 7, pp. 2176--2192,
+Jul. 2023.
+
+\bibitem{agentsmobile}
+X. Zheng \etal, ``Exploring multi-agent dynamics for generative AI and large
+language models in mobile edge networks,'' \emph{IEEE Wireless Commun.},
+vol. 32, no. 6, pp. 69--78, Dec. 2025.
+
+\bibitem{modeloffload}
+Q. Chen, C. Yang, S. Lan, L. Zhu, and Y. Zhang, ``Two-stage evolutionary
+search for efficient task offloading in edge computing power networks,''
+\emph{IEEE Internet Things J.}, vol. 11, no. 19, pp. 30787--30799,
+Oct. 2024.
+
+\end{thebibliography}
+
+\end{document}

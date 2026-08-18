@@ -1,0 +1,233 @@
+\relax 
+\citation{3gpp22870}
+\citation{gpt3,dalle}
+\citation{mmlu,bigbench}
+\citation{agentbench}
+\citation{react,reflexion}
+\citation{metaworld,rt2,libero}
+\citation{edgeLLMsurvey}
+\citation{semanticclassic,tokcom}
+\citation{isea}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\newlabel{sec:introduction}{{I}{1}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Contributions}{1}{}\protected@file@percent }
+\citation{gpt3,dalle}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The outline of this survey.}}{2}{}\protected@file@percent }
+\newlabel{fig:roadmap}{{1}{2}{}{}{}}
+\citation{gpt3}
+\citation{mmlu}
+\citation{bleu,rouge}
+\citation{mmlu}
+\citation{bigbench}
+\citation{vit}
+\citation{ddpm}
+\citation{agentbench}
+\citation{webarena}
+\citation{swebench}
+\citation{react,reflexion}
+\citation{groot}
+\citation{metaworld}
+\citation{rt2}
+\citation{libero}
+\citation{saferl}
+\@writefile{toc}{\contentsline {section}{\numberline {II}From Generative to Embodied LAMs: Performance Metrics, Benchmarks, and Model Evolution}{3}{}\protected@file@percent }
+\newlabel{sec:model_evolution}{{II}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Generative LAMs}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Agentic LAMs}{3}{}\protected@file@percent }
+\newlabel{eq:agent_reliability}{{1}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Embodied LAMs}{3}{}\protected@file@percent }
+\citation{flashvla}
+\citation{dadu}
+\newlabel{eq:control_cost}{{2}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Development Laws and a Regression Heuristic}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-E}}Benchmark Design Across Stages}{4}{}\protected@file@percent }
+\citation{evatok,edgeLLMsurvey}
+\citation{3gpp22870}
+\citation{evatok}
+\citation{edgeLLMsurvey}
+\citation{tree}
+\citation{agenticsystems}
+\citation{agenticenergy}
+\citation{netmcp}
+\citation{qkvcomm,kvcomm}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Model and Workload Evolution Across LAM Stages}}{5}{}\protected@file@percent }
+\newlabel{tab:modeltaxonomy}{{I}{5}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}From Generative to Embodied Networks for LAMs: QoS Scale and Model Emphasis}{5}{}\protected@file@percent }
+\newlabel{sec:qos}{{III}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Generative Stage: Fidelity and Cost under Elastic Interaction}{5}{}\protected@file@percent }
+\newlabel{eq:gen_utility}{{3}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Agentic Stage: Long-Horizon Goodput, Memory, and Retry}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Evolution of LAM services and their dominant network operating bottlenecks. Requirements accumulate rather than replace one another: embodied systems still need throughput and semantic reliability, but must add deterministic closed-loop behavior. The circular marker on the planner/supervisor denotes retry; each embodied sensing--action loop carries a task-specific update rate, with 30 Hz shown as an illustrative requirement.}}{6}{}\protected@file@percent }
+\newlabel{fig:evolution}{{2}{6}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Order-of-Magnitude QoS Anchors and Explicit Scenario Basis}}{6}{}\protected@file@percent }
+\newlabel{tab:qos}{{II}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Embodied Stage: Closed-Loop Timing and Physical Loss}{6}{}\protected@file@percent }
+\newlabel{eq:loop_delay}{{4}{6}{}{}{}}
+\newlabel{eq:robust_slo}{{5}{6}{}{}{}}
+\newlabel{eq:task_distortion}{{6}{6}{}{}{}}
+\newlabel{eq:cost_effectiveness}{{7}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Minimal End-to-End Measurement Contract}{6}{}\protected@file@percent }
+\citation{wdmoe}
+\citation{pipeline}
+\citation{edgeLLMsurvey}
+\citation{progressive}
+\citation{agentsmobile,du_debate,estornell}
+\citation{agentprotocols}
+\citation{thoughtcomm,latentcomm}
+\citation{hybrid}
+\newlabel{eq:syncgoodput}{{8}{7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}From Generative to Embodied Networks for LAMs: Architecture Evolution}{7}{}\protected@file@percent }
+\newlabel{sec:architecture}{{IV}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Architecture for Generative-LAM Networks}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Architecture for Agentic-LAM Networks}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Architecture for Embodied-LAM Networks}{7}{}\protected@file@percent }
+\citation{multitier}
+\citation{edgeinference}
+\citation{offloading}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Cloud--edge--device hierarchy for distributed LAM services. The generative stage primarily uses cloud scale, the agentic stage adds stateful edge orchestration, and the embodied stage keeps hard safety and stabilization local while the edge closes latency-critical cognition and coordination loops.}}{8}{}\protected@file@percent }
+\newlabel{fig:architecture}{{3}{8}{}{}{}}
+\newlabel{eq:interaction}{{9}{8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Architecture Design Principles}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Service Lifecycle and Timescale Separation}{8}{}\protected@file@percent }
+\citation{tokcom}
+\citation{todma}
+\citation{distributedllm,aircompneural}
+\citation{airfusion}
+\citation{avery}
+\citation{specdecode}
+\citation{actiondeviation}
+\citation{du_debate,estornell}
+\citation{qkvcomm,kvcomm,latentcomm}
+\citation{semsharekv}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Placement, Networking Topology, and Collaboration Evolution}}{9}{}\protected@file@percent }
+\newlabel{tab:architecture}{{III}{9}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Improving Networks for LAMs: Key Enabling Technologies}{9}{}\protected@file@percent }
+\newlabel{sec:enablers}{{V}{9}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Enablers for Generative-LAM Networks}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-A}1}Compression and token communications}{9}{}\protected@file@percent }
+\newlabel{eq:rd}{{10}{9}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-A}2}Split, distributed, and speculative inference}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Enablers for Agentic-LAM Networks}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}1}Reliable collaboration and model routing}{9}{}\protected@file@percent }
+\citation{garq}
+\citation{qvla}
+\citation{polyanskiy}
+\citation{cellfree,resourceurlcc}
+\citation{interfacediversity,harq}
+\citation{puncturing,ranslicing,mobileran}
+\citation{unifiedqos}
+\citation{mixedjitter,deterministic}
+\citation{waypoint}
+\citation{isea}
+\citation{semanticclosedloop}
+\citation{fang}
+\citation{pang}
+\citation{systemid}
+\citation{energywncs}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}2}State, freshness, and transactional transport}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Enablers for Embodied-LAM Networks}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}1}Control-loss-aware token selection}{10}{}\protected@file@percent }
+\newlabel{eq:token_value}{{11}{10}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}2}Finite-blocklength and deterministic transport}{10}{}\protected@file@percent }
+\newlabel{eq:fbl}{{12}{10}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}3}Semantic and goal-oriented communication}{10}{}\protected@file@percent }
+\citation{tokcom,todma}
+\citation{progressive,specdecode}
+\citation{qkvcomm,kvcomm,semsharekv,latentcomm}
+\citation{netmcp,garq}
+\citation{fang,pang}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}4}Communication--control co-design and dynamic model sharing}{11}{}\protected@file@percent }
+\newlabel{eq:joint_problem}{{13}{11}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Case Study: Deployable Token Recognition and Service Mapping}{11}{}\protected@file@percent }
+\newlabel{sec:case}{{VI}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Problem and Observation Boundary}{11}{}\protected@file@percent }
+\newlabel{eq:recognition}{{14}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Hierarchical Recognition and Sorting}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Evaluation and Commercial Feasibility}{11}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Stage-by-Stage Mapping from QoS and Architecture to Enabling Technologies}}{12}{}\protected@file@percent }
+\newlabel{tab:stageenablers}{{IV}{12}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Token/Chunk Recognition Evidence and Conservative Network Actions}}{12}{}\protected@file@percent }
+\newlabel{tab:case}{{V}{12}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Challenges and Future Directions}{12}{}\protected@file@percent }
+\newlabel{sec:future}{{VII}{12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}Open Problems in Token Recognition}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-B}}Tokenizer Compatibility}{12}{}\protected@file@percent }
+\citation{3gpp22870}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-C}}Token-Native Protocols}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-D}}Benchmarking, Theory, and Standardization Gaps}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Conclusions}{13}{}\protected@file@percent }
+\newlabel{sec:conclusion}{{VIII}{13}{}{}{}}
+\bibcite{3gpp22870}{1}
+\bibcite{gpt3}{2}
+\bibcite{dalle}{3}
+\bibcite{semanticclassic}{4}
+\bibcite{tokcom}{5}
+\bibcite{isea}{6}
+\bibcite{mmlu}{7}
+\bibcite{bigbench}{8}
+\bibcite{bleu}{9}
+\bibcite{rouge}{10}
+\bibcite{vit}{11}
+\bibcite{ddpm}{12}
+\bibcite{agentbench}{13}
+\bibcite{webarena}{14}
+\bibcite{swebench}{15}
+\bibcite{react}{16}
+\bibcite{reflexion}{17}
+\bibcite{du_debate}{18}
+\bibcite{estornell}{19}
+\bibcite{garq}{20}
+\bibcite{groot}{21}
+\bibcite{metaworld}{22}
+\bibcite{rt2}{23}
+\bibcite{libero}{24}
+\bibcite{saferl}{25}
+\bibcite{fang}{26}
+\bibcite{pang}{27}
+\bibcite{systemid}{28}
+\bibcite{flashvla}{29}
+\bibcite{dadu}{30}
+\bibcite{evatok}{31}
+\bibcite{edgeLLMsurvey}{32}
+\bibcite{tree}{33}
+\bibcite{agenticsystems}{34}
+\bibcite{agenticenergy}{35}
+\bibcite{netmcp}{36}
+\bibcite{qkvcomm}{37}
+\bibcite{kvcomm}{38}
+\bibcite{wdmoe}{39}
+\bibcite{pipeline}{40}
+\bibcite{progressive}{41}
+\bibcite{agentsmobile}{42}
+\bibcite{agentprotocols}{43}
+\bibcite{thoughtcomm}{44}
+\bibcite{latentcomm}{45}
+\bibcite{hybrid}{46}
+\bibcite{multitier}{47}
+\bibcite{edgeinference}{48}
+\bibcite{offloading}{49}
+\bibcite{todma}{50}
+\bibcite{distributedllm}{51}
+\@writefile{toc}{\contentsline {section}{References}{14}{}\protected@file@percent }
+\bibcite{aircompneural}{52}
+\bibcite{airfusion}{53}
+\bibcite{avery}{54}
+\bibcite{specdecode}{55}
+\bibcite{actiondeviation}{56}
+\bibcite{semsharekv}{57}
+\bibcite{qvla}{58}
+\bibcite{polyanskiy}{59}
+\bibcite{cellfree}{60}
+\bibcite{resourceurlcc}{61}
+\bibcite{interfacediversity}{62}
+\bibcite{harq}{63}
+\bibcite{puncturing}{64}
+\bibcite{ranslicing}{65}
+\bibcite{mobileran}{66}
+\bibcite{unifiedqos}{67}
+\bibcite{mixedjitter}{68}
+\bibcite{deterministic}{69}
+\bibcite{waypoint}{70}
+\bibcite{semanticclosedloop}{71}
+\bibcite{energywncs}{72}
+\gdef \@abspage@last{15}

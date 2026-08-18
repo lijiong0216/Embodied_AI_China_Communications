@@ -1,0 +1,595 @@
+{
+  "project": "Embodied AI China Communications",
+  "projectId": "6a5f16d94be9063fcac156de",
+  "generated": "2026-08-17T15:49:01.669Z",
+  "filesScanned": 1,
+  "totalComments": 36,
+  "perFile": [
+    {
+      "file": "current file",
+      "count": 17
+    },
+    {
+      "file": "(unlocated)",
+      "count": 19
+    }
+  ],
+  "records": [
+    {
+      "threadId": "6a66da52ac27d5566a000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "?",
+          "timestamp": "2026/7/27 12:10:58",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a66db113406dc0ccb000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "需要更新",
+          "timestamp": "2026/7/27 12:14:08",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a66dd11fba73e105f000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "换成Token识别，来不及就先不加了",
+          "timestamp": "2026/7/27 12:22:40",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a66f1d16a0df7095d000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "关于创新性的论述要小心，已经有人提过生成式、代理式和具身式了",
+          "timestamp": "2026/7/27 13:51:12",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a66f22dee1d2f5710000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "这个明明是具身特有的不足。",
+          "timestamp": "2026/7/27 13:52:44",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a66f260ff41797be1000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "需要更换",
+          "timestamp": "2026/7/27 13:53:36",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70a826f81a250dc6000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "最好可以找一个引用",
+          "timestamp": "2026/8/3 22:39:34",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70a8451abff10b1f000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "没有看到引用。",
+          "timestamp": "2026/8/3 22:40:05",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70a87daf07b02a5b000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "剩下的部分可以统一总结为发展规律的特性总结。可以进一步讲一讲退行的观点。",
+          "timestamp": "2026/8/3 22:41:02",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70ab0a29a1534192000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "这个部分不太对，指标可能有略微差别，但是大部分是量级的变化，重点参照PPT中的雷达图。但是不同阶段的大模型侧重点不同。",
+          "timestamp": "2026/8/3 22:51:54",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70ab5a3851c008ab000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "感觉都可以去掉",
+          "timestamp": "2026/8/3 22:53:14",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70af54786a344548000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "云边端要提，组网方式要提（中心式、去中心式、一对多、多对一、点对点等），协作方式要提（参考PPT中的“智能体协作网络发展规律”）",
+          "timestamp": "2026/8/3 23:10:12",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70afc85fe5d974f5000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "而且量级变化都要辅以计算依据和出处，不然无法信服。",
+          "timestamp": "2026/8/3 23:12:08",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70b096753bf751a1000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "有可取之处，可以辅以一张闭环架构图。",
+          "timestamp": "2026/8/3 23:15:35",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70b13a541ceb2b8e000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "别画蛇添足。",
+          "timestamp": "2026/8/3 23:18:19",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70b186a1c2dc5721000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "应该是对比各自的智能体的阶段的，而不是仅仅对比具身智能体",
+          "timestamp": "2026/8/3 23:19:35",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70b1e210cd1b7bbe000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "需要和前面的QoS要求以及网络架构好好对应上；然后可以把书里面的文献加上去。",
+          "timestamp": "2026/8/3 23:21:06",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a70b1f547743330af000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "涉及到与上层交互的内容需要特别小心，在商业上往往不具备可行性。",
+          "timestamp": "2026/8/3 23:21:25",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a71aa0e7c62c77ca6000001",
+      "file": "(unlocated)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "可去掉",
+          "timestamp": "2026/8/4 16:59:58",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a734eb954d7e631d8000001",
+      "file": "current file",
+      "fragment": "\\subsection{Scope and Survey Method}",
+      "context": "\\subsection{Scope and Survey Method}",
+      "position": 5317,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "一般没有人会这么写。去掉。",
+          "timestamp": "2026/8/5 22:55:03",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a734ed7054b585176000001",
+      "file": "current file",
+      "fragment": "\\IEEEPARstart{L}{arge} AI models are moving beyond a single prompt--response",
+      "context": "\\IEEEPARstart{L}{arge} AI models are moving beyond a single prompt--response",
+      "position": 3078,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "引用太少了。这个部分也需要做文献调研以及综述。",
+          "timestamp": "2026/8/5 22:55:33",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a74417e46f17e1f85000001",
+      "file": "current file",
+      "fragment": "Generative LAMs learn a conditional distribution over token sequences.",
+      "context": "Generative LAMs learn a conditional distribution over token sequences.",
+      "position": 12665,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "加2个引用。",
+          "timestamp": "2026/8/6 16:10:39",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79ca45e39afa4b73000001",
+      "file": "current file",
+      "fragment": "\\subsection{Positioning Relative to Adjacent Surveys}",
+      "context": "% \\subsection{Positioning Relative to Adjacent Surveys}",
+      "position": 6144,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "这个部分就算要写也得和实际的已发表的survey进行对比。",
+          "timestamp": "2026/8/10 20:55:34",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79cba1c069a0377c000001",
+      "file": "current file",
+      "fragment": "\\documentclass[letterpaper,journal]{IEEEtran}",
+      "context": "\\documentclass[letterpaper,journal]{IEEEtran}",
+      "position": 0,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "请务必帮我把模板切换回最初的IEEETrans或者Journal模板",
+          "timestamp": "2026/8/10 21:01:21",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e2ad13b86a7fd8000001",
+      "file": "current file",
+      "fragment": "Perplexity measures predictive fit, exact-match or multiple-choice accuracy",
+      "context": "Perplexity measures predictive fit, exact-match or multiple-choice accuracy",
+      "position": 13284,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "加引用",
+          "timestamp": "2026/8/10 22:39:41",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e2beebc46a51a4000001",
+      "file": "current file",
+      "fragment": "Perplexity measures predictive fit, exact-match or multiple-choice accuracy",
+      "context": "Perplexity measures predictive fit, exact-match or multiple-choice accuracy",
+      "position": 13284,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "加引用",
+          "timestamp": "2026/8/10 22:39:58",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e30ed7ce3b0f7e000001",
+      "file": "current file",
+      "fragment": "surface-form overlap is",
+      "context": "factuality, and safety are required because surface-form overlap is",
+      "position": 13780,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "用语更加常用一些。",
+          "timestamp": "2026/8/10 22:41:19",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e6949583f02084000001",
+      "file": "current file",
+      "fragment": "The corresponding traffic is asymmetric and elastic. Prompts and retrieved",
+      "context": "The corresponding traffic is asymmetric and elastic. Prompts and retrieved",
+      "position": 13819,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "这里建议再讲一讲不同模态在进行理解以及生成的时候traffic是怎么样的，对资源的消耗是怎么样的。edge inference/cloud inference这些都涉及到实际网络化落地部署了，不在这一章节讨论。",
+          "timestamp": "2026/8/10 22:56:20",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e6f10a78d51f66000001",
+      "file": "current file",
+      "fragment": "\\section{From Generative to Embodied LAMs: Performance Metrics, Benchmarks, and Model Evolution}",
+      "context": "\\section{From Generative to Embodied LAMs: Performance Metrics, Benchmarks, and Model Evolution}",
+      "position": 12511,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "整个章节仅从AI模型本地部署的角度去讲从生成式到具身式AI本身的performance metrics、benchmarks等的演变，不需要提到在网络中部署的问题。但是标题不需要改变了。",
+          "timestamp": "2026/8/10 22:57:54",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e88aedcff22c87000001",
+      "file": "current file",
+      "fragment": "\\begin{figure*}[h]",
+      "context": "\\begin{figure*}[h]",
+      "position": 26438,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "Agentic LAM的部分建议体现retry（即对planner/supervisor加一个循环符号），embodied LAM可以体现在闭环（即对VLA/World Model加一个循环符号）的基础上每个闭环都有一个频率的要求（例如30Hz等）",
+          "timestamp": "2026/8/10 23:04:42",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e93fdfd5035758000001",
+      "file": "current file",
+      "fragment": "Relevant metrics include task success rate, number of tool",
+      "context": "\\cite{agentbench}. Relevant metrics include task success rate, number of tool",
+      "position": 15487,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "加一些引用。",
+          "timestamp": "2026/8/10 23:07:43",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79e9f1e547a5400b000001",
+      "file": "current file",
+      "fragment": "Network reliability compounds over the trajectory",
+      "context": "Network reliability compounds over the trajectory",
+      "position": 15768,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "还是一样的要求，讲reliability以及heavy tail job completion time都可以，但请把对网络提要求的内容去掉，直接讲agentic LAM本身的特性。",
+          "timestamp": "2026/8/10 23:10:42",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79f2a11446e40b72000001",
+      "file": "current file",
+      "fragment": "modern VLA evaluations additionally report",
+      "context": "generalization \\cite{metaworld}; modern VLA evaluations additionally report",
+      "position": 17488,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "需要找到对应的一些引用",
+          "timestamp": "2026/8/10 23:47:45",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79f2cb121b1c3666000001",
+      "file": "current file",
+      "fragment": "Following communication--control co-design formulations",
+      "context": "Following communication--control co-design formulations",
+      "position": 17909,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "有没有类似的文献支撑？没有的话不建议自己发明这个东西。",
+          "timestamp": "2026/8/10 23:48:27",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79f3361dd4f85e06000001",
+      "file": "current file",
+      "fragment": "Embodied traffic also has",
+      "context": "Embodied traffic also has structure unavailable in generic Internet flows.",
+      "position": 18640,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "不用和网络相关。就讲embodied LAM的traffic即可。",
+          "timestamp": "2026/8/10 23:50:14",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a79f46280815a3101000001",
+      "file": "current file",
+      "fragment": "Embodied traffic also has",
+      "context": "Embodied traffic also has structure unavailable in generic Internet flows.",
+      "position": 18581,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "这一段需要补充讲一下具身LAM面临着什么样的交互挑战。（既要对场景有理解又要实时）这个挑战很难，然后并不是没有解决方案，从而引出后续发掘redundancy的思路。",
+          "timestamp": "2026/8/10 23:55:15",
+          "author": "tomlijiong"
+        }
+      ]
+    }
+  ]
+}
