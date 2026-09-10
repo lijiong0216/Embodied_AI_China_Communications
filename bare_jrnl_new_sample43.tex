@@ -233,7 +233,7 @@ Section~\ref{sec:model_evolution} reviews model evolution and benchmarks.
 Sections~\ref{sec:qos} and~\ref{sec:architecture} study metric and architecture
 evolution, respectively. Section~\ref{sec:enablers} surveys enabling
 technologies, Section~\ref{sec:case} presents the case study, and
-Section~\ref{sec:future} discusses open challenges.
+Section~\ref{sec:future} discusses open challenges. The architecture of the main sections of the paper is presented in Fig.~\ref{fig:roadmap}. 
 
 \section{From Generative to Embodied LAMs: Performance Metrics, Benchmarks, and Model Evolution}
 \label{sec:model_evolution}
@@ -333,7 +333,7 @@ measures transfer and robustness across lifelong manipulation task suites
 \cite{libero}. VLA evaluations accordingly report task success, trajectory
 efficiency, collision rate, action error, robustness to scene perturbation, and
 sim-to-real degradation. World models are judged by predictive consistency and
-planning quality, not merely reconstruction. Because a small perception error
+planning quality, not merely reconstruction, since a small perception error
 is harmless in one state and catastrophic near a contact transition, average
 token distortion alone is inadequate.
 
@@ -415,19 +415,13 @@ than missing information \\ \hline
 \end{table*}
 
 \subsection{Development Laws and a Regression Heuristic}
-Table~\ref{tab:modeltaxonomy} reveals four recurring development laws. First,
-evaluation moves
-from \emph{relative content accuracy}, to \emph{practical process success}, to
-\emph{physical closed-loop performance}. Second, interaction frequency and
-coupling increase: a prompt is weakly coupled to the next request, an agent
-trajectory is logically coupled across steps, and an embodied trajectory is
-both logically and dynamically coupled through the environment. Third, the
-consequence of failure changes from a correctable response to an external
-state change and finally to a potentially irreversible physical event. Fourth,
-the quantitative workload grows through longer contexts, more model invocations,
-and denser multimodal streams, whereas the dominant qualitative model concern
-changes from generation fidelity, to trajectory correctness and memory, and
-then to grounded control and safety.
+Table~\ref{tab:modeltaxonomy} reveals four recurring development laws. 
+\begin{itemize}
+    \item First, evaluation moves from \emph{relative content accuracy}, to \emph{practical process success}, to \emph{physical closed-loop performance}. 
+    \item Second, interaction frequency and coupling increase: a prompt is weakly coupled to the next request, an agent trajectory is logically coupled across steps, and an embodied trajectory is both logically and dynamically coupled through the environment. 
+    \item Third, the consequence of failure changes from a correctable response to an external state change and finally to a potentially irreversible physical event. 
+    \item Fourth, the quantitative workload grows through longer contexts, more model invocations, and denser multimodal streams, whereas the dominant qualitative model concern changes from generation fidelity, to trajectory correctness and memory, and then to grounded control and safety.
+\end{itemize}
 
 The increasing structure of model inputs and outputs creates an opportunity as
 well as a burden. Generative tokens mainly expose statistical redundancy;
@@ -447,7 +441,7 @@ helps explain why generating fluent text does not imply reliable tool use, and
 why either capability does not imply safe physical intelligence. It is neither
 a biological law nor an originality claim; its engineering implication is only
 that later stages inherit earlier representation and generation abilities while
-adding state, timing, interaction, and physical grounding.
+adding state, timing, interaction, and physical grounding. And the embodied system requires more sophisticated training and ingenious system optimization. 
 
 \subsection{Benchmark Design Across Stages}
 A benchmark supports a valid cross-stage comparison only when its execution
@@ -555,10 +549,11 @@ changes is primarily their \emph{order of magnitude} and the model-side loss
 that qualifies delivered traffic as useful. Generative models emphasize
 multimodal fidelity and decode efficiency; agentic models emphasize trajectory
 success, retries, and long-term memory; embodied models emphasize synchronized
-state estimation, control, and safety. Table~\ref{tab:qos} gives a reproducible
+state estimation, control, and safety. Table~\ref{tab:qos}\footnote{Two cautions are essential. First, multiplying every maximum in one row by every maximum in another creates an impossible workload; duty factors and statistical multiplexing must be declared. Second, a ``token'' is not a fixed number of bits across text, images, video, latent states, or actions. Token rate therefore complements rather than replaces bit rate. The assumptions in Table~\ref{tab:qos} make sensitivity analysis possible: changing $r_0$,
+$N_{\rm par}$, $L_{\rm state}$, $a$, or trajectory length $H$ immediately produces a new deployment-specific envelope.} gives a reproducible
 scenario envelope that instantiates the radar-style comparison motivating this
-survey. The entries are design anchors, not standardized 6G requirements or
-simultaneous maxima.
+survey. 
+% The entries are design anchors, not standardized 6G requirements or simultaneous maxima.
 
 \begin{table*}[t]
 \caption{Order-of-Magnitude QoS Anchors and Explicit Scenario Basis}
@@ -604,15 +599,6 @@ agent/tool endpoints, to massive sensors and physical agents; the top anchor
 matches the established massive-connectivity order \cite{3gpp22870}. \\ \hline
 \end{tabular}
 \end{table*}
-
-Two cautions are essential. First, multiplying every maximum in one row by
-every maximum in another creates an impossible workload; duty factors and
-statistical multiplexing must be declared. Second, a ``token'' is not a fixed
-number of bits across text, images, video, latent states, or actions. Token
-rate therefore complements rather than replaces bit rate. The assumptions in
-Table~\ref{tab:qos} make sensitivity analysis possible: changing $r_0$,
-$N_{\rm par}$, $L_{\rm state}$, $a$, or trajectory length $H$ immediately
-produces a new deployment-specific envelope.
 
 \subsection{Generative Stage: Fidelity and Cost under Elastic Interaction}
 Generative serving decomposes delay into request admission, prefill, and
@@ -707,37 +693,37 @@ where $B,E,F,S$ denote bandwidth, energy, compute cycles, and storage. This
 form discourages spending large resources on tokens that do not improve the
 physical task.
 
-\subsection{Minimal End-to-End Measurement Contract}
-The operator need not observe prompts, plans, sensor content, or actions. A
-commercially plausible contract keeps rich semantics inside the trusted
-endpoint/vertical and exposes only an authenticated service identifier,
-generation time, coarse deadline/reliability bin, chunk size, and an opaque
-causal identifier. Endpoint and compute-domain telemetry can privately bind the
-identifier to model queues and outcomes. Thus the carrier can attribute radio,
-path, and edge-queue delay without deep packet inspection or direct access to
-upper-layer state.
+% \subsection{Minimal End-to-End Measurement Contract}
+% The operator need not observe prompts, plans, sensor content, or actions. A
+% commercially plausible contract keeps rich semantics inside the trusted
+% endpoint/vertical and exposes only an authenticated service identifier,
+% generation time, coarse deadline/reliability bin, chunk size, and an opaque
+% causal identifier. Endpoint and compute-domain telemetry can privately bind the
+% identifier to model queues and outcomes. Thus the carrier can attribute radio,
+% path, and edge-queue delay without deep packet inspection or direct access to
+% upper-layer state.
 
-Measurement granularity scales with risk: per-request aggregation for
-best-effort generation, per-step spans for an agentic transaction, and per-loop
-timing for an embodied service. Results should report percentiles and violation
-runs, condition on load, separate offered/decoded/useful goodput, and report
-joint freshness for fused modalities. For modalities $m\in{\cal M}_i$, a useful
-online proxy is
-\begin{equation}
-G_i^{\rm sync}=\frac{1}{|{\cal T}|}\sum_{k\in{\cal K}_i}
-v_k{\bf 1}\!\left\{t_k^{\rm rx}\le d_k,\,
-\max_{m,n\in{\cal M}_i}|a_m-a_n|\le s_i\right\},
-\label{eq:syncgoodput}
-\end{equation}
-where $v_k$ is an endpoint-assigned value bin, $a_m$ information age, and
-$s_i$ permitted skew. This metric is auditable network telemetry, not a
-replacement for application-owned quality or safety evaluation.
+% Measurement granularity scales with risk: per-request aggregation for
+% best-effort generation, per-step spans for an agentic transaction, and per-loop
+% timing for an embodied service. Results should report percentiles and violation
+% runs, condition on load, separate offered/decoded/useful goodput, and report
+% joint freshness for fused modalities. For modalities $m\in{\cal M}_i$, a useful
+% online proxy is
+% \begin{equation}
+% G_i^{\rm sync}=\frac{1}{|{\cal T}|}\sum_{k\in{\cal K}_i}
+% v_k{\bf 1}\!\left\{t_k^{\rm rx}\le d_k,\,
+% \max_{m,n\in{\cal M}_i}|a_m-a_n|\le s_i\right\},
+% \label{eq:syncgoodput}
+% \end{equation}
+% where $v_k$ is an endpoint-assigned value bin, $a_m$ information age, and
+% $s_i$ permitted skew. This metric is auditable network telemetry, not a
+% replacement for application-owned quality or safety evaluation.
 
-The records close an assurance loop: admission predicts resource distributions,
-runtime monitoring detects joint violations, endpoints adapt compression,
-placement, or period, and aggregated outcomes update the next admission model.
-This limited exposure is sufficient for service-level engineering and is more
-deployable than assuming that a network can interpret raw tokens.
+% The records close an assurance loop: admission predicts resource distributions,
+% runtime monitoring detects joint violations, endpoints adapt compression,
+% placement, or period, and aggregated outcomes update the next admission model.
+% This limited exposure is sufficient for service-level engineering and is more
+% deployable than assuming that a network can interpret raw tokens.
 
 \section{From Generative to Embodied Networks for LAMs: Architecture Evolution}
 \label{sec:architecture}
@@ -929,90 +915,90 @@ density alone. Third, \emph{retain a safe degraded mode}: if the edge model,
 radio link, or clock synchronization fails, the device must fall back to a
 local controller that maintains a safe set, even if task progress stops.
 
-\subsection{Service Lifecycle and Timescale Separation}
-Architecture must cover the service lifecycle, not only the inference data
-path. During
-\emph{registration}, an endpoint or vertical gateway publishes an authenticated
-coarse capability/SLO manifest; detailed model state, sensor content, action
-semantics, and safety policy remain inside its trust domain. During
-\emph{admission}, the orchestrator maps a requested service
-to a service graph, predicts complete resource demand, selects placements,
-and rejects or degrades a task whose robust SLO is infeasible. During
-\emph{execution}, fast schedulers allocate token, radio, and compute resources
-under the admitted envelope. During \emph{recovery}, endpoints switch models,
-paths, or controllers and preserve transaction semantics. During
-\emph{learning}, traces update workload, token-value, channel, and physical
-interaction models.
+% \subsection{Service Lifecycle and Timescale Separation}
+% Architecture must cover the service lifecycle, not only the inference data
+% path. During
+% \emph{registration}, an endpoint or vertical gateway publishes an authenticated
+% coarse capability/SLO manifest; detailed model state, sensor content, action
+% semantics, and safety policy remain inside its trust domain. During
+% \emph{admission}, the orchestrator maps a requested service
+% to a service graph, predicts complete resource demand, selects placements,
+% and rejects or degrades a task whose robust SLO is infeasible. During
+% \emph{execution}, fast schedulers allocate token, radio, and compute resources
+% under the admitted envelope. During \emph{recovery}, endpoints switch models,
+% paths, or controllers and preserve transaction semantics. During
+% \emph{learning}, traces update workload, token-value, channel, and physical
+% interaction models.
 
-% \begin{figure*}[t]
-% \centering
-% \setlength{\tabcolsep}{2.2pt}
-% \renewcommand{\arraystretch}{1.05}
-% \begin{tabular}{c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c}
-% \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Register}\\
-% capability\\version/trust\\fallback}}
-% &
-% \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Admit}\\
-% service graph\\placement\\risk budget}}
-% &
-% \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Execute}\\
-% token value\\radio/compute\\loop monitor}}
-% &
-% \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Recover}\\
-% reroute/retry\\safe mode\\rollback}}
-% &
-% \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Learn}\\
-% causal trace\\model update\\SLO revision}}
-% \\[-1pt]
-% \multicolumn{5}{c}{\small
-% $\longleftarrow$ aggregated outcomes and revised workload/risk envelopes feed
-% the next registration and admission cycle $\longleftarrow$}
-% \end{tabular}
-% \caption{Closed assurance loop for a distributed LAM-agent service. Execution
-% is only one stage; versioned registration and admission bound runtime risk,
-% while recovery and privacy-preserving outcome feedback revise the next cycle.}
-% \label{fig:lifecycle}
-% \end{figure*}
+% % \begin{figure*}[t]
+% % \centering
+% % \setlength{\tabcolsep}{2.2pt}
+% % \renewcommand{\arraystretch}{1.05}
+% % \begin{tabular}{c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c@{\,$\rightarrow$\,}c}
+% % \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Register}\\
+% % capability\\version/trust\\fallback}}
+% % &
+% % \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Admit}\\
+% % service graph\\placement\\risk budget}}
+% % &
+% % \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Execute}\\
+% % token value\\radio/compute\\loop monitor}}
+% % &
+% % \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Recover}\\
+% % reroute/retry\\safe mode\\rollback}}
+% % &
+% % \fbox{\parbox[c][0.78in][c]{0.15\textwidth}{\centering\textbf{Learn}\\
+% % causal trace\\model update\\SLO revision}}
+% % \\[-1pt]
+% % \multicolumn{5}{c}{\small
+% % $\longleftarrow$ aggregated outcomes and revised workload/risk envelopes feed
+% % the next registration and admission cycle $\longleftarrow$}
+% % \end{tabular}
+% % \caption{Closed assurance loop for a distributed LAM-agent service. Execution
+% % is only one stage; versioned registration and admission bound runtime risk,
+% % while recovery and privacy-preserving outcome feedback revise the next cycle.}
+% % \label{fig:lifecycle}
+% % \end{figure*}
 
-The lifecycle contains at least three control timescales.
-\begin{itemize}
-\item At a \emph{planning timescale} (minutes to hours), models and adapters
-are placed, capacity and slices are reserved, and fleet-wide policies are
-updated. Forecast error dominates.
-\item At a \emph{task timescale} (hundreds of milliseconds to minutes),
-agents/tools are selected, model-sharing groups and loop periods change, and
-context migrates. Task and physical topology dominate.
-\item At a \emph{loop/slot timescale} (sub-millisecond to tens of
-milliseconds), features and actions are scheduled, short packets are coded,
-and compute slots are aligned. Channel, queue, and release-time uncertainty
-dominate.
-\end{itemize}
-Optimizing every variable at the fastest timescale is neither feasible nor
-stable. Slow decisions should pass resource and risk budgets downward; fast
-controllers should return feasibility margins and violation statistics.
-When fast scheduling cannot maintain an admitted envelope, it should trigger
-a defined degradation---smaller model, fewer views, slower noncritical loop,
-or local safe mode---rather than silently accumulating queue.
+% The lifecycle contains at least three control timescales.
+% \begin{itemize}
+% \item At a \emph{planning timescale} (minutes to hours), models and adapters
+% are placed, capacity and slices are reserved, and fleet-wide policies are
+% updated. Forecast error dominates.
+% \item At a \emph{task timescale} (hundreds of milliseconds to minutes),
+% agents/tools are selected, model-sharing groups and loop periods change, and
+% context migrates. Task and physical topology dominate.
+% \item At a \emph{loop/slot timescale} (sub-millisecond to tens of
+% milliseconds), features and actions are scheduled, short packets are coded,
+% and compute slots are aligned. Channel, queue, and release-time uncertainty
+% dominate.
+% \end{itemize}
+% Optimizing every variable at the fastest timescale is neither feasible nor
+% stable. Slow decisions should pass resource and risk budgets downward; fast
+% controllers should return feasibility margins and violation statistics.
+% When fast scheduling cannot maintain an admitted envelope, it should trigger
+% a defined degradation---smaller model, fewer views, slower noncritical loop,
+% or local safe mode---rather than silently accumulating queue.
 
-Mobility makes state migration a first-class operation. A generative session
-can move after transferring a key--value cache, subject to a short pause. An
-agentic session also needs memory and tool-transaction state. An embodied
-session cannot pause an unsafe plant while a large cache migrates. Predictive
-handover should replicate only the state needed to continue the near-term
-loop, keep stabilization local, and transfer large context in the background.
-Multi-tier computation offloading \cite{multitier} and ultra-low-latency edge
-inference \cite{edgeinference}, together with reliability-aware edge
-offloading \cite{offloading}, provide resource-allocation foundations, but
-embodied migration adds continuity of action and safety state.
+% Mobility makes state migration a first-class operation. A generative session
+% can move after transferring a key--value cache, subject to a short pause. An
+% agentic session also needs memory and tool-transaction state. An embodied
+% session cannot pause an unsafe plant while a large cache migrates. Predictive
+% handover should replicate only the state needed to continue the near-term
+% loop, keep stabilization local, and transfer large context in the background.
+% Multi-tier computation offloading \cite{multitier} and ultra-low-latency edge
+% inference \cite{edgeinference}, together with reliability-aware edge
+% offloading \cite{offloading}, provide resource-allocation foundations, but
+% embodied migration adds continuity of action and safety state.
 
-Finally, administrative and physical trust domains need not coincide. A
-warehouse owner, robot vendor, network operator, and cloud-model provider may
-control different lifecycle stages. The architecture therefore needs signed
-capability manifests, explicit data-use policy, model provenance, and
-auditable responsibility at every boundary. The vertical remains responsible
-for translating private semantics and safety policy into coarse service
-classes; the operator authenticates, meters, and polices those classes without
-requiring raw-token visibility.
+% Finally, administrative and physical trust domains need not coincide. A
+% warehouse owner, robot vendor, network operator, and cloud-model provider may
+% control different lifecycle stages. The architecture therefore needs signed
+% capability manifests, explicit data-use policy, model provenance, and
+% auditable responsibility at every boundary. The vertical remains responsible
+% for translating private semantics and safety policy into coarse service
+% classes; the operator authenticates, meters, and polices those classes without
+% requiring raw-token visibility.
 
 \section{Improving Networks for LAMs: Key Enabling Technologies}
 \label{sec:enablers}
