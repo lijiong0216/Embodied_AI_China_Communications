@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{xcolor}
+\usepackage{tikz}
 
 \hyphenation{op-tical net-works semi-conduc-tor multi-modal token-izer token-izers}
 
@@ -65,7 +66,8 @@ ultra-reliable low-latency communications.
 \section{Introduction}
 \label{sec:introduction}
 \IEEEPARstart{L}{arge} AI models are moving beyond a single prompt--response
-exchange. Generative models synthesize text, images, audio, and video;
+exchange. Generative models synthesize text, images, audio, and video
+\cite{nvidiagenai};
 agentic models decompose goals, invoke tools, retrieve memory, and cooperate
 with other models; embodied models close the loop between multimodal sensing
 and physical actuation. We use \emph{\LAM} (LAM) as an umbrella term for these
@@ -103,13 +105,16 @@ evaluation---content, task trajectory, and physical episode---which motivates a
 cross-stage synthesis.
 
 This transition exposes a mismatch between conventional communication
-objectives and application value. Maximizing throughput or minimizing average
-packet delay does not specify whether a missing visual patch hides a grasp
-point, whether a stale tool response invalidates the remaining plan, or
-whether jitter destabilizes a fast control loop. Conversely, transmitting all
-raw data with uniform reliability is often infeasible: an embodied platform
-may contain multiple cameras and range sensors, tens of joints, and more than
-one control timescale. The central design question is consequently:
+objectives and application value at every LAM stage. For a generative service,
+average throughput does not reveal whether an interactive first token is late,
+whether a variable-length multimodal response can be sustained, or whether the
+delivered representation retains the required content quality. For an agentic
+service, a stale tool result or one failed step can invalidate a long,
+branching trajectory, while retries and growing memory make resource demand and
+completion time highly variable. For an embodied service, a missing visual
+patch may hide a grasp point and jitter may destabilize a fast control loop;
+yet transporting every camera, range, joint-state, and action sample with
+uniform fidelity is often infeasible. The central design question is therefore:
 \emph{which information must be delivered, to which model or actuator, by
 what deadline, and with what task-level loss when resources are limited?}
 
@@ -274,17 +279,19 @@ workloads define the relevant local model characteristics in this section.
 
 \subsection{Agentic LAMs}
 An agentic LAM places a large AI model inside a feedback loop with a planner,
-tool interfaces, memory, verification, and sometimes other agents. The unit of
-work is no longer one output sequence but a trajectory
+tool interfaces, memory, verification, and sometimes other agents
+\cite{react,reflexion,du_debate}. The unit of work is no longer one output
+sequence but a trajectory
 \[
 \tau=(o_0,a_0,o_1,a_1,\ldots,o_K),
 \]
 where observations $o_k$ may be web pages, application screenshots, database
 results, code-execution logs, or messages from peer agents, and $a_k$ may call
 an API or change external state. Reasoning techniques such as chain-of-thought
-and tree/graph search, retrieval-augmented generation, model context
-protocols, and multi-agent debate increase capability by introducing more
-rounds and more state.
+\cite{cot} and tree/graph search \cite{tot}, retrieval-augmented generation
+\cite{rag}, model context protocols \cite{agentprotocols}, and multi-agent
+debate \cite{du_debate} increase capability by introducing more rounds and
+more state.
 
 Consequently, evaluation shifts from answer similarity to
 \emph{process-grounded task completion}. AgentBench, for example, evaluates
@@ -307,6 +314,27 @@ P_{\rm fail}\leq\sum_{k=1}^{K}(1-p_k),
 \end{equation}
 where the equality assumes that each $p_k$ already conditions on prior
 success. Even modest per-call error becomes material for large $K$.
+The same trajectory exposes a model-side resource law. Let $L_k$ and $G_k$
+denote the input-context and generated-token lengths at step $k$, let $n_k$
+count branches or retries, and let ${\cal A}$ contain the concurrently live
+branches. A useful accounting model is
+\begin{equation}
+\begin{split}
+C_{\rm ag}&\simeq\sum_{k=1}^{K}n_k
+\big[C_{\rm pre}(L_k)+C_{\rm dec}(L_k,G_k)\big],\\
+M_{\rm KV}&=\Theta\!\left(N_{\rm layer}d
+\sum_{j\in{\cal A}}L_j\right),
+\end{split}
+\label{eq:agent_resource}
+\end{equation}
+where $C_{\rm pre}$ and $C_{\rm dec}$ are prefill and decoding cost and $d$ is
+the cached key/value width. Attention makes the prefill component grow
+quadratically with context length, whereas the key--value cache grows linearly
+with the live context \cite{vllm}. Tool outputs and retrieved memory increase
+$L_k$ over the trajectory; branching and retry multiply both repeated prefill
+and simultaneously resident caches. Agentic inference therefore combines
+growing state, bursty local accelerator utilization, and a heavy-tailed total
+compute demand rather than a single fixed-size decode.
 Reason--act traces and verbal feedback enable exception handling and retry
 \cite{react,reflexion}, but repeated attempts expand context, consume tokens,
 and create a heavy tail in job completion time. Agentic-LAM evaluation should
@@ -316,7 +344,8 @@ an independent prediction.
 
 \subsection{Embodied LAMs}
 Embodied LAMs ground language and vision in state estimation, world
-prediction, planning, and action. Architectures include VLA models, latent
+prediction, planning, and action \cite{palme,rt2,dreamer3}. Architectures
+include VLA models, latent
 world models, bird's-eye-view transformers, and joint-embedding predictive
 architectures. The observation $o_t$ can combine RGB/depth images, point
 clouds, force/torque, inertial measurements, joint encoders, and messages from
@@ -326,49 +355,58 @@ GR00T N1 illustrate a trend toward shared representations across embodiments
 and tasks \cite{groot}.
 
 The benchmark moves into a physical or high-fidelity simulated loop.
-Meta-World contains 50 robotic manipulation tasks and evaluates multi-task
-generalization \cite{metaworld}; RT-2 uses thousands of real-robot trials to
-test seen and unseen skills and semantic generalization \cite{rt2}; and LIBERO
-measures transfer and robustness across lifelong manipulation task suites
-\cite{libero}. VLA evaluations accordingly report task success, trajectory
-efficiency, collision rate, action error, robustness to scene perturbation, and
-sim-to-real degradation. World models are judged by predictive consistency and
-planning quality, not merely reconstruction, since a small perception error
-is harmless in one state and catastrophic near a contact transition, average
-token distortion alone is inadequate.
+Meta-World contains 50 manipulation tasks and evaluates multi-task
+generalization \cite{metaworld}; RT-2 tests seen and unseen skills and semantic
+generalization on real robots \cite{rt2}; and LIBERO measures knowledge
+transfer across lifelong manipulation suites \cite{libero}. These widely used
+benchmarks primarily score success or return under a benchmark-defined horizon
+and do not standardize end-to-end inference latency. HumanoidBench includes
+locomotion, stabilization, and whole-body manipulation and runs its
+61-dimensional policy at 50~Hz \cite{humanoidbench}, while Habitat~3.0 adds
+dynamic human collaborators and human-in-the-loop evaluation
+\cite{habitat3}. ReflexBench directly exposes reaction time: its six dynamic
+manipulation tasks sweep configurable latency under synchronous and
+asynchronous inference \cite{reflexbench}. Accordingly, balance-sensitive,
+non-stationary, and multi-actor evaluation should report task outcome jointly
+with observation-to-action latency and effective control frequency, rather
+than treating a fixed simulator step as evidence of real-time operation.
+World models used for control are ultimately judged by episodic return and
+planning quality, not merely reconstruction \cite{dreamer3}; a small
+perception error may be harmless in one state but decisive near a contact
+transition, so average token distortion alone is inadequate.
 
-Safe reinforcement learning formalizes episodic return together with safety
-constraints or risk penalties \cite{saferl}. Following that established
-evaluation pattern, a benchmark-defined control cost can be written as
+Embodied work uses task-specific objectives and reports task success, episodic
+return, and trajectory or control error \cite{rt2,dreamer3,humanoidbench}. A
+benchmark-specific finite-horizon control cost can be written as
 \begin{equation}
 J_{\rm c}=\mathbb{E}\!\left[\sum_{t=0}^{H}
 \gamma^t\!\left(
 \|x_t-x_t^\star\|_{\mathbf Q}^{2}
 +\|u_t\|_{\mathbf R}^{2}
-+\lambda_{\rm s}{\bf 1}\{\text{unsafe at }t\}
 \right)\right],
 \label{eq:control_cost}
 \end{equation}
 where $x_t$ is the physical state, $x_t^\star$ the task-dependent target,
-$u_t$ the action, and ${\bf 1}\{\cdot\}$ is an indicator that penalizes safety
-constraint violation. This is not proposed as a universal new score: each
-benchmark must publish its horizon, weights, and safety definition and should
-also report the component metrics separately.
+$u_t$ the action, and $\mathbf Q$ and $\mathbf R$ weight state-tracking and
+control effort. This is not proposed as a universal new score: each benchmark
+must publish its horizon, weights, termination conditions, and component
+metrics separately.
 
 Embodied LAM workloads contain continuous, coupled perception and action
 streams. The model must understand scene semantics, object relations, and task
 intent from rich multimodal observations while updating actions in real time;
 adding more frames or viewpoints improves grounding but increases token count
-and inference cost. This accuracy--responsiveness tension is difficult, but the
-streams are not irreducible. Visual tokens contain \emph{spatial} redundancy
-because only a subset describes task-relevant objects, and action tokens contain
-\emph{temporal} redundancy during stable motion while becoming highly sensitive
-near transitions. FlashVLA exploits visual-token pruning and action reuse,
-reporting substantial compute and latency savings with a small success-rate
-reduction on LIBERO \cite{flashvla}; algorithm--architecture co-design provides
-another route to real-time embodied inference \cite{dadu}. These results
-motivate exploiting redundancy, while also showing why small corrective actions
-near an unstable equilibrium cannot be removed indiscriminately.
+and inference cost. This creates a three-way local resource tension. Increasing
+resolution, context length, or temporal history can improve scene and state
+estimation, but consumes more operations and memory and lengthens
+observation-to-action inference. Reducing precision, visual tokens, or action
+updates saves compute and shortens latency, but can lower task accuracy or make
+the controller miss a short transition. Increasing the update rate tightens
+the per-cycle compute budget while repeating multimodal fusion more often.
+These constraints are most severe in balance, contact-rich, and dynamic
+multi-actor tasks; model evaluation should therefore report task accuracy or
+return jointly with median and tail inference latency, effective control
+frequency, peak memory, and energy on declared hardware.
 
 \begin{table*}[t]
 \caption{Model and Workload Evolution Across LAM Stages}
@@ -402,34 +440,26 @@ long-tail completion time &
 Wrong external operation or cascading plan failure; compensation may be
 expensive or impossible \\ \hline
 Embodied &
-Perceive, predict, and act safely in the physical world &
+Perceive, predict, and act effectively in the physical world &
 Multiview/multimodal perception, world-state and action tokens; spatial,
 temporal, task, and physical coupling &
-Task success, action/trajectory error, collision/safety, world-model error,
-planning quality, sim-to-real gap, control cost &
+Task success, episodic return, action/trajectory error, world-model error,
+planning quality, sim-to-real gap, control cost, inference latency &
 Continuous, bidirectional, multisource loops at heterogeneous periods;
 scene understanding and action updates at heterogeneous frequencies &
-Unstable motion, equipment damage, or injury; late information can be worse
-than missing information \\ \hline
+Task failure, unstable motion, or divergence from the commanded state; late
+information can be worse than missing information \\ \hline
 \end{tabular}
 \end{table*}
 
 \subsection{Development Laws and a Regression Heuristic}
 Table~\ref{tab:modeltaxonomy} reveals four recurring development laws. 
 \begin{itemize}
-    \item First, evaluation moves from \emph{relative content accuracy}, to \emph{practical process success}, to \emph{physical closed-loop performance}. 
-    \item Second, interaction frequency and coupling increase: a prompt is weakly coupled to the next request, an agent trajectory is logically coupled across steps, and an embodied trajectory is both logically and dynamically coupled through the environment. 
-    \item Third, the consequence of failure changes from a correctable response to an external state change and finally to a potentially irreversible physical event. 
-    \item Fourth, the quantitative workload grows through longer contexts, more model invocations, and denser multimodal streams, whereas the dominant qualitative model concern changes from generation fidelity, to trajectory correctness and memory, and then to grounded control and safety.
+    \item Interaction frequency and coupling increase: a prompt is weakly coupled to the next request, an agent trajectory is logically coupled across steps, and an embodied trajectory is both logically and dynamically coupled through the environment.
+    \item Failure propagates farther: a generative error usually affects one response, an agentic error can corrupt the remaining task graph and external state, and an embodied error changes the next observation through physical dynamics.
+    \item The computational path evolves from one-pass generation, to iterative stateful trajectories, and then to continuous multi-rate perception--action loops. The dominant bottleneck consequently shifts from sequential decoding and key--value memory, to repeated inference and context expansion, and finally to concurrent multimodal fusion under a per-cycle deadline.
+    \item The exploitable structure becomes richer: generative tokens mainly expose statistical redundancy, agentic trajectories add repeated context and workflow redundancy, and embodied streams add geometry-, kinematics-, and task-induced constraints. Selective computation and reuse therefore become more structured, but their validity must be judged at the response, trajectory, or closed-loop episode level.
 \end{itemize}
-
-The increasing structure of model inputs and outputs creates an opportunity as
-well as a burden. Generative tokens mainly expose statistical redundancy;
-agentic trajectories add repeated context and workflow redundancy; embodied
-streams add constraints induced by geometry, kinematics, and task relations.
-Selective computation, caching, pruning, and action reuse can exploit these
-regularities, but their errors must be evaluated at the content, task, or
-physical-episode level appropriate to the stage.
 
 An intuitive, but deliberately non-normative, interpretation is a
 \emph{regression heuristic}. Artificial systems have scaled capabilities in an
@@ -444,15 +474,7 @@ that later stages inherit earlier representation and generation abilities while
 adding state, timing, interaction, and physical grounding. And the embodied system requires more sophisticated training and ingenious system optimization. 
 
 \subsection{Benchmark Design Across Stages}
-A benchmark supports a valid cross-stage comparison only when its execution
-semantics are preserved. Three mappings are required. First, the benchmark
-unit must be declared. For generation it may be a prompt and response; for an
-agent it is a complete trajectory including tool side effects; for a robot it
-is an episode with initial state, perturbations, and termination criteria.
-Reporting per-call latency for an agent or per-frame accuracy for a robot
-silently changes the evaluation unit and can reverse conclusions.
-
-Second, stressors must be injected at the model interface under study.
+Stressors must be injected at the model interface under study.
 Generative evaluation should vary context length, output length, prompt
 ambiguity, and modality corruption; agentic evaluation should inject tool
 failure, stale or missing memory, and misleading intermediate observations;
@@ -461,7 +483,7 @@ subsampling, and action noise. Temporal structure must be preserved: random
 frame removal is not equivalent to losing a contiguous observation interval at
 grasp contact.
 
-Third, the benchmark must propagate a stressor to the terminal metric. For a
+The benchmark must also propagate a stressor to the terminal metric. For a
 generative model this requires scoring the decoded output, not only an internal
 feature error. For an agent it requires executing the remaining task graph,
 because one wrong observation can alter later tool calls. For an embodied agent
@@ -600,56 +622,102 @@ matches the established massive-connectivity order \cite{3gpp22870}. \\ \hline
 \end{tabular}
 \end{table*}
 
-\subsection{Generative Stage: Fidelity and Cost under Elastic Interaction}
-Generative serving decomposes delay into request admission, prefill, and
-decode. Operational metrics include time to first token (TTFT), time per output
-token (TPOT), completion time, token/bit goodput, and deadline attainment.
-Multimodal diversity requires scalable acquisition and fusion, while generation
-quality limits aggressive token removal: adaptive video tokenization, for
-example, explicitly trades sequence length against reconstruction and
-generation quality \cite{evatok}. Computation is strongly asymmetric between
-prefill and autoregressive decode, so batching, cache placement, and the
-device--edge--cloud split can dominate radio time \cite{edgeLLMsurvey}.
+\begin{figure*}[t]
+\centering
+\definecolor{radargen}{RGB}{54,104,177}
+\definecolor{radarag}{RGB}{230,126,34}
+\definecolor{radaremb}{RGB}{39,145,96}
+\begin{tikzpicture}[font=\scriptsize]
+  % Concentric logarithmic-normalization guides.
+  \foreach \r in {0.76,1.52,2.28,3.04}{
+    \draw[gray!35] (90:\r)--(38.57:\r)--(-12.86:\r)--(-64.29:\r)--
+      (-115.71:\r)--(-167.14:\r)--(141.43:\r)--cycle;
+  }
+  \foreach \a in {90,38.57,-12.86,-64.29,-115.71,-167.14,141.43}{
+    \draw[gray!45] (0,0)--(\a:3.04);
+  }
+  \node[above,align=center] at (90:3.42) {Latency\\stringency};
+  \node[right,align=left] at (38.57:3.45) {Peak service-\\token rate};
+  \node[right,align=left] at (-12.86:3.42) {Peak service\\bit rate};
+  \node[below right,align=left] at (-64.29:3.38) {Active-token\\density};
+  \node[below left,align=right] at (-115.71:3.38) {Area traffic\\density};
+  \node[left,align=right] at (-167.14:3.42) {Step/deadline\\reliability};
+  \node[left,align=right] at (141.43:3.45) {Connection\\density};
 
-Let $q_i$ be response quality, $T_i^{\rm f}$ TTFT, $r_i^{\rm tok}$ useful
-output rate, and $e_i$ the communication--compute--storage cost. A generic
-service utility is
-\begin{equation}
-U_i^{\rm gen}=w_q q_i-w_f[T_i^{\rm f}-d_i^{\rm f}]^+
-+w_r\log r_i^{\rm tok}-w_e e_i,
-\label{eq:gen_utility}
-\end{equation}
-where $[z]^+=\max(z,0)$. Interactive text emphasizes TTFT/TPOT, offline media
-emphasizes completion energy, and high-fidelity generation emphasizes semantic
-quality and sustained rate. A token-responsive cost-effectiveness metric is
-therefore more informative than raw throughput or bits/J alone \cite{tree}.
+  % Values are log-normalized from Table II; minima are displayed at 0.2.
+  \draw[radargen,very thick,fill=radargen,fill opacity=0.09]
+    (90:0.61)--(38.57:0.61)--(-12.86:0.61)--(-64.29:0.61)--
+    (-115.71:0.61)--(-167.14:0.61)--(141.43:0.61)--cycle;
+  \draw[radarag,very thick,fill=radarag,fill opacity=0.09]
+    (90:1.82)--(38.57:2.67)--(-12.86:2.48)--(-64.29:1.82)--
+    (-115.71:1.82)--(-167.14:1.42)--(141.43:1.82)--cycle;
+  \draw[radaremb,very thick,fill=radaremb,fill opacity=0.07]
+    (90:3.04)--(38.57:3.04)--(-12.86:3.04)--(-64.29:3.04)--
+    (-115.71:3.04)--(-167.14:3.04)--(141.43:3.04)--cycle;
+
+  \draw[radargen,very thick] (-2.95,-3.95)--(-2.45,-3.95)
+    node[right,text=black] {Generative};
+  \draw[radarag,very thick] (-0.55,-3.95)--(-0.05,-3.95)
+    node[right,text=black] {Agentic};
+  \draw[radaremb,very thick] (1.35,-3.95)--(1.85,-3.95)
+    node[right,text=black] {Embodied};
+\end{tikzpicture}
+\caption{Radar view of the seven QoS anchors in Table~\ref{tab:qos}. Each
+axis is logarithmically normalized between the smallest and largest tabulated
+anchor; the minimum is plotted at 0.2 rather than the origin for visibility.
+Latency and reliability increase outward as the latency budget and admissible
+failure probability decrease. The polygons compare illustrative scenario
+anchors, not standardized requirements or simultaneous maxima.}
+\label{fig:qos_radar}
+\end{figure*}
+
+\subsection{Generative Stage: Fidelity and Cost under Elastic Interaction}
+The content-centric benchmarks in Section~II first determine whether an output
+is useful; service evaluation then adds time to first token (TTFT), time per
+output token (TPOT), completion time, useful-token or bit goodput, and deadline
+attainment. In the illustrative point in Table~\ref{tab:qos}, a generative
+session combines a 100-ms network budget with $10^3$ token/s and a peak
+0.5-Gbit/s multimodal flow. These quantities are strongly modality and request
+dependent: interactive text tightens TTFT and token cadence, long outputs
+extend the service interval, and high-fidelity image, audio, or video raises
+the transient bit rate. The resulting numerical signature is therefore a wide
+distribution of response sizes and completion times rather than one fixed-rate
+flow, with content quality acting as the admissibility condition.
+
+This signature burdens a current mobile network through variability and
+burstiness. User arrivals can become correlated after a shared event, whereas
+prompt length, output modality, and final response length are not fully known
+at admission. Uplink prompts are followed by asymmetric downlink streams, and
+short interactive sessions coexist with large media bursts. Conservative
+reservation then wastes capacity between bursts, while best-effort scheduling
+exposes TTFT and completion time to queueing tails. A generative-LAM network
+should consequently characterize peak-to-mean load, burst duration, tail
+queueing delay, and useful-token goodput in addition to average throughput.
 
 \subsection{Agentic Stage: Long-Horizon Goodput, Memory, and Retry}
-An agentic model autonomously plans, decomposes, reflects, retrieves memory,
-and invokes tools \cite{agenticsystems}. Every model response is an
-intermediate event, so useful network goodput is the fraction of transmitted
-state that contributes to a correctly completed task. End-to-end job time,
-task success, recovery probability, context freshness, unnecessary calls, and
-cost per completed task qualify the same underlying latency, reliability,
-rate, storage, and energy metrics. Branching, timeouts, debate, and retries
-produce long tails and repeated token generation/transmission; persistent
-personalization further turns memory movement and cache affinity into network
-requirements \cite{agenticenergy}.
+The process-grounded benchmarks in Section~II make the complete $K$-step task,
+not an individual model response, the unit of success. Their task-success,
+tool-correctness, attempts, recovery, and cost metrics translate into
+end-to-end job time, per-step reliability, context freshness, active state,
+and useful task-level goodput. For example, a 99\% target over ten serial steps
+requires $p_{\rm step}\geq0.99^{1/10}=99.8995\%$, which motivates the 99.9\%
+illustrative anchor in Table~\ref{tab:qos}. Its 10-ms network budget,
+$5\!\times\!10^4$ token/s peak rate, and $10^5$/km$^2$ connection density
+represent multiple concurrent agent, tool, memory, and verifier exchanges, not
+a uniform rate sustained by every task. Longer plans and more branches tighten
+the reliability requirement and broaden both state size and completion-time
+distributions.
 
-A packet may arrive correctly while a stale observation, duplicate
-non-idempotent tool call, incompatible schema, or poisoned memory causes task
-failure. Conversely, a lost low-value rationale need not be retransmitted when
-a verified tool result is intact. A useful transaction-level SLO is
-\[
-{\cal S}_{\rm ag}=(P_{\rm task},T_{95}^{\rm job},A_{\rm mem},
-C_{\rm job},P_{\rm unsafe}),
-\]
-where $A_{\rm mem}$ is the age of relevant memory and $C_{\rm job}$ includes
-communication, inference, storage, and tool access. Network-aware model-context
-platforms expose capability and path state \cite{netmcp}; representation and
-cache exchange can reduce repeated text and prefill traffic
-\cite{qkvcomm,kvcomm}, but admission, idempotence, rollback, and audit still
-apply to the complete task graph.
+This numerical signature produces a different load on a mobile network. Task
+graphs alternate silent tool execution with synchronized fan-out and fan-in;
+timeouts, debate, and retries create microbursts, duplicate state, and a heavy
+tail of unfinished jobs. The set of active flows changes during execution, so
+admission and scheduling cannot rely on a fixed session graph or known payload.
+Moreover, packet success is insufficient when an observation is stale, a tool
+operation is duplicated, or a schema is inconsistent. The network must
+therefore measure tail task-completion time, state freshness, retry-amplified
+load, and completed-task goodput, while isolating correlated bursts from other
+latency-sensitive services.
 
 \subsection{Embodied Stage: Closed-Loop Timing and Physical Loss}
 Embodied intelligence inherits generative fidelity and agentic trajectory
@@ -1022,6 +1090,9 @@ corrupted content \cite{tokcom}. Compared with conventional source coding, a
 receiver equipped with a compatible foundation model can exploit learned
 priors. This can reduce payload but transfers burden to shared model state,
 tokenizer agreement, uncertainty calibration, and semantic error detection.
+For video generation, EVATok adapts sequence length to the content and exposes
+an explicit tradeoff between token count and reconstruction/generation quality
+\cite{evatok}.
 Token-domain multiple access further lets many devices share tokenizer and
 modulation codebooks, using contextual reconstruction to mitigate token
 collisions \cite{todma}. It targets the high token and connection densities in
@@ -1127,6 +1198,9 @@ changes with control phase: background visual patches can be pruned during
 free motion, contact geometry becomes critical at grasp time, and action
 reuse is safest inside stable segments. Channel-wise VLA quantization studies
 also indicate that channels have unequal action sensitivity \cite{qvla}.
+FlashVLA instantiates this principle through visual-token pruning and action
+reuse \cite{flashvla}, while DaDu-Corki couples the embodied algorithm and
+accelerator architecture to meet real-time inference constraints \cite{dadu}.
 
 A practical estimator can combine attention/gradient saliency, model
 uncertainty, object and contact semantics, and counterfactual rollouts in a
@@ -1544,6 +1618,11 @@ connect distributed intelligence to the physical world.
 
 \begin{thebibliography}{99}
 
+\bibitem{nvidiagenai}
+NVIDIA, ``What is generative AI?'' [Online]. Available:
+\url{https://www.nvidia.com/en-us/glossary/generative-ai/}. Accessed:
+Sep. 10, 2026.
+
 \bibitem{3gpp22870}
 3GPP, ``Study on 6G use cases and service requirements,'' 3rd Generation
 Partnership Project (3GPP), Tech. Rep. 22.870, Rel. 20, 2026.
@@ -1598,6 +1677,19 @@ image recognition at scale,'' in \emph{Proc. ICLR}, 2021.
 J. Ho, A. Jain, and P. Abbeel, ``Denoising diffusion probabilistic models,''
 in \emph{Proc. NeurIPS}, vol. 33, 2020, pp. 6840--6851.
 
+\bibitem{cot}
+J. Wei \etal, ``Chain-of-thought prompting elicits reasoning in large language
+models,'' in \emph{Proc. NeurIPS}, vol. 35, 2022, pp. 24824--24837.
+
+\bibitem{tot}
+S. Yao, D. Yu, J. Zhao, I. Shafran, T. L. Griffiths, Y. Cao, and
+K. Narasimhan, ``Tree of thoughts: Deliberate problem solving with large
+language models,'' in \emph{Proc. NeurIPS}, vol. 36, 2023.
+
+\bibitem{rag}
+P. Lewis \etal, ``Retrieval-augmented generation for knowledge-intensive NLP
+tasks,'' in \emph{Proc. NeurIPS}, vol. 33, 2020, pp. 9459--9474.
+
 \bibitem{agentbench}
 X. Liu \etal, ``AgentBench: Evaluating LLMs as agents,'' in \emph{Proc. ICLR},
 2024.
@@ -1626,6 +1718,12 @@ Y. Du, S. Li, A. Torralba, J. B. Tenenbaum, and I. Mordatch, ``Improving
 factuality and reasoning in language models through multiagent debate,''
 arXiv:2305.14325, May 2023.
 
+\bibitem{vllm}
+W. Kwon, Z. Li, S. Zhuang, Y. Sheng, L. Zheng, C. H. Yu,
+J. E. Gonzalez, H. Zhang, and I. Stoica, ``Efficient memory management for
+large language model serving with PagedAttention,'' in \emph{Proc. ACM SOSP},
+2023, pp. 611--626.
+
 \bibitem{estornell}
 A. Estornell and Y. Liu, ``Multi-LLM debate: Framework, principals, and
 interventions,'' in \emph{Proc. NeurIPS}, 2024.
@@ -1639,6 +1737,14 @@ doi: 10.1109/ICCWorkshops63917.2026.11586445.
 \bibitem{groot}
 NVIDIA \etal, ``GR00T N1: An open foundation model for generalist humanoid
 robots,'' arXiv:2503.14734, Mar. 2025.
+
+\bibitem{palme}
+D. Driess \etal, ``PaLM-E: An embodied multimodal language model,'' in
+\emph{Proc. ICML}, vol. 202, 2023, pp. 8469--8488.
+
+\bibitem{dreamer3}
+D. Hafner, J. Pasukonis, J. Ba, and T. Lillicrap, ``Mastering diverse domains
+through world models,'' arXiv:2301.04104, Jan. 2023.
 
 \bibitem{metaworld}
 T. Yu \etal, ``Meta-World: A benchmark and evaluation for multi-task and
@@ -1655,10 +1761,19 @@ B. Liu, Y. Zhu, C. Gao, Y. Feng, Q. Liu, Y. Zhu, and P. Stone, ``LIBERO:
 Benchmarking knowledge transfer for lifelong robot learning,'' in
 \emph{Proc. NeurIPS}, vol. 36, 2023.
 
-\bibitem{saferl}
-J. Garc\'ia and F. Fern\'andez, ``A comprehensive survey on safe reinforcement
-learning,'' \emph{J. Mach. Learn. Res.}, vol. 16, no. 42, pp. 1437--1480,
-2015.
+\bibitem{humanoidbench}
+C. Sferrazza, D.-M. Huang, X. Lin, Y. Lee, and P. Abbeel,
+``HumanoidBench: Simulated humanoid benchmark for whole-body locomotion and
+manipulation,'' arXiv:2403.10506, Mar. 2024.
+
+\bibitem{habitat3}
+X. Puig \etal, ``Habitat 3.0: A co-habitat for humans, avatars, and robots,''
+in \emph{Proc. ICLR}, 2024.
+
+\bibitem{reflexbench}
+Y. Chen, W. Zhang, and X. Li, ``Reflex: Enabling fast and predictive
+vision-language-action models for reaction-critical manipulation,''
+arXiv:2608.14379, Aug. 2026.
 
 \bibitem{fang}
 X. Fang \etal, ``Sensing-communication-computing-control closed-loop
@@ -1697,20 +1812,6 @@ G. Qu, Q. Chen, W. Wei, Z. Lin, X. Chen, and K. Huang, ``Mobile edge
 intelligence for large language models: A contemporary survey,'' \emph{IEEE
 Commun. Surveys Tuts.}, vol. 27, pp. 3820--3860, 2025,
 doi: 10.1109/COMST.2025.3527641.
-
-\bibitem{tree}
-T. Yu \etal, ``TREE: Token-responsive energy efficiency framework for green
-AI-integrated 6G networks,'' \emph{IEEE Wireless Commun.}, early access, 2026,
-doi: 10.1109/MWC.2025.3641529.
-
-\bibitem{agenticsystems}
-F. Bousetouane, ``Agentic systems: A guide to transforming industries with
-vertical AI agents,'' arXiv:2501.00881, Jan. 2025.
-
-\bibitem{agenticenergy}
-X. Chen, H. Yu, W. Ni, D. Niyato, R. Zhang, X. Wang, S. Zhang, and S. Xu,
-``Networking-aware energy efficiency in agentic AI inference: A survey,''
-arXiv:2604.07857, Apr. 2026.
 
 \bibitem{netmcp}
 E. Li, H. Du, and K. Huang, ``NetMCP: Network-aware model context protocol
