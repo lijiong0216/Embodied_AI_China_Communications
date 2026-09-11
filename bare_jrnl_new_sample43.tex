@@ -229,9 +229,12 @@ For embodied agents specifically, the synthesis exposes two transfer gaps:
 compression is commonly perception-oriented rather than control-oriented, and
 deterministic transmission is commonly source-independent rather than
 task-coupled.
-\item It develops a deployable token-recognition case study and derives
-research directions for service classification, interoperability, and protocol
-design under confidentiality and commercial-boundary constraints.
+\item It develops a two-stage LAM-traffic-recognition case study. Before an
+operator--OTT agreement, passive recognition uses encrypted uplink/downlink
+traffic dynamics to distinguish generative, agentic, embodied, and legacy
+mobile services; after agreement, active recognition uses authenticated
+service, transaction, deadline, and reliability descriptors for enforceable
+QoS mapping.
 \end{itemize}
 
 Section~\ref{sec:model_evolution} reviews model evolution and benchmarks.
@@ -561,14 +564,13 @@ task-specific update rate, with 30 Hz shown as an illustrative requirement.}
 % \label{fig:evolution}
 % \end{figure*}
 
-The three stages do not require three unrelated sets of network metrics.
-Latency, bit and token rates, traffic and connection densities, reliability,
-compute, storage, and energy remain the common engineering quantities. What
-changes is primarily their \emph{order of magnitude} and the model-side loss
-that qualifies delivered traffic as useful. Generative models emphasize
-multimodal fidelity and decode efficiency; agentic models emphasize trajectory
-success, retries, and long-term memory; embodied models emphasize synchronized
-state estimation, control, and safety. Table~\ref{tab:qos}\footnote{Two cautions are essential. First, multiplying every maximum in one row by every maximum in another creates an impossible workload; duty factors and statistical multiplexing must be declared. Second, a ``token'' is not a fixed number of bits across text, images, video, latent states, or actions. Token rate therefore complements rather than replaces bit rate. The assumptions in Table~\ref{tab:qos} make sensitivity analysis possible: changing $r_0$,
+The three stages impose different quantitative requirements on common network
+indicators, including latency and jitter, bit and token rates, traffic and
+connection densities, reliability, compute, storage, and energy. Generative
+services combine elastic completion times with highly variable multimodal
+rates; agentic services tighten per-step reliability and accumulate long-tail
+task delay; embodied services require synchronized bidirectional delivery under
+strict loop deadlines and dense sensing loads. Table~\ref{tab:qos}\footnote{Two cautions are essential. First, multiplying every maximum in one row by every maximum in another creates an impossible workload; duty factors and statistical multiplexing must be declared. Second, a ``token'' is not a fixed number of bits across text, images, video, latent states, or actions. Token rate therefore complements rather than replaces bit rate. The assumptions in Table~\ref{tab:qos} make sensitivity analysis possible: changing $r_0$,
 $N_{\rm par}$, $L_{\rm state}$, $a$, or trajectory length $H$ immediately produces a new deployment-specific envelope.} gives a scenario envelope that instantiates the radar-style comparison motivating this
 survey. 
 % The entries are design anchors, not standardized 6G requirements or simultaneous maxima.
@@ -737,57 +739,31 @@ Asynchronous modalities also require age and skew bounds: a perfectly delivered
 camera frame from before a contact transition can be less useful than a lower-
 resolution but current frame.
 
-% For retained token set ${\cal K}$, goal $g$, and state $x$, define the
-% task-conditional distortion
-% \begin{equation}
-% D_{\rm task}({\cal K}\mid g,x)=J_{\rm c}({\cal K}\mid g,x)
-% -J_{\rm c}({\cal K}_{\rm full}\mid g,x).
-% \label{eq:task_distortion}
-% \end{equation}
-% The same token can be dispensable in free space and critical near an obstacle.
-% The corresponding economic metric should measure control improvement per total
-% resource cost:
-% \begin{equation}
-% \eta_{\rm EAI}=
-% \frac{J_{\rm c}^{\rm baseline}-J_{\rm c}^{\rm scheme}}
-% {\alpha B+\beta E+\chi F+\zeta S},
-% \label{eq:cost_effectiveness}
-% \end{equation}
-% where $B,E,F,S$ denote bandwidth, energy, compute cycles, and storage. This
-% form discourages spending large resources on tokens that do not improve the
-% physical task.
+Together, the model metrics in Section~II and the loop conditions above produce
+the most stringent numerical profile in Table~\ref{tab:qos}: a 1-ms
+illustrative network budget, $10^5$ service tokens/s, up to 10~Gbit/s of
+aggregated multimodal traffic, and 99.999\% deadline reliability. These values
+must be interpreted jointly. Higher sensing resolution and longer observation
+history can improve state estimation and task return, but increase encoding and
+inference time; faster action updates reduce reaction age, but repeat
+multimodal processing more frequently. An embodied service is therefore
+characterized not by a single peak rate, but by a coupled requirement on loop
+latency, tail jitter, cross-modal skew, deadline reliability, and control
+performance.
 
-% \subsection{Minimal End-to-End Measurement Contract}
-% The operator need not observe prompts, plans, sensor content, or actions. A
-% commercially plausible contract keeps rich semantics inside the trusted
-% endpoint/vertical and exposes only an authenticated service identifier,
-% generation time, coarse deadline/reliability bin, chunk size, and an opaque
-% causal identifier. Endpoint and compute-domain telemetry can privately bind the
-% identifier to model queues and outcomes. Thus the carrier can attribute radio,
-% path, and edge-queue delay without deep packet inspection or direct access to
-% upper-layer state.
-
-% Measurement granularity scales with risk: per-request aggregation for
-% best-effort generation, per-step spans for an agentic transaction, and per-loop
-% timing for an embodied service. Results should report percentiles and violation
-% runs, condition on load, separate offered/decoded/useful goodput, and report
-% joint freshness for fused modalities. For modalities $m\in{\cal M}_i$, a useful
-% online proxy is
-% \begin{equation}
-% G_i^{\rm sync}=\frac{1}{|{\cal T}|}\sum_{k\in{\cal K}_i}
-% v_k{\bf 1}\!\left\{t_k^{\rm rx}\le d_k,\,
-% \max_{m,n\in{\cal M}_i}|a_m-a_n|\le s_i\right\},
-% \label{eq:syncgoodput}
-% \end{equation}
-% where $v_k$ is an endpoint-assigned value bin, $a_m$ information age, and
-% $s_i$ permitted skew. This metric is auditable network telemetry, not a
-% replacement for application-owned quality or safety evaluation.
-
-% The records close an assurance loop: admission predicts resource distributions,
-% runtime monitoring detects joint violations, endpoints adapt compression,
-% placement, or period, and aggregated outcomes update the next admission model.
-% This limited exposure is sufficient for service-level engineering and is more
-% deployable than assuming that a network can interpret raw tokens.
+This coupling creates a latency--compute--performance burden for the network.
+High-rate sensor uplinks coexist with small, frequent action downlinks, and
+periodic control traffic is interrupted by event-triggered bursts near contact
+or environmental change. Lower source rates relieve radio and edge queues but
+can remove state detail; allocating more compute can improve perception or
+planning but may consume the same loop deadline that communication must meet.
+Short action packets also demand very low deadline-miss probability, whereas
+the redundancy needed to suppress rare failures consumes spectrum and path
+capacity. Dense deployments further synchronize sensing and action releases,
+so a small queueing excursion can affect many loops at once. The resulting
+challenge is to sustain extreme tail reliability without allowing redundancy,
+multisource bursts, or accelerator contention to erase the latency and task
+performance gains it is intended to protect.
 
 \section{From Generative to Embodied Networks for LAMs: Architecture Evolution}
 \label{sec:architecture}
@@ -1345,130 +1321,272 @@ error to long-horizon physical loss \\ \hline
 \end{tabular}
 \end{table*}
 
-\section{Case Study: Deployable Token Recognition and Service Mapping}
+\section{Case Study: Two-Stage Recognition of LAM Traffic}
 \label{sec:case}
 
-\subsection{Problem and Observation Boundary}
-Token-aware scheduling first requires the network to identify what service a
-chunk belongs to. Payload inspection is an unsuitable premise: traffic is
-normally encrypted, proprietary model state is commercially sensitive, and a
-carrier cannot be expected to infer application semantics or safety policy.
-This case study therefore considers a deployable boundary in which a trusted
-endpoint or vertical-domain gateway converts private state into a small,
-authenticated descriptor. The carrier observes only conventional flow
-features and coarse bins; rich meaning remains end to end.
+\subsection{Two-Stage Observation Boundary}
+LAM-aware QoS cannot assume that a mobile operator and an over-the-top (OTT)
+model provider already share service semantics. We therefore separate
+recognition into two deployment stages. In the \emph{passive stage}, no such
+agreement exists. The operator observes only encrypted-flow dynamics and uses
+a traffic classifier to distinguish generative, agentic, and embodied LAM
+sessions from conventional mobile traffic. Its decision may guide conservative
+QoS differentiation, but cannot certify a task deadline or infer private
+content. In the \emph{active stage}, the operator and OTT provider agree on a
+small authenticated descriptor. Service identity, transaction dependency,
+deadline, and reliability bins can then be mapped to an admitted QoS profile
+without exposing prompts, reasoning traces, sensor content, or actions.
 
-Let $c\in\{G,A,E,U\}$ denote generative, agentic, embodied, or unknown service.
-The endpoint may provide metadata $m$ consisting of an opaque service ID,
-chunk/transaction identifier, timestamp, deadline bin, reliability tier, and
-token-count or byte-count bin. The network can independently observe features
-$x$ such as directionality, burst/periodicity, inter-arrival variation, chunk
-size, fan-out/fan-in degree, retry pattern, and edge-queue association. It does
-not observe the prompt, chain of thought, tool arguments, sensor content, or
-action. Recognition is a cost-sensitive decision
+This separation makes the trust boundary explicit. Passive recognition asks
+whether LAM traffic has distinguishable time-domain signatures and is the only
+stage evaluated experimentally below. Active recognition asks how a declared
+class should be verified and sorted after commercial agreement; it is presented
+as a deployment framework rather than an experimental result.
+
+\subsection{Phase I: Passive Traffic Recognition Experiment}
+\subsubsection{Prototype and trace construction}
+Fig.~\ref{fig:case_prototype} follows the planned prototype. Two laptop
+terminals generate representative generative and agentic sessions, while a
+Unitree Go2 equipped with a Jetson edge module provides the embodied terminal.
+All terminals traverse the same access gateway. A monitor port exports packet
+timestamps, sizes, directions, and flow identifiers to a workstation for trace
+construction and offline classification; encrypted payload bytes are neither
+decrypted nor inspected.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[font=\footnotesize,>=stealth]
+  \node[draw,rounded corners,minimum width=4.0cm,minimum height=1.0cm,
+    align=center,fill=gray!8] (server) at (0,1.65)
+    {Traffic-capture and analysis workstation\\trace alignment, labeling, and baseline evaluation};
+  \node[draw,rounded corners,minimum width=3.0cm,minimum height=0.9cm,
+    align=center,fill=gray!8] (gateway) at (0,0)
+    {Access gateway / AP\\bidirectional packet monitor};
+  \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
+    align=center,fill=blue!6] (gen) at (-5.1,-1.75)
+    {Laptop 1\\generative-LAM terminal};
+  \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
+    align=center,fill=orange!8] (agent) at (0,-1.75)
+    {Laptop 2\\agentic-LAM terminal};
+  \node[draw,rounded corners,minimum width=3.8cm,minimum height=1.0cm,
+    align=center,fill=green!7] (emb) at (5.1,-1.75)
+    {Unitree Go2 + Jetson\\embodied-LAM terminal};
+  \draw[<->,thick] (gen)--(gateway);
+  \draw[<->,thick] (agent)--(gateway);
+  \draw[<->,thick] (emb)--(gateway);
+  \draw[->,thick,dashed] (gateway)--node[right,align=left]
+    {mirrored headers\\and timing records} (server);
+\end{tikzpicture}
+\caption{Planned prototype and passive-recognition measurement boundary. The
+capture workstation observes encrypted traffic metadata at the common access
+gateway; endpoint-side experiment logs provide ground truth only for offline
+training and evaluation.}
+\label{fig:case_prototype}
+\end{figure*}
+
+For bin duration $\Delta$, the basic time series are the directional rates
 \begin{equation}
-\hat c=\arg\min_{j\in\{G,A,E,U\}}
+r^{\rm ul}[n]=\frac{8B^{\rm ul}[n]}{\Delta},\qquad
+r^{\rm dl}[n]=\frac{8B^{\rm dl}[n]}{\Delta},
+\label{eq:case_rates}
+\end{equation}
+where $B^{\rm ul}[n]$ and $B^{\rm dl}[n]$ are the uplink and downlink bytes in
+bin $n$. Packet counts, active-flow counts, and burst boundaries are recorded
+on the same clock. The final data set should vary prompt/output length, number
+of agent steps and retries, robot control period, radio condition, and
+background load. Train, validation, and test partitions must be separated by
+complete session---and preferably by terminal or task configuration---rather
+than by randomly splitting adjacent windows, which would leak nearly identical
+traffic segments across partitions.
+
+\subsubsection{Time-domain payload characteristics}
+Fig.~\ref{fig:case_lam_traces} translates the whiteboard sketch into three
+testable traffic signatures. It is schematic at this stage; the curves will be
+replaced by measured $r^{\rm ul}[n]$ and $r^{\rm dl}[n]$ traces. A generative
+session is expected to show a short prompt/context uplink followed by a delayed,
+usually larger downlink response whose duration depends on output length. An
+agentic session alternates model, tool, memory, and verifier exchanges, creating
+irregular bidirectional bursts, silent tool-execution intervals, and possible
+retry clusters. An embodied session combines a dense or periodic sensor uplink
+with small, frequent action downlinks; contact and environmental change can
+superimpose event-triggered bursts on the periodic background.
+
+\begin{figure*}[t]
+\centering
+\definecolor{caseul}{RGB}{45,105,180}
+\definecolor{casedl}{RGB}{215,95,35}
+\begin{tikzpicture}[x=0.82cm,y=0.58cm,font=\scriptsize,>=stealth]
+  \foreach \y/\name in {6/Generative,3/Agentic,0/Embodied}{
+    \draw[->,gray!70] (0,\y)--(12.4,\y) node[right] {$t$};
+    \draw[->,gray!70] (0.25,\y-1.05)--(0.25,\y+1.05);
+    \node[left] at (0.25,\y+0.72) {UL};
+    \node[left] at (0.25,\y-0.72) {DL};
+    \node[above] at (6.2,\y+0.95) {\textbf{\name}};
+  }
+  % Generative: short uplink requests followed by longer downlink outputs.
+  \draw[caseul,very thick] (0.4,6)--(0.9,6)--(0.9,6.82)--(1.18,6.82)--
+    (1.18,6)--(6.15,6)--(6.15,6.62)--(6.45,6.62)--(6.45,6)--(12,6);
+  \draw[casedl,very thick] (0.4,6)--(1.48,6)--(1.48,5.40)--(4.75,5.40)--
+    (4.75,6)--(6.78,6)--(6.78,5.55)--(10.9,5.55)--(10.9,6)--(12,6);
+  % Agentic: irregular alternating bursts and retries.
+  \draw[caseul,very thick] (0.4,3)--(0.75,3)--(0.75,3.65)--(1.0,3.65)--
+    (1.0,3)--(1.45,3)--(1.45,3.42)--(1.70,3.42)--(1.70,3)--
+    (2.45,3)--(2.45,3.75)--(2.68,3.75)--(2.68,3)--(4.0,3)--
+    (4.0,3.50)--(4.27,3.50)--(4.27,3)--(7.2,3)--(7.2,3.62)--
+    (7.48,3.62)--(7.48,3)--(8.0,3)--(8.0,3.48)--(8.25,3.48)--(8.25,3)--(12,3);
+  \draw[casedl,very thick] (0.4,3)--(1.08,3)--(1.08,2.54)--(1.32,2.54)--
+    (1.32,3)--(1.78,3)--(1.78,2.35)--(2.08,2.35)--(2.08,3)--
+    (2.82,3)--(2.82,2.55)--(3.12,2.55)--(3.12,3)--(4.48,3)--
+    (4.48,2.38)--(4.78,2.38)--(4.78,3)--(7.56,3)--(7.56,2.45)--
+    (7.88,2.45)--(7.88,3)--(8.35,3)--(8.35,2.58)--(8.65,2.58)--(8.65,3)--(12,3);
+  % Embodied: periodic sensor uplink and smaller action chunks.
+  \draw[caseul,very thick] (0.4,0)--(0.55,0.62)--(0.72,0)--(0.90,0.62)--
+    (1.07,0)--(1.25,0.62)--(1.42,0)--(1.60,0.62)--(1.77,0)--
+    (1.95,0.62)--(2.12,0)--(2.30,0.62)--(2.47,0)--(2.65,0.62)--
+    (2.82,0)--(4.9,0)--(5.10,0.88)--(5.32,0)--(5.62,0.72)--
+    (5.82,0)--(6.20,0.92)--(6.42,0)--(8.8,0)--(9.0,0.62)--
+    (9.18,0)--(9.36,0.62)--(9.54,0)--(9.72,0.62)--(9.90,0)--(12,0);
+  \draw[casedl,very thick] (0.4,0)--(0.75,-0.34)--(0.90,0)--
+    (1.10,-0.34)--(1.25,0)--(1.45,-0.34)--(1.60,0)--(1.80,-0.34)--
+    (1.95,0)--(2.15,-0.34)--(2.30,0)--(2.50,-0.34)--(2.65,0)--
+    (5.35,-0.62)--(5.65,0)--(6.48,-0.50)--(6.80,0)--(8.82,0)--
+    (9.20,-0.42)--(9.52,0)--(10.05,-0.42)--(10.38,0)--(12,0);
+  \node[caseul,right] at (12.55,5.25) {UL trace};
+  \node[casedl,right] at (12.55,4.70) {DL trace};
+\end{tikzpicture}
+\caption{Schematic uplink/downlink payload characteristics to be replaced by
+measured traces. The morphology---request/response asymmetry, irregular
+multi-round bursts, or periodic/event-triggered closed-loop traffic---defines
+the passive-recognition hypotheses rather than a claimed experimental result.}
+\label{fig:case_lam_traces}
+\end{figure*}
+
+The reference set also includes conventional video streaming and IoT traffic.
+Video is predominantly downlink and often follows segment-fetch bursts; IoT is
+commonly low-rate, uplink-heavy, and periodic. These controls prevent a
+classifier from equating every downlink burst with generation or every periodic
+flow with embodiment. Fig.~\ref{fig:case_mixed_trace} illustrates the intended
+mixed-payload test, in which fixed observation windows may contain overlapping
+LAM and conventional flows.
+
+\begin{figure}[t]
+\centering
+\definecolor{casevideo}{RGB}{115,90,160}
+\definecolor{caseiot}{RGB}{60,150,95}
+\begin{tikzpicture}[x=0.50cm,y=0.56cm,font=\scriptsize,>=stealth]
+  \foreach \y/\name in {4/Video,2/IoT,0/Mixed}{
+    \draw[->,gray!70] (0,\y)--(7.7,\y) node[right] {$t$};
+    \node[left] at (0,\y) {\name};
+  }
+  \draw[casevideo,very thick] (0.2,4)--(0.8,4)--(0.8,3.35)--(2.1,3.35)--
+    (2.1,4)--(2.7,4)--(2.7,3.48)--(4.0,3.48)--(4.0,4)--
+    (4.7,4)--(4.7,3.38)--(6.2,3.38)--(6.2,4)--(7.4,4);
+  \draw[caseiot,very thick] (0.2,2)--(0.65,2.38)--(0.82,2)--
+    (1.65,2.38)--(1.82,2)--(2.65,2.38)--(2.82,2)--
+    (3.65,2.38)--(3.82,2)--(4.65,2.38)--(4.82,2)--
+    (5.65,2.38)--(5.82,2)--(6.65,2.38)--(6.82,2)--(7.4,2);
+  \draw[black,very thick] (0.2,0)--(0.55,0.55)--(0.8,0)--(1.0,-0.35)--
+    (1.45,-0.35)--(1.7,0.82)--(1.9,0)--(2.2,-0.72)--(2.75,-0.72)--
+    (3.0,0.38)--(3.25,0)--(3.55,0.64)--(3.8,-0.30)--(4.2,0)--
+    (4.5,0.92)--(4.75,0)--(5.0,-0.58)--(5.5,-0.58)--(5.8,0.45)--
+    (6.05,0)--(6.35,0.72)--(6.6,0)--(6.9,-0.42)--(7.4,0);
+  \foreach \x in {1.5,3.0,4.5,6.0}{
+    \draw[dashed,gray!55] (\x,-0.95)--(\x,0.95);
+  }
+  \node[above] at (0.75,0.75) {$W_1$};
+  \node[above] at (2.25,0.75) {$W_2$};
+  \node[above] at (3.75,0.75) {$W_3$};
+  \node[above] at (5.25,0.75) {$W_4$};
+  \node[above] at (6.75,0.75) {$W_5$};
+\end{tikzpicture}
+\caption{Planned reference and mixed-payload traces. Video and IoT provide
+legacy mobile controls; dashed boundaries indicate online classification
+windows whose labels are hidden from the passive detector.}
+\label{fig:case_mixed_trace}
+\end{figure}
+
+\subsubsection{Baselines and analysis protocol}
+For each window $W_t$, the classifier receives directional byte/packet-rate
+sequences and traffic-only summaries: uplink/downlink ratio, peak-to-mean ratio,
+burst duration and count, inter-arrival variation, duty factor, autocorrelation,
+and the number of active flows. The planned baselines in
+Table~\ref{tab:passive_baselines} span a transparent rule system, conventional
+feature-based classifiers, and a sequence model that consumes the raw binned
+curves. Accuracy is the primary quantity requested by this case study. Macro-F1
+and the confusion matrix should be retained as diagnostics because the mixed
+trace may be class-imbalanced.
+
+\begin{table}[t]
+\caption{Planned Baselines for Passive Traffic Recognition}
+\label{tab:passive_baselines}
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{|p{0.25\columnwidth}|p{0.48\columnwidth}|p{0.16\columnwidth}|}
+\hline
+\textbf{Baseline} & \textbf{Input} & \textbf{Accuracy (\%)} \\ \hline
+Burst-threshold rules & Directionality, periodicity, burst count & -- \\ \hline
+Logistic regression & Window-level statistical features & -- \\ \hline
+RBF-SVM & Standardized statistical features & -- \\ \hline
+Random forest & Statistical and flow-count features & -- \\ \hline
+1-D CNN & Raw UL/DL byte- and packet-rate sequences & -- \\ \hline
+\end{tabular}
+\vspace{2pt}
+
+\parbox{0.96\columnwidth}{\scriptsize ``--'' denotes a result to be populated
+after the planned trace collection; no synthetic accuracy is reported.}
+\end{table}
+
+The analysis should test three specific separability hypotheses. First,
+generative and video sessions can both be downlink-heavy, but generative traffic
+should exhibit a request-conditioned delay and response-length variability
+rather than regular media-segment fetching. Second, embodied and IoT traffic can
+both be periodic and uplink-heavy, but embodied traffic should show a denser
+bidirectional coupling between sensor releases and action chunks. Third,
+agentic traffic should be distinguished by irregular multi-round burst count,
+changing active-flow degree, and retry-induced clusters. Errors should be
+reported by class and workload condition so that a high aggregate accuracy
+cannot hide systematic confusion precisely where QoS requirements differ.
+
+\subsection{Phase II: Active Recognition and QoS Mapping}
+After an operator--OTT agreement, let $c\in\{G,A,E,U\}$ denote the declared
+generative, agentic, embodied, or unknown class. A signed metadata descriptor
+$m$ contains an opaque service ID, session/chunk identifier, timestamp,
+deadline bin, reliability tier, and token- or byte-count bin. Traffic features
+$x$ remain available for consistency checking. Active recognition is then a
+cost-sensitive decision
+\begin{equation}
+\hat c^{\rm act}=\arg\min_{j\in\{G,A,E,U\}}
 \sum_i C_{ij}\Pr(c=i\mid x,m),
 \label{eq:recognition}
 \end{equation}
-where $C_{ij}$ prices a false promotion as wasted reserved capacity and a false
-demotion as SLO risk. For an authenticated embodied class,
-$C_{E,G}$ and $C_{E,A}$ should exceed $C_{G,E}$, but only the responsible
-vertical---not the carrier classifier---is allowed to assert physical safety.
+where $C_{ij}$ distinguishes false promotion, which wastes reserved resources,
+from false demotion, which risks an admitted SLO. A traffic-shape mismatch can
+trigger re-authentication or re-admission, but cannot silently override the
+signed class.
 
-\begin{table*}[t]
-\caption{Token/Chunk Recognition Evidence and Conservative Network Actions}
-\label{tab:case}
-\centering
-\footnotesize
-\renewcommand{\arraystretch}{1.18}
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{|p{0.10\textwidth}|p{0.20\textwidth}|p{0.20\textwidth}|p{0.19\textwidth}|p{0.22\textwidth}|}
-\hline
-\textbf{Class} & \textbf{Trusted endpoint evidence} &
-\textbf{Observable traffic tendency} & \textbf{QoS/model qualification} &
-\textbf{Network mapping and fallback} \\ \hline
-Generative ($G$) &
-Request/response ID, model/tokenizer version hash, output deadline and token bin
-& Bursty context uplink followed by asymmetric autoregressive or media downlink;
-one/few transactions & $100$-ms and $10^3$-token/s anchors; qualify rate by
-content quality, TTFT/TPOT, and cost & Cache/model-affine routing, batching and
-elastic rate; on missing/invalid metadata use ordinary interactive/media QoS
-\\ \hline
-Agentic ($A$) &
-Session plus parent-step ID, expiry, idempotence/commit flag, memory-version
-hash, and coarse retry tier & Multi-round fan-out/fan-in among model, tool, and
-memory endpoints; correlated bursts, retries, and long-lived state & $10$-ms,
-$5\!\times\!10^4$-token/s, and $99.9\%$ anchors; qualify by complete-task
-success, job tail, freshness, and cost & Session affinity and joint
-radio--compute--storage admission; protect commits, expire stale rationales,
-and use bounded heterogeneous retry \\ \hline
-Embodied ($E$) &
-Loop ID, measurement/action timestamp, period/deadline and skew bins, signed
-local-fallback capability & Periodic or event-triggered multisensor uplink plus
-small action downlink; correlated sources and strict release times & $1$-ms,
-$10^5$-token/s, and $99.999\%$ anchors; qualify by loop-tail, jitter,
-synchronized goodput, and application-owned control outcome & Align radio and
-edge-compute slots, reserve/duplicate critical chunks, and keep stabilization
-local; unverified $E$ declarations are not granted a safety tier \\ \hline
-Unknown ($U$) &
-No descriptor, failed authentication, or unsupported version & Any encrypted
-legacy flow; behavior may resemble more than one stage & No semantic or safety
-claim can be inferred & Conventional QoS and congestion control; never infer a
-high-impact class solely from traffic shape \\ \hline
-\end{tabular}
-\end{table*}
-
-\subsection{Hierarchical Recognition and Sorting}
-Recognition operates at three granularities. First, \emph{registration-time
+The framework operates at three granularities. \emph{Registration-time
 recognition} verifies the service manifest, tenant authorization, endpoint
-attestation, and allowed maximum rate/reliability class. This is slow and
-commercially enforceable: the operator sells reserved network/edge resources,
-not knowledge of private tokens. Second, \emph{session-level recognition}
-combines the signed class with traffic behavior. A mismatch---for example, an
-allegedly sparse generative session producing a dense periodic load---triggers
-rate policing or re-admission rather than semantic inspection. Third,
-\emph{chunk-level sorting} uses deadline, dependency, and value bins already
-assigned by the endpoint. The network orders chunks inside the admitted
-envelope but does not compute their task value.
+attestation, and maximum admitted rate/reliability class. \emph{Session-level
+recognition} binds the declaration to observed traffic and to model, memory, or
+edge-compute affinity. \emph{Chunk-level sorting} uses endpoint-assigned
+deadline, dependency, and coarse value bins to order traffic inside the
+admitted envelope; the network does not infer semantic value from encrypted
+payloads.
 
-The hierarchy controls overhead. If a compact descriptor adds $h=8$ bytes to
-a $1$-kbyte chunk, its byte overhead is $h/(1024+h)=0.78\%$; attaching it to
-every small token would be far more expensive. Flow-level metadata is therefore
-adequate for elastic generation, transaction/chunk metadata is useful for
-agentic steps, and fine chunking is reserved for deadline-critical embodied
-transitions. Token-level scheduling is justified only when its marginal SLO
-gain exceeds header, authentication, and queue-management cost.
-
-Table~\ref{tab:case} maps each recognized class to the quantitative anchors in
-Table~\ref{tab:qos}; implementation replaces those anchors with an admitted
-tenant profile. For $G$, the scheduler batches and routes by model/cache while
-preserving a quality-qualified completion deadline. For $A$, parent-step and
-expiry metadata prevent a late rationale from blocking a verified commit, and
-session affinity avoids repeated memory/KV movement. For $E$, timestamps and
-skew groups align sensing, radio, edge compute, and action delivery; the local
-controller remains the fallback if the admitted envelope cannot be sustained.
-
-\subsection{Evaluation and Commercial Feasibility}
-Plain classification accuracy is insufficient. A test should report classwise
-precision/recall, calibration error, descriptor and cryptographic overhead,
-false-promotion resource waste, false-demotion SLO violations, useful goodput,
-radio/compute utilization, and cost per completed request/task/loop. Workloads
-must mix all four classes and include class imbalance, encrypted legacy flows,
-burst loss, edge saturation, mobility, version mismatch, replayed descriptors,
-and a tenant that inflates priority. Comparisons should include conventional
-five-tuple QoS, traffic-only recognition, authenticated metadata only, and the
-hybrid in \eqref{eq:recognition}.
-
-The business boundary is equally testable. The operator guarantees measurable
-resources and network-side delay/reliability percentiles; the application or
-vertical owns model quality, tool correctness, and physical safety. Charging
-can be based on reserved rate, compute, storage, and verified service-class
-usage rather than on prompt meaning or private memory contents. If a vendor
-declines metadata exposure, its traffic remains class $U$ and retains ordinary
-connectivity. This opt-in, backward-compatible contract is less ambitious than
-network-side semantic interpretation, but it is implementable across trust and
-administrative domains.
+QoS mapping follows the three stage profiles. Generative sessions use elastic
+rate and completion budgets while preserving TTFT/TPOT targets. Agentic
+sessions bind parent-step, expiry, and idempotence metadata to the whole task
+graph so stale rationale or duplicate operations do not consume protected
+capacity. Embodied sessions use loop and measurement/action timestamps to
+align uplink sensing, edge inference, and downlink action deadlines. If metadata
+is absent, invalid, or unsupported, the flow falls back to passive recognition
+and ordinary connectivity rather than receiving an unverified high-priority
+class. Thus the active stage enables an auditable commercial contract without
+requiring the operator to inspect model inputs, private memory, or physical
+task semantics; its experimental validation is left to a later deployment
+study, as specified in the two-stage design.
 
 \section{Challenges and Future Directions}
 \label{sec:future}
