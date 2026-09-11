@@ -337,10 +337,8 @@ growing state, bursty local accelerator utilization, and a heavy-tailed total
 compute demand rather than a single fixed-size decode.
 Reason--act traces and verbal feedback enable exception handling and retry
 \cite{react,reflexion}, but repeated attempts expand context, consume tokens,
-and create a heavy tail in job completion time. Agentic-LAM evaluation should
-therefore report the distribution of attempts, total model and tool calls,
-recovery success, and terminal task outcome, rather than treating each call as
-an independent prediction.
+and create a heavy tail in job completion time. 
+% Agentic-LAM evaluation should therefore report the distribution of attempts, total model and tool calls, recovery success, and terminal task outcome, rather than treating each call as an independent prediction.
 
 \subsection{Embodied LAMs}
 Embodied LAMs ground language and vision in state estimation, world
@@ -404,9 +402,8 @@ updates saves compute and shortens latency, but can lower task accuracy or make
 the controller miss a short transition. Increasing the update rate tightens
 the per-cycle compute budget while repeating multimodal fusion more often.
 These constraints are most severe in balance, contact-rich, and dynamic
-multi-actor tasks; model evaluation should therefore report task accuracy or
-return jointly with median and tail inference latency, effective control
-frequency, peak memory, and energy on declared hardware.
+multi-actor tasks. 
+% model evaluation should therefore report task accuracy or return jointly with median and tail inference latency, effective control frequency, peak memory, and energy on declared hardware.
 
 \begin{table*}[t]
 \caption{Model and Workload Evolution Across LAM Stages}
@@ -473,40 +470,40 @@ a biological law nor an originality claim; its engineering implication is only
 that later stages inherit earlier representation and generation abilities while
 adding state, timing, interaction, and physical grounding. And the embodied system requires more sophisticated training and ingenious system optimization. 
 
-\subsection{Benchmark Design Across Stages}
-Stressors must be injected at the model interface under study.
-Generative evaluation should vary context length, output length, prompt
-ambiguity, and modality corruption; agentic evaluation should inject tool
-failure, stale or missing memory, and misleading intermediate observations;
-embodied evaluation should vary viewpoint, occlusion, object layout, temporal
-subsampling, and action noise. Temporal structure must be preserved: random
-frame removal is not equivalent to losing a contiguous observation interval at
-grasp contact.
+% \subsection{Benchmark Design Across Stages}
+% Stressors must be injected at the model interface under study.
+% Generative evaluation should vary context length, output length, prompt
+% ambiguity, and modality corruption; agentic evaluation should inject tool
+% failure, stale or missing memory, and misleading intermediate observations;
+% embodied evaluation should vary viewpoint, occlusion, object layout, temporal
+% subsampling, and action noise. Temporal structure must be preserved: random
+% frame removal is not equivalent to losing a contiguous observation interval at
+% grasp contact.
 
-The benchmark must also propagate a stressor to the terminal metric. For a
-generative model this requires scoring the decoded output, not only an internal
-feature error. For an agent it requires executing the remaining task graph,
-because one wrong observation can alter later tool calls. For an embodied agent
-it requires closing the physics loop; isolated perception accuracy cannot show
-whether the resulting action succeeds safely.
+% The benchmark must also propagate a stressor to the terminal metric. For a
+% generative model this requires scoring the decoded output, not only an internal
+% feature error. For an agent it requires executing the remaining task graph,
+% because one wrong observation can alter later tool calls. For an embodied agent
+% it requires closing the physics loop; isolated perception accuracy cannot show
+% whether the resulting action succeeds safely.
 
-The mapping also reveals a reproducibility hierarchy. A \emph{trace replay}
-uses fixed model inputs and outputs and is inexpensive, but cannot represent
-feedback. An \emph{interactive environment} executes tools or a simulator
-against live model decisions. A \emph{hardware-in-the-loop} setup adds real
-sensors or actuators and captures timing and embodiment effects. A
-\emph{field trial} tests distribution shift and safety procedures.
-Claims should match the highest validated level. In particular, a simulation
-gain in task success is evidence for an orchestration principle, not proof of
-real-world safety.
+% The mapping also reveals a reproducibility hierarchy. A \emph{trace replay}
+% uses fixed model inputs and outputs and is inexpensive, but cannot represent
+% feedback. An \emph{interactive environment} executes tools or a simulator
+% against live model decisions. A \emph{hardware-in-the-loop} setup adds real
+% sensors or actuators and captures timing and embodiment effects. A
+% \emph{field trial} tests distribution shift and safety procedures.
+% Claims should match the highest validated level. In particular, a simulation
+% gain in task success is evidence for an orchestration principle, not proof of
+% real-world safety.
 
-Finally, benchmark scores should be reported as a surface rather than a
-single operating point. The surface relates model scale, token budget,
-inference steps, compute load, and task quality. It exposes Pareto fronts
-and phase transitions---for example, a stable range in which action reuse is
-safe followed by a sharp loss near contact. Such a surface is the empirical
-counterpart of the model and task tradeoffs that later system sections must
-support.
+% Finally, benchmark scores should be reported as a surface rather than a
+% single operating point. The surface relates model scale, token budget,
+% inference steps, compute load, and task quality. It exposes Pareto fronts
+% and phase transitions---for example, a stable range in which action reuse is
+% safe followed by a sharp loss near contact. Such a surface is the empirical
+% counterpart of the model and task tradeoffs that later system sections must
+% support.
 
 \section{From Generative to Embodied Networks for LAMs: QoS Scale and Model Emphasis}
 \label{sec:qos}
@@ -572,8 +569,7 @@ that qualifies delivered traffic as useful. Generative models emphasize
 multimodal fidelity and decode efficiency; agentic models emphasize trajectory
 success, retries, and long-term memory; embodied models emphasize synchronized
 state estimation, control, and safety. Table~\ref{tab:qos}\footnote{Two cautions are essential. First, multiplying every maximum in one row by every maximum in another creates an impossible workload; duty factors and statistical multiplexing must be declared. Second, a ``token'' is not a fixed number of bits across text, images, video, latent states, or actions. Token rate therefore complements rather than replaces bit rate. The assumptions in Table~\ref{tab:qos} make sensitivity analysis possible: changing $r_0$,
-$N_{\rm par}$, $L_{\rm state}$, $a$, or trajectory length $H$ immediately produces a new deployment-specific envelope.} gives a reproducible
-scenario envelope that instantiates the radar-style comparison motivating this
+$N_{\rm par}$, $L_{\rm state}$, $a$, or trajectory length $H$ immediately produces a new deployment-specific envelope.} gives a scenario envelope that instantiates the radar-style comparison motivating this
 survey. 
 % The entries are design anchors, not standardized 6G requirements or simultaneous maxima.
 
@@ -741,25 +737,25 @@ Asynchronous modalities also require age and skew bounds: a perfectly delivered
 camera frame from before a contact transition can be less useful than a lower-
 resolution but current frame.
 
-For retained token set ${\cal K}$, goal $g$, and state $x$, define the
-task-conditional distortion
-\begin{equation}
-D_{\rm task}({\cal K}\mid g,x)=J_{\rm c}({\cal K}\mid g,x)
--J_{\rm c}({\cal K}_{\rm full}\mid g,x).
-\label{eq:task_distortion}
-\end{equation}
-The same token can be dispensable in free space and critical near an obstacle.
-The corresponding economic metric should measure control improvement per total
-resource cost:
-\begin{equation}
-\eta_{\rm EAI}=
-\frac{J_{\rm c}^{\rm baseline}-J_{\rm c}^{\rm scheme}}
-{\alpha B+\beta E+\chi F+\zeta S},
-\label{eq:cost_effectiveness}
-\end{equation}
-where $B,E,F,S$ denote bandwidth, energy, compute cycles, and storage. This
-form discourages spending large resources on tokens that do not improve the
-physical task.
+% For retained token set ${\cal K}$, goal $g$, and state $x$, define the
+% task-conditional distortion
+% \begin{equation}
+% D_{\rm task}({\cal K}\mid g,x)=J_{\rm c}({\cal K}\mid g,x)
+% -J_{\rm c}({\cal K}_{\rm full}\mid g,x).
+% \label{eq:task_distortion}
+% \end{equation}
+% The same token can be dispensable in free space and critical near an obstacle.
+% The corresponding economic metric should measure control improvement per total
+% resource cost:
+% \begin{equation}
+% \eta_{\rm EAI}=
+% \frac{J_{\rm c}^{\rm baseline}-J_{\rm c}^{\rm scheme}}
+% {\alpha B+\beta E+\chi F+\zeta S},
+% \label{eq:cost_effectiveness}
+% \end{equation}
+% where $B,E,F,S$ denote bandwidth, energy, compute cycles, and storage. This
+% form discourages spending large resources on tokens that do not improve the
+% physical task.
 
 % \subsection{Minimal End-to-End Measurement Contract}
 % The operator need not observe prompts, plans, sensor content, or actions. A
@@ -974,14 +970,14 @@ Sub-ms--hours \\ \hline
 \end{tabular}
 \end{table*}
 
-\subsection{Architecture Design Principles}
-Three principles follow. First, \emph{place deadlines before models}: determine
-which loop can tolerate cloud, edge, or only local execution before selecting
-model size. Second, \emph{centralize only useful mutual information}: shared
-models should be activated by task or physical coupling rather than by agent
-density alone. Third, \emph{retain a safe degraded mode}: if the edge model,
-radio link, or clock synchronization fails, the device must fall back to a
-local controller that maintains a safe set, even if task progress stops.
+% \subsection{Architecture Design Principles}
+% Three principles follow. First, \emph{place deadlines before models}: determine
+% which loop can tolerate cloud, edge, or only local execution before selecting
+% model size. Second, \emph{centralize only useful mutual information}: shared
+% models should be activated by task or physical coupling rather than by agent
+% density alone. Third, \emph{retain a safe degraded mode}: if the edge model,
+% radio link, or clock synchronization fails, the device must fall back to a
+% local controller that maintains a safe set, even if task progress stops.
 
 % \subsection{Service Lifecycle and Timescale Separation}
 % Architecture must cover the service lifecycle, not only the inference data
@@ -1522,8 +1518,7 @@ Future protocols should negotiate a tokenizer/model manifest containing a
 cryptographic version hash, modality, vocabulary or codebook identifier,
 embedding format, supported adapters, calibration range, and fallback codec.
 Gateways can translate tokens through learned adapters, but translation adds
-latency and an error that must be included in
-\eqref{eq:task_distortion}. For safety-critical actions, a receiver should
+latency and the translation error must be considered. For safety-critical actions, a receiver should
 reject an unknown or out-of-range codebook rather than guess.
 
 Model updates create a consistency problem similar to a rolling protocol
