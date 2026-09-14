@@ -18,7 +18,7 @@
 
 \begin{document}
 
-\title{From Generative to Embodied Intelligence: Network Evolution for Distributed Large-AI-Model Agents}
+\title{From Generative to Embodied Intelligence: Network Evolution for Large-AI-Model Agents}
 
 \author{Jihong Li, Bo Li,~\IEEEmembership{Student Member,~IEEE,}
 Qingqing Wu,~\IEEEmembership{Senior Member,~IEEE,}
@@ -565,8 +565,8 @@ task-specific update rate, with 30 Hz shown as an illustrative requirement.}
 % \end{figure*}
 
 The three stages impose different quantitative requirements on common network
-indicators, including latency and jitter, bit and token rates, traffic and
-connection densities, reliability, compute, storage, and energy. Generative
+indicators, including latency, bit and token rates, traffic and
+connection densities, reliability, etc. Generative
 services combine elastic completion times with highly variable multimodal
 rates; agentic services tighten per-step reliability and accumulate long-tail
 task delay; embodied services require synchronized bidirectional delivery under
@@ -1355,28 +1355,28 @@ decrypted nor inspected.
 
 \begin{figure*}[t]
 \centering
-\begin{tikzpicture}[font=\footnotesize,>=stealth]
-  \node[draw,rounded corners,minimum width=4.0cm,minimum height=1.0cm,
-    align=center,fill=gray!8] (server) at (0,1.65)
-    {Traffic-capture and analysis workstation\\trace alignment, labeling, and baseline evaluation};
-  \node[draw,rounded corners,minimum width=3.0cm,minimum height=0.9cm,
-    align=center,fill=gray!8] (gateway) at (0,0)
-    {Access gateway / AP\\bidirectional packet monitor};
-  \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
-    align=center,fill=blue!6] (gen) at (-5.1,-1.75)
-    {Laptop 1\\generative-LAM terminal};
-  \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
-    align=center,fill=orange!8] (agent) at (0,-1.75)
-    {Laptop 2\\agentic-LAM terminal};
-  \node[draw,rounded corners,minimum width=3.8cm,minimum height=1.0cm,
-    align=center,fill=green!7] (emb) at (5.1,-1.75)
-    {Unitree Go2 + Jetson\\embodied-LAM terminal};
-  \draw[<->,thick] (gen)--(gateway);
-  \draw[<->,thick] (agent)--(gateway);
-  \draw[<->,thick] (emb)--(gateway);
-  \draw[->,thick,dashed] (gateway)--node[right,align=left]
-    {mirrored headers\\and timing records} (server);
-\end{tikzpicture}
+% \begin{tikzpicture}[font=\footnotesize,>=stealth]
+%   \node[draw,rounded corners,minimum width=4.0cm,minimum height=1.0cm,
+%     align=center,fill=gray!8] (server) at (0,1.65)
+%     {Traffic-capture and analysis workstation\\trace alignment, labeling, and baseline evaluation};
+%   \node[draw,rounded corners,minimum width=3.0cm,minimum height=0.9cm,
+%     align=center,fill=gray!8] (gateway) at (0,0)
+%     {Access gateway / AP\\bidirectional packet monitor};
+%   \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
+%     align=center,fill=blue!6] (gen) at (-5.1,-1.75)
+%     {Laptop 1\\generative-LAM terminal};
+%   \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
+%     align=center,fill=orange!8] (agent) at (0,-1.75)
+%     {Laptop 2\\agentic-LAM terminal};
+%   \node[draw,rounded corners,minimum width=3.8cm,minimum height=1.0cm,
+%     align=center,fill=green!7] (emb) at (5.1,-1.75)
+%     {Unitree Go2 + Jetson\\embodied-LAM terminal};
+%   \draw[<->,thick] (gen)--(gateway);
+%   \draw[<->,thick] (agent)--(gateway);
+%   \draw[<->,thick] (emb)--(gateway);
+%   \draw[->,thick,dashed] (gateway)--node[right,align=left]
+%     {mirrored headers\\and timing records} (server);
+% \end{tikzpicture}
 \caption{Planned prototype and passive-recognition measurement boundary. The
 capture workstation observes encrypted traffic metadata at the common access
 gateway; endpoint-side experiment logs provide ground truth only for offline
@@ -1413,47 +1413,47 @@ superimpose event-triggered bursts on the periodic background.
 
 \begin{figure*}[t]
 \centering
-\definecolor{caseul}{RGB}{45,105,180}
-\definecolor{casedl}{RGB}{215,95,35}
-\begin{tikzpicture}[x=0.82cm,y=0.58cm,font=\scriptsize,>=stealth]
-  \foreach \y/\name in {6/Generative,3/Agentic,0/Embodied}{
-    \draw[->,gray!70] (0,\y)--(12.4,\y) node[right] {$t$};
-    \draw[->,gray!70] (0.25,\y-1.05)--(0.25,\y+1.05);
-    \node[left] at (0.25,\y+0.72) {UL};
-    \node[left] at (0.25,\y-0.72) {DL};
-    \node[above] at (6.2,\y+0.95) {\textbf{\name}};
-  }
-  % Generative: short uplink requests followed by longer downlink outputs.
-  \draw[caseul,very thick] (0.4,6)--(0.9,6)--(0.9,6.82)--(1.18,6.82)--
-    (1.18,6)--(6.15,6)--(6.15,6.62)--(6.45,6.62)--(6.45,6)--(12,6);
-  \draw[casedl,very thick] (0.4,6)--(1.48,6)--(1.48,5.40)--(4.75,5.40)--
-    (4.75,6)--(6.78,6)--(6.78,5.55)--(10.9,5.55)--(10.9,6)--(12,6);
-  % Agentic: irregular alternating bursts and retries.
-  \draw[caseul,very thick] (0.4,3)--(0.75,3)--(0.75,3.65)--(1.0,3.65)--
-    (1.0,3)--(1.45,3)--(1.45,3.42)--(1.70,3.42)--(1.70,3)--
-    (2.45,3)--(2.45,3.75)--(2.68,3.75)--(2.68,3)--(4.0,3)--
-    (4.0,3.50)--(4.27,3.50)--(4.27,3)--(7.2,3)--(7.2,3.62)--
-    (7.48,3.62)--(7.48,3)--(8.0,3)--(8.0,3.48)--(8.25,3.48)--(8.25,3)--(12,3);
-  \draw[casedl,very thick] (0.4,3)--(1.08,3)--(1.08,2.54)--(1.32,2.54)--
-    (1.32,3)--(1.78,3)--(1.78,2.35)--(2.08,2.35)--(2.08,3)--
-    (2.82,3)--(2.82,2.55)--(3.12,2.55)--(3.12,3)--(4.48,3)--
-    (4.48,2.38)--(4.78,2.38)--(4.78,3)--(7.56,3)--(7.56,2.45)--
-    (7.88,2.45)--(7.88,3)--(8.35,3)--(8.35,2.58)--(8.65,2.58)--(8.65,3)--(12,3);
-  % Embodied: periodic sensor uplink and smaller action chunks.
-  \draw[caseul,very thick] (0.4,0)--(0.55,0.62)--(0.72,0)--(0.90,0.62)--
-    (1.07,0)--(1.25,0.62)--(1.42,0)--(1.60,0.62)--(1.77,0)--
-    (1.95,0.62)--(2.12,0)--(2.30,0.62)--(2.47,0)--(2.65,0.62)--
-    (2.82,0)--(4.9,0)--(5.10,0.88)--(5.32,0)--(5.62,0.72)--
-    (5.82,0)--(6.20,0.92)--(6.42,0)--(8.8,0)--(9.0,0.62)--
-    (9.18,0)--(9.36,0.62)--(9.54,0)--(9.72,0.62)--(9.90,0)--(12,0);
-  \draw[casedl,very thick] (0.4,0)--(0.75,-0.34)--(0.90,0)--
-    (1.10,-0.34)--(1.25,0)--(1.45,-0.34)--(1.60,0)--(1.80,-0.34)--
-    (1.95,0)--(2.15,-0.34)--(2.30,0)--(2.50,-0.34)--(2.65,0)--
-    (5.35,-0.62)--(5.65,0)--(6.48,-0.50)--(6.80,0)--(8.82,0)--
-    (9.20,-0.42)--(9.52,0)--(10.05,-0.42)--(10.38,0)--(12,0);
-  \node[caseul,right] at (12.55,5.25) {UL trace};
-  \node[casedl,right] at (12.55,4.70) {DL trace};
-\end{tikzpicture}
+% \definecolor{caseul}{RGB}{45,105,180}
+% \definecolor{casedl}{RGB}{215,95,35}
+% \begin{tikzpicture}[x=0.82cm,y=0.58cm,font=\scriptsize,>=stealth]
+%   \foreach \y/\name in {6/Generative,3/Agentic,0/Embodied}{
+%     \draw[->,gray!70] (0,\y)--(12.4,\y) node[right] {$t$};
+%     \draw[->,gray!70] (0.25,\y-1.05)--(0.25,\y+1.05);
+%     \node[left] at (0.25,\y+0.72) {UL};
+%     \node[left] at (0.25,\y-0.72) {DL};
+%     \node[above] at (6.2,\y+0.95) {\textbf{\name}};
+%   }
+%   % Generative: short uplink requests followed by longer downlink outputs.
+%   \draw[caseul,very thick] (0.4,6)--(0.9,6)--(0.9,6.82)--(1.18,6.82)--
+%     (1.18,6)--(6.15,6)--(6.15,6.62)--(6.45,6.62)--(6.45,6)--(12,6);
+%   \draw[casedl,very thick] (0.4,6)--(1.48,6)--(1.48,5.40)--(4.75,5.40)--
+%     (4.75,6)--(6.78,6)--(6.78,5.55)--(10.9,5.55)--(10.9,6)--(12,6);
+%   % Agentic: irregular alternating bursts and retries.
+%   \draw[caseul,very thick] (0.4,3)--(0.75,3)--(0.75,3.65)--(1.0,3.65)--
+%     (1.0,3)--(1.45,3)--(1.45,3.42)--(1.70,3.42)--(1.70,3)--
+%     (2.45,3)--(2.45,3.75)--(2.68,3.75)--(2.68,3)--(4.0,3)--
+%     (4.0,3.50)--(4.27,3.50)--(4.27,3)--(7.2,3)--(7.2,3.62)--
+%     (7.48,3.62)--(7.48,3)--(8.0,3)--(8.0,3.48)--(8.25,3.48)--(8.25,3)--(12,3);
+%   \draw[casedl,very thick] (0.4,3)--(1.08,3)--(1.08,2.54)--(1.32,2.54)--
+%     (1.32,3)--(1.78,3)--(1.78,2.35)--(2.08,2.35)--(2.08,3)--
+%     (2.82,3)--(2.82,2.55)--(3.12,2.55)--(3.12,3)--(4.48,3)--
+%     (4.48,2.38)--(4.78,2.38)--(4.78,3)--(7.56,3)--(7.56,2.45)--
+%     (7.88,2.45)--(7.88,3)--(8.35,3)--(8.35,2.58)--(8.65,2.58)--(8.65,3)--(12,3);
+%   % Embodied: periodic sensor uplink and smaller action chunks.
+%   \draw[caseul,very thick] (0.4,0)--(0.55,0.62)--(0.72,0)--(0.90,0.62)--
+%     (1.07,0)--(1.25,0.62)--(1.42,0)--(1.60,0.62)--(1.77,0)--
+%     (1.95,0.62)--(2.12,0)--(2.30,0.62)--(2.47,0)--(2.65,0.62)--
+%     (2.82,0)--(4.9,0)--(5.10,0.88)--(5.32,0)--(5.62,0.72)--
+%     (5.82,0)--(6.20,0.92)--(6.42,0)--(8.8,0)--(9.0,0.62)--
+%     (9.18,0)--(9.36,0.62)--(9.54,0)--(9.72,0.62)--(9.90,0)--(12,0);
+%   \draw[casedl,very thick] (0.4,0)--(0.75,-0.34)--(0.90,0)--
+%     (1.10,-0.34)--(1.25,0)--(1.45,-0.34)--(1.60,0)--(1.80,-0.34)--
+%     (1.95,0)--(2.15,-0.34)--(2.30,0)--(2.50,-0.34)--(2.65,0)--
+%     (5.35,-0.62)--(5.65,0)--(6.48,-0.50)--(6.80,0)--(8.82,0)--
+%     (9.20,-0.42)--(9.52,0)--(10.05,-0.42)--(10.38,0)--(12,0);
+%   \node[caseul,right] at (12.55,5.25) {UL trace};
+%   \node[casedl,right] at (12.55,4.70) {DL trace};
+% \end{tikzpicture}
 \caption{Schematic uplink/downlink payload characteristics to be replaced by
 measured traces. The morphology---request/response asymmetry, irregular
 multi-round bursts, or periodic/event-triggered closed-loop traffic---defines
@@ -1471,34 +1471,34 @@ LAM and conventional flows.
 
 \begin{figure}[t]
 \centering
-\definecolor{casevideo}{RGB}{115,90,160}
-\definecolor{caseiot}{RGB}{60,150,95}
-\begin{tikzpicture}[x=0.50cm,y=0.56cm,font=\scriptsize,>=stealth]
-  \foreach \y/\name in {4/Video,2/IoT,0/Mixed}{
-    \draw[->,gray!70] (0,\y)--(7.7,\y) node[right] {$t$};
-    \node[left] at (0,\y) {\name};
-  }
-  \draw[casevideo,very thick] (0.2,4)--(0.8,4)--(0.8,3.35)--(2.1,3.35)--
-    (2.1,4)--(2.7,4)--(2.7,3.48)--(4.0,3.48)--(4.0,4)--
-    (4.7,4)--(4.7,3.38)--(6.2,3.38)--(6.2,4)--(7.4,4);
-  \draw[caseiot,very thick] (0.2,2)--(0.65,2.38)--(0.82,2)--
-    (1.65,2.38)--(1.82,2)--(2.65,2.38)--(2.82,2)--
-    (3.65,2.38)--(3.82,2)--(4.65,2.38)--(4.82,2)--
-    (5.65,2.38)--(5.82,2)--(6.65,2.38)--(6.82,2)--(7.4,2);
-  \draw[black,very thick] (0.2,0)--(0.55,0.55)--(0.8,0)--(1.0,-0.35)--
-    (1.45,-0.35)--(1.7,0.82)--(1.9,0)--(2.2,-0.72)--(2.75,-0.72)--
-    (3.0,0.38)--(3.25,0)--(3.55,0.64)--(3.8,-0.30)--(4.2,0)--
-    (4.5,0.92)--(4.75,0)--(5.0,-0.58)--(5.5,-0.58)--(5.8,0.45)--
-    (6.05,0)--(6.35,0.72)--(6.6,0)--(6.9,-0.42)--(7.4,0);
-  \foreach \x in {1.5,3.0,4.5,6.0}{
-    \draw[dashed,gray!55] (\x,-0.95)--(\x,0.95);
-  }
-  \node[above] at (0.75,0.75) {$W_1$};
-  \node[above] at (2.25,0.75) {$W_2$};
-  \node[above] at (3.75,0.75) {$W_3$};
-  \node[above] at (5.25,0.75) {$W_4$};
-  \node[above] at (6.75,0.75) {$W_5$};
-\end{tikzpicture}
+% \definecolor{casevideo}{RGB}{115,90,160}
+% \definecolor{caseiot}{RGB}{60,150,95}
+% \begin{tikzpicture}[x=0.50cm,y=0.56cm,font=\scriptsize,>=stealth]
+%   \foreach \y/\name in {4/Video,2/IoT,0/Mixed}{
+%     \draw[->,gray!70] (0,\y)--(7.7,\y) node[right] {$t$};
+%     \node[left] at (0,\y) {\name};
+%   }
+%   \draw[casevideo,very thick] (0.2,4)--(0.8,4)--(0.8,3.35)--(2.1,3.35)--
+%     (2.1,4)--(2.7,4)--(2.7,3.48)--(4.0,3.48)--(4.0,4)--
+%     (4.7,4)--(4.7,3.38)--(6.2,3.38)--(6.2,4)--(7.4,4);
+%   \draw[caseiot,very thick] (0.2,2)--(0.65,2.38)--(0.82,2)--
+%     (1.65,2.38)--(1.82,2)--(2.65,2.38)--(2.82,2)--
+%     (3.65,2.38)--(3.82,2)--(4.65,2.38)--(4.82,2)--
+%     (5.65,2.38)--(5.82,2)--(6.65,2.38)--(6.82,2)--(7.4,2);
+%   \draw[black,very thick] (0.2,0)--(0.55,0.55)--(0.8,0)--(1.0,-0.35)--
+%     (1.45,-0.35)--(1.7,0.82)--(1.9,0)--(2.2,-0.72)--(2.75,-0.72)--
+%     (3.0,0.38)--(3.25,0)--(3.55,0.64)--(3.8,-0.30)--(4.2,0)--
+%     (4.5,0.92)--(4.75,0)--(5.0,-0.58)--(5.5,-0.58)--(5.8,0.45)--
+%     (6.05,0)--(6.35,0.72)--(6.6,0)--(6.9,-0.42)--(7.4,0);
+%   \foreach \x in {1.5,3.0,4.5,6.0}{
+%     \draw[dashed,gray!55] (\x,-0.95)--(\x,0.95);
+%   }
+%   \node[above] at (0.75,0.75) {$W_1$};
+%   \node[above] at (2.25,0.75) {$W_2$};
+%   \node[above] at (3.75,0.75) {$W_3$};
+%   \node[above] at (5.25,0.75) {$W_4$};
+%   \node[above] at (6.75,0.75) {$W_5$};
+% \end{tikzpicture}
 \caption{Planned reference and mixed-payload traces. Video and IoT provide
 legacy mobile controls; dashed boundaries indicate online classification
 windows whose labels are hidden from the passive detector.}
