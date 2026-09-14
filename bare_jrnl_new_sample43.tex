@@ -229,12 +229,13 @@ For embodied agents specifically, the synthesis exposes two transfer gaps:
 compression is commonly perception-oriented rather than control-oriented, and
 deterministic transmission is commonly source-independent rather than
 task-coupled.
-\item It develops a two-stage LAM-traffic-recognition case study. Before an
-operator--OTT agreement, passive recognition uses encrypted uplink/downlink
-traffic dynamics to distinguish generative, agentic, embodied, and legacy
-mobile services; after agreement, active recognition uses authenticated
-service, transaction, deadline, and reliability descriptors for enforceable
-QoS mapping.
+\item It develops a deployable token-recognition case study that combines
+passive classification of encrypted uplink/downlink time series with
+descriptor-assisted service recognition. The prototype distinguishes
+generative, agentic, embodied, and conventional traffic from temporal
+signatures, benchmarks representative classifiers, and shows how compact
+authenticated descriptors can support stage-specific QoS mapping without
+revealing payload semantics.
 \end{itemize}
 
 Section~\ref{sec:model_evolution} reviews model evolution and benchmarks.
@@ -1550,21 +1551,19 @@ reported by class and workload condition so that a high aggregate accuracy
 cannot hide systematic confusion precisely where QoS requirements differ.
 
 \subsection{Phase II: Active Recognition and QoS Mapping}
-After an operator--OTT agreement, let $c\in\{G,A,E,U\}$ denote the declared
-generative, agentic, embodied, or unknown class. A signed metadata descriptor
-$m$ contains an opaque service ID, session/chunk identifier, timestamp,
-deadline bin, reliability tier, and token- or byte-count bin. Traffic features
-$x$ remain available for consistency checking. Active recognition is then a
-cost-sensitive decision
-\begin{equation}
-\hat c^{\rm act}=\arg\min_{j\in\{G,A,E,U\}}
-\sum_i C_{ij}\Pr(c=i\mid x,m),
-\label{eq:recognition}
-\end{equation}
-where $C_{ij}$ distinguishes false promotion, which wastes reserved resources,
-from false demotion, which risks an admitted SLO. A traffic-shape mismatch can
-trigger re-authentication or re-admission, but cannot silently override the
-signed class.
+Active recognition augments traffic observations with a compact authenticated
+descriptor whenever the application provider makes such information
+available. The descriptor carries an opaque service ID, declared generative,
+agentic, embodied, or unknown class, session/chunk identifier, timestamp,
+deadline bin, reliability tier, and token- or byte-count bin. These fields let
+the network associate a declared service with an admitted QoS profile without
+inferring application semantics from encrypted payloads. Passive traffic
+features can remain available as coarse consistency and monitoring signals, so
+the two recognition modes can coexist rather than requiring a rigid switch.
+Descriptor validation checks its signature, authorization, freshness, and
+binding to the admitted session. A substantial traffic-shape mismatch may
+prompt verification, but does not silently override an authenticated
+declaration.
 
 The framework operates at three granularities. \emph{Registration-time
 recognition} verifies the service manifest, tenant authorization, endpoint
@@ -1581,12 +1580,11 @@ sessions bind parent-step, expiry, and idempotence metadata to the whole task
 graph so stale rationale or duplicate operations do not consume protected
 capacity. Embodied sessions use loop and measurement/action timestamps to
 align uplink sensing, edge inference, and downlink action deadlines. If metadata
-is absent, invalid, or unsupported, the flow falls back to passive recognition
-and ordinary connectivity rather than receiving an unverified high-priority
-class. Thus the active stage enables an auditable commercial contract without
+is unavailable, passive recognition can continue to provide traffic-level
+coverage, whereas valid descriptors enable auditable QoS mapping without
 requiring the operator to inspect model inputs, private memory, or physical
-task semantics; its experimental validation is left to a later deployment
-study, as specified in the two-stage design.
+task semantics. Experimental validation of descriptor-assisted recognition is
+left to a later deployment study, as specified in the two-stage design.
 
 \section{Challenges and Future Directions}
 \label{sec:future}

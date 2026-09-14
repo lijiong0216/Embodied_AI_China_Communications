@@ -1,0 +1,467 @@
+{
+  "project": "Embodied_AI_China_Communications",
+  "projectId": "6a83fd9e3962f4540150c307",
+  "generated": "2026-09-14T13:18:06.091Z",
+  "filesScanned": 1,
+  "totalComments": 28,
+  "perFile": [
+    {
+      "file": "current file",
+      "count": 2
+    },
+    {
+      "file": "(resolved)",
+      "count": 26
+    }
+  ],
+  "records": [
+    {
+      "threadId": "6a8520dd8b996d7770000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:01:31",
+      "messages": [
+        {
+          "content": "这句话引用一下最早提出这个概念的来源，应该是英伟达。",
+          "timestamp": "2026/8/19 11:19:57",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a852702fa1e091fcc000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:03:30",
+      "messages": [
+        {
+          "content": "这个部分是全文的motivation，但是你好像只写了具身的motivation，其他的LAM都没有囊括进去。",
+          "timestamp": "2026/8/19 11:46:10",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a8529130978c92b5f000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:08:02",
+      "messages": [
+        {
+          "content": "这一句话需要加引用",
+          "timestamp": "2026/8/19 11:54:59",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a865ada8a49a17f09000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:08:06",
+      "messages": [
+        {
+          "content": "相关技术加上引用",
+          "timestamp": "2026/8/20 09:39:38",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6a865b9ce93ec9188b000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:08:14",
+      "messages": [
+        {
+          "content": "这里可以模仿Ⅱ.A进一步推导出本地的Agentic LAM对资源的消耗有什么特点。",
+          "timestamp": "2026/8/20 09:42:52",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2abcd57386e711d000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:08:23",
+      "messages": [
+        {
+          "content": "这句话需要加引用",
+          "timestamp": "2026/9/10 21:08:29",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2ac15db61101b1d000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:08:51",
+      "messages": [
+        {
+          "content": "这句话需要加引用",
+          "timestamp": "2026/9/10 21:09:42",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2ac599d556f7a87000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:08:54",
+      "messages": [
+        {
+          "content": "这句话同样需要加引用。",
+          "timestamp": "2026/9/10 21:10:49",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2acb7306eff1372000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:09:00",
+      "messages": [
+        {
+          "content": "不是让你针对RL加一个引用，而是具身是否真的会以这个saferl为目标进行训练？你找的引用应该是具身的工作。",
+          "timestamp": "2026/9/10 21:12:23",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2ada6a2feac52c7000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:09:32",
+      "messages": [
+        {
+          "content": "这些部分可以留到后面的enabling technologies里面去说。这部分可以引用少一些，而是直接指出上述的具身智能的指标到底会带来什么样资源的挑战。例如算力、精度和时延的相互制约关系。（这段还是老样子，不需要提到网络）",
+          "timestamp": "2026/9/10 21:16:23",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2ae1d9b50286602000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:08:47",
+      "messages": [
+        {
+          "content": "benchmark里面难道没有时延的要求吗？同时有没有benchmark可以提现端到端时延对于具身智能的评估来说很重要？（尤其是保持平衡以及涉及到与分平稳环境或者其他智能体交互）",
+          "timestamp": "2026/9/10 21:18:22",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2ae68b7e5e870e5000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:09:12",
+      "messages": [
+        {
+          "content": "safe这个东西现在到底是不是主要的指标？如果不是就去掉。然后后面的表格里面也不要再提了。",
+          "timestamp": "2026/9/10 21:19:37",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2aef44e07003f04000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:10:15",
+      "messages": [
+        {
+          "content": "去掉",
+          "timestamp": "2026/9/10 21:21:57",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2af76a288ee4b17000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:10:19",
+      "messages": [
+        {
+          "content": "这句话没有任何额外的信息量，只是总结了一下分别有哪些workload和评估指标。但是没有讲这当中是怎么一个趋势",
+          "timestamp": "2026/9/10 21:24:07",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2aff0eddf693dbd000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:10:23",
+      "messages": [
+        {
+          "content": "这段可以放到前面的itemize里面",
+          "timestamp": "2026/9/10 21:26:09",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2affa6c75353d9c000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:11:20",
+      "messages": [
+        {
+          "content": "这段去掉",
+          "timestamp": "2026/9/10 21:26:18",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2b17b46bc333066000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:11:34",
+      "messages": [
+        {
+          "content": "整段删除",
+          "timestamp": "2026/9/10 21:32:44",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2b218bb00391580000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 12:49:39",
+      "messages": [
+        {
+          "content": "帮我把按照这个表格画的雷达图也加进来",
+          "timestamp": "2026/9/10 21:35:20",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2b62f8377b50300000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:18:22",
+      "messages": [
+        {
+          "content": "这个章节的脉络应该是：第一节先写生成式智能体由于上一章提到的benchmark以及自身固有的评价指标，怎么会引起智能体网络对应的评价指标上面的数值特点。第二节讲一下这样的评价指标会引起当前移动通信网络的何种负担？（例如是否会有业务波动大，业务突发性强等，造成网络难以调度等问题）",
+          "timestamp": "2026/9/10 21:52:48",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2b664b5b5f92a47000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:18:25",
+      "messages": [
+        {
+          "content": "这一subsection的逻辑以及写作要求和上一个subsection一致。",
+          "timestamp": "2026/9/10 21:53:41",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2b6b93cd40d7083000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:18:27",
+      "messages": [
+        {
+          "content": "这个章节不需要那么多引用，也不需要讲技术，技术都放到enabling technologies里面去讲",
+          "timestamp": "2026/9/10 21:55:06",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa2b6cd71076c7d52000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 11:18:29",
+      "messages": [
+        {
+          "content": "这一subsection的逻辑以及写作要求和上一个subsection一致。",
+          "timestamp": "2026/9/10 21:55:25",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa36c2a4f21451bc6000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/14 21:13:32",
+      "messages": [
+        {
+          "content": "这个章节我准备分两个阶段写：\n第一个阶段是被动检测阶段，即运营商和OTT还没有达成协议，但是运营商可以通过对经过网络的智能体流量进行识别，来进行QoS保障。第二个阶段是主动检测阶段，也就是你VI.B中所提的这些方法。\n第一个阶段我准备做一个实验：首先画出生成式、代理式、具身式网络上下行流量随时间变化的图以及典型的5G的业务流量的图（可以包括视频流媒体播放、物联网），然后标注出生成式、代理式、具身式网络上下行流量的时域特征。紧接着跑一些对流量曲线进行识别的基线算法，把准确率打出来即可。\n然后第二阶段可以把你原来VI.B当中提到的框架介绍一下，但不做实验了。",
+          "timestamp": "2026/9/11 10:49:15",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa36c7b915a361d1f000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/14 21:13:33",
+      "messages": [
+        {
+          "content": "李博 把这个流程生成一张图吧",
+          "timestamp": "2026/9/11 10:50:36",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa36fca7b35c61ec4000001",
+      "file": "current file",
+      "fragment": "\\item It develops a two-stage LAM-traffic-recognition case study. Before an",
+      "context": "\\item It develops a two-stage LAM-traffic-recognition case study. Before an",
+      "position": 12388,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "这个按照我现在新写的token识别章节的思路重写一下。",
+          "timestamp": "2026/9/11 11:04:43",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa371c391bac75210000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 12:49:40",
+      "messages": [
+        {
+          "content": "这句话表述非常奇怪，你就正常说三个阶段对网络指标（包括xxx、xxx）的要求各异即可。",
+          "timestamp": "2026/9/11 11:13:08",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa37436d4576f1b6c000001",
+      "file": "(resolved)",
+      "fragment": "",
+      "context": "",
+      "position": "",
+      "resolved": true,
+      "resolvedAt": "2026/9/11 12:51:45",
+      "messages": [
+        {
+          "content": "这两个部分都应该去掉,改为像前面两个subsection一样去讲这些指标是对网络造成了什么样的负担?(例如引入了时延-算力-性能的相互制约,需要引入极高可靠性的传输方式(低码率高可靠\\冗余链路传输等等))但你这一段主要是讲引入的负担和挑战,不需要去讲技术也不需要加引用.",
+          "timestamp": "2026/9/11 11:23:36",
+          "author": "tomlijiong"
+        }
+      ]
+    },
+    {
+      "threadId": "6aa7f2ce88711d15ef000001",
+      "file": "current file",
+      "fragment": "Traffic features",
+      "context": "deadline bin, reliability tier, and token- or byte-count bin. Traffic features",
+      "position": 87943,
+      "resolved": false,
+      "resolvedAt": "",
+      "messages": [
+        {
+          "content": "这段可以淡化一下Active recognition的切换条件，不要再写这个乱七八糟的公式了",
+          "timestamp": "2026/9/14 21:12:46",
+          "author": "tomlijiong"
+        }
+      ]
+    }
+  ]
+}
