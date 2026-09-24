@@ -1354,36 +1354,15 @@ timestamps, sizes, directions, and flow identifiers to a workstation for trace
 construction and offline classification; encrypted payload bytes are neither
 decrypted nor inspected.
 
-\begin{figure*}[t]
+\begin{figure}[t]
 \centering
-% \begin{tikzpicture}[font=\footnotesize,>=stealth]
-%   \node[draw,rounded corners,minimum width=4.0cm,minimum height=1.0cm,
-%     align=center,fill=gray!8] (server) at (0,1.65)
-%     {Traffic-capture and analysis workstation\\trace alignment, labeling, and baseline evaluation};
-%   \node[draw,rounded corners,minimum width=3.0cm,minimum height=0.9cm,
-%     align=center,fill=gray!8] (gateway) at (0,0)
-%     {Access gateway / AP\\bidirectional packet monitor};
-%   \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
-%     align=center,fill=blue!6] (gen) at (-5.1,-1.75)
-%     {Laptop 1\\generative-LAM terminal};
-%   \node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,
-%     align=center,fill=orange!8] (agent) at (0,-1.75)
-%     {Laptop 2\\agentic-LAM terminal};
-%   \node[draw,rounded corners,minimum width=3.8cm,minimum height=1.0cm,
-%     align=center,fill=green!7] (emb) at (5.1,-1.75)
-%     {Unitree Go2 + Jetson\\embodied-LAM terminal};
-%   \draw[<->,thick] (gen)--(gateway);
-%   \draw[<->,thick] (agent)--(gateway);
-%   \draw[<->,thick] (emb)--(gateway);
-%   \draw[->,thick,dashed] (gateway)--node[right,align=left]
-%     {mirrored headers\\and timing records} (server);
-% \end{tikzpicture}
+\includegraphics[width=\linewidth, trim=0 0 0 2, clip]{prototype_exp.png}
 \caption{Planned prototype and passive-recognition measurement boundary. The
 capture workstation observes encrypted traffic metadata at the common access
 gateway; endpoint-side experiment logs provide ground truth only for offline
 training and evaluation.}
 \label{fig:case_prototype}
-\end{figure*}
+\end{figure}
 
 For bin duration $\Delta$, the basic time series are the directional rates
 \begin{equation}
@@ -1551,9 +1530,15 @@ reported by class and workload condition so that a high aggregate accuracy
 cannot hide systematic confusion precisely where QoS requirements differ.
 
 \subsection{Phase II: Active Recognition and QoS Mapping}
+\begin{figure*}
+    \centering
+    \includegraphics[width=\linewidth, trim=0 30 0 0, clip]{Fig_VIC.pdf}
+    \caption{Illustration of functional units and procedures tailored for active descriptor-assisted LAM service mapping. }
+    \label{fig:active_recognition}
+\end{figure*}
 Active recognition augments traffic observations with a compact authenticated
 descriptor whenever the application provider makes such information
-available. The descriptor carries an opaque service ID, declared generative,
+available. As illustrated in Fig.~\ref{fig:active_recognition}, the descriptor carries an opaque service ID, declared generative,
 agentic, embodied, or unknown class, session/chunk identifier, timestamp,
 deadline bin, reliability tier, and token- or byte-count bin. These fields let
 the network associate a declared service with an admitted QoS profile without
