@@ -1357,10 +1357,13 @@ decrypted nor inspected.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth, trim=0 0 0 2, clip]{prototype_exp.png}
-\caption{Planned prototype and passive-recognition measurement boundary. The
-capture workstation observes encrypted traffic metadata at the common access
-gateway; endpoint-side experiment logs provide ground truth only for offline
-training and evaluation.}
+\caption{Experimental platform for the Phase-I passive traffic-recognition
+experiment. Laptop~1 and Laptop~2 generate agentic- and generative-AI traffic,
+respectively, while the Unitree Go2 serves as the embodied-AI terminal. The
+three terminals connect through a common Wi-Fi router. A workstation/edge
+server equipped with a Pro~6000 GPU hosts large models and provides inference
+services to the terminals. The monitor displays the resulting uplink/downlink
+traffic traces for passive-recognition analysis.}
 \label{fig:case_prototype}
 \end{figure}
 
