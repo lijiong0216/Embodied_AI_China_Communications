@@ -1352,7 +1352,7 @@ Unitree Go2 equipped with a Jetson edge module provides the embodied terminal.
 All terminals traverse the same access gateway. A monitor port exports packet
 timestamps, sizes, directions, and flow identifiers to a workstation for trace
 construction and offline classification; encrypted payload bytes are neither
-decrypted nor inspected.
+decrypted nor inspected. On the workstation, we locally deploy Qwen3-8B \cite{} and Janus-Pro-7B \cite{} as generative LAMs for text Q\&A, image understanding and image generation, respectively; we locally deploy OpenClaw with Qwen3-8B as agentic LAMs for file creation, file move and code writing; we locally deploy InternVLA-N1-DualVLN \cite{} as embodied LAMs for visual-language navigation. 
 
 \begin{figure}[t]
 \centering
@@ -1367,20 +1367,20 @@ traffic traces for passive-recognition analysis.}
 \label{fig:case_prototype}
 \end{figure}
 
-For bin duration $\Delta$, the basic time series are the directional rates
-\begin{equation}
-r^{\rm ul}[n]=\frac{8B^{\rm ul}[n]}{\Delta},\qquad
-r^{\rm dl}[n]=\frac{8B^{\rm dl}[n]}{\Delta},
-\label{eq:case_rates}
-\end{equation}
-where $B^{\rm ul}[n]$ and $B^{\rm dl}[n]$ are the uplink and downlink bytes in
-bin $n$. Packet counts, active-flow counts, and burst boundaries are recorded
-on the same clock. The final data set should vary prompt/output length, number
-of agent steps and retries, robot control period, radio condition, and
-background load. Train, validation, and test partitions must be separated by
-complete session---and preferably by terminal or task configuration---rather
-than by randomly splitting adjacent windows, which would leak nearly identical
-traffic segments across partitions.
+% For bin duration $\Delta$, the basic time series are the directional rates
+% \begin{equation}
+% r^{\rm ul}[n]=\frac{8B^{\rm ul}[n]}{\Delta},\qquad
+% r^{\rm dl}[n]=\frac{8B^{\rm dl}[n]}{\Delta},
+% \label{eq:case_rates}
+% \end{equation}
+% where $B^{\rm ul}[n]$ and $B^{\rm dl}[n]$ are the uplink and downlink bytes in
+% bin $n$. Packet counts, active-flow counts, and burst boundaries are recorded
+% on the same clock. The final data set should vary prompt/output length, number
+% of agent steps and retries, robot control period, radio condition, and
+% background load. Train, validation, and test partitions must be separated by
+% complete session---and preferably by terminal or task configuration---rather
+% than by randomly splitting adjacent windows, which would leak nearly identical
+% traffic segments across partitions.
 
 \subsubsection{Time-domain payload characteristics}
 Fig.~\ref{fig:case_lam_traces} translates the whiteboard sketch into three
@@ -1395,7 +1395,7 @@ with small, frequent action downlinks; contact and environmental change can
 superimpose event-triggered bursts on the periodic background.
 
 \begin{figure*}[t]
-\centering
+\centering\includegraphics[width=\linewidth, trim=10 10 10 10, clip]{lam-network-dataflow-1.pdf}
 % \definecolor{caseul}{RGB}{45,105,180}
 % \definecolor{casedl}{RGB}{215,95,35}
 % \begin{tikzpicture}[x=0.82cm,y=0.58cm,font=\scriptsize,>=stealth]
@@ -1452,41 +1452,41 @@ flow with embodiment. Fig.~\ref{fig:case_mixed_trace} illustrates the intended
 mixed-payload test, in which fixed observation windows may contain overlapping
 LAM and conventional flows.
 
-\begin{figure}[t]
-\centering
-% \definecolor{casevideo}{RGB}{115,90,160}
-% \definecolor{caseiot}{RGB}{60,150,95}
-% \begin{tikzpicture}[x=0.50cm,y=0.56cm,font=\scriptsize,>=stealth]
-%   \foreach \y/\name in {4/Video,2/IoT,0/Mixed}{
-%     \draw[->,gray!70] (0,\y)--(7.7,\y) node[right] {$t$};
-%     \node[left] at (0,\y) {\name};
-%   }
-%   \draw[casevideo,very thick] (0.2,4)--(0.8,4)--(0.8,3.35)--(2.1,3.35)--
-%     (2.1,4)--(2.7,4)--(2.7,3.48)--(4.0,3.48)--(4.0,4)--
-%     (4.7,4)--(4.7,3.38)--(6.2,3.38)--(6.2,4)--(7.4,4);
-%   \draw[caseiot,very thick] (0.2,2)--(0.65,2.38)--(0.82,2)--
-%     (1.65,2.38)--(1.82,2)--(2.65,2.38)--(2.82,2)--
-%     (3.65,2.38)--(3.82,2)--(4.65,2.38)--(4.82,2)--
-%     (5.65,2.38)--(5.82,2)--(6.65,2.38)--(6.82,2)--(7.4,2);
-%   \draw[black,very thick] (0.2,0)--(0.55,0.55)--(0.8,0)--(1.0,-0.35)--
-%     (1.45,-0.35)--(1.7,0.82)--(1.9,0)--(2.2,-0.72)--(2.75,-0.72)--
-%     (3.0,0.38)--(3.25,0)--(3.55,0.64)--(3.8,-0.30)--(4.2,0)--
-%     (4.5,0.92)--(4.75,0)--(5.0,-0.58)--(5.5,-0.58)--(5.8,0.45)--
-%     (6.05,0)--(6.35,0.72)--(6.6,0)--(6.9,-0.42)--(7.4,0);
-%   \foreach \x in {1.5,3.0,4.5,6.0}{
-%     \draw[dashed,gray!55] (\x,-0.95)--(\x,0.95);
-%   }
-%   \node[above] at (0.75,0.75) {$W_1$};
-%   \node[above] at (2.25,0.75) {$W_2$};
-%   \node[above] at (3.75,0.75) {$W_3$};
-%   \node[above] at (5.25,0.75) {$W_4$};
-%   \node[above] at (6.75,0.75) {$W_5$};
-% \end{tikzpicture}
-\caption{Planned reference and mixed-payload traces. Video and IoT provide
-legacy mobile controls; dashed boundaries indicate online classification
-windows whose labels are hidden from the passive detector.}
-\label{fig:case_mixed_trace}
-\end{figure}
+% \begin{figure}[t]
+% \centering
+% % \definecolor{casevideo}{RGB}{115,90,160}
+% % \definecolor{caseiot}{RGB}{60,150,95}
+% % \begin{tikzpicture}[x=0.50cm,y=0.56cm,font=\scriptsize,>=stealth]
+% %   \foreach \y/\name in {4/Video,2/IoT,0/Mixed}{
+% %     \draw[->,gray!70] (0,\y)--(7.7,\y) node[right] {$t$};
+% %     \node[left] at (0,\y) {\name};
+% %   }
+% %   \draw[casevideo,very thick] (0.2,4)--(0.8,4)--(0.8,3.35)--(2.1,3.35)--
+% %     (2.1,4)--(2.7,4)--(2.7,3.48)--(4.0,3.48)--(4.0,4)--
+% %     (4.7,4)--(4.7,3.38)--(6.2,3.38)--(6.2,4)--(7.4,4);
+% %   \draw[caseiot,very thick] (0.2,2)--(0.65,2.38)--(0.82,2)--
+% %     (1.65,2.38)--(1.82,2)--(2.65,2.38)--(2.82,2)--
+% %     (3.65,2.38)--(3.82,2)--(4.65,2.38)--(4.82,2)--
+% %     (5.65,2.38)--(5.82,2)--(6.65,2.38)--(6.82,2)--(7.4,2);
+% %   \draw[black,very thick] (0.2,0)--(0.55,0.55)--(0.8,0)--(1.0,-0.35)--
+% %     (1.45,-0.35)--(1.7,0.82)--(1.9,0)--(2.2,-0.72)--(2.75,-0.72)--
+% %     (3.0,0.38)--(3.25,0)--(3.55,0.64)--(3.8,-0.30)--(4.2,0)--
+% %     (4.5,0.92)--(4.75,0)--(5.0,-0.58)--(5.5,-0.58)--(5.8,0.45)--
+% %     (6.05,0)--(6.35,0.72)--(6.6,0)--(6.9,-0.42)--(7.4,0);
+% %   \foreach \x in {1.5,3.0,4.5,6.0}{
+% %     \draw[dashed,gray!55] (\x,-0.95)--(\x,0.95);
+% %   }
+% %   \node[above] at (0.75,0.75) {$W_1$};
+% %   \node[above] at (2.25,0.75) {$W_2$};
+% %   \node[above] at (3.75,0.75) {$W_3$};
+% %   \node[above] at (5.25,0.75) {$W_4$};
+% %   \node[above] at (6.75,0.75) {$W_5$};
+% % \end{tikzpicture}
+% \caption{Planned reference and mixed-payload traces. Video and IoT provide
+% legacy mobile controls; dashed boundaries indicate online classification
+% windows whose labels are hidden from the passive detector.}
+% \label{fig:case_mixed_trace}
+% \end{figure}
 
 \subsubsection{Baselines and analysis protocol}
 For each window $W_t$, the classifier receives directional byte/packet-rate
