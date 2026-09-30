@@ -230,10 +230,10 @@ compression is commonly perception-oriented rather than control-oriented, and
 deterministic transmission is commonly source-independent rather than
 task-coupled.
 \item It develops a deployable token-recognition case study that combines
-passive classification of encrypted uplink/downlink time series with
-descriptor-assisted service recognition. The prototype distinguishes
-generative, agentic, embodied, and conventional traffic from temporal
-signatures, benchmarks representative classifiers, and shows how compact
+passive classification of individual uplink/downlink traffic segments with
+descriptor-assisted service recognition. The prototype measures generative,
+agentic, and embodied traffic and defines a blind three-class comparison of
+rule-based, convolutional, and recurrent classifiers. It also shows how compact
 authenticated descriptors can support stage-specific QoS mapping without
 revealing payload semantics.
 \end{itemize}
@@ -1329,9 +1329,9 @@ error to long-horizon physical loss \\ \hline
 LAM-aware QoS cannot assume that a mobile operator and an over-the-top (OTT)
 model provider already share service semantics. We therefore separate
 recognition into two deployment stages. In the \emph{passive stage}, no such
-agreement exists. The operator observes only encrypted-flow dynamics and uses
-a traffic classifier to distinguish generative, agentic, and embodied LAM
-sessions from conventional mobile traffic. Its decision may guide conservative
+agreement exists. The operator observes packet timing, sizes, and directions
+and classifies each individual LAM traffic segment as generative, agentic, or
+embodied without using endpoint identifiers or payloads. Its decision may guide conservative
 QoS differentiation, but cannot certify a task deadline or infer private
 content. In the \emph{active stage}, the operator and OTT provider agree on a
 small authenticated descriptor. Service identity, transaction dependency,
@@ -1339,20 +1339,27 @@ deadline, and reliability bins can then be mapped to an admitted QoS profile
 without exposing prompts, reasoning traces, sensor content, or actions.
 
 This separation makes the trust boundary explicit. Passive recognition asks
-whether LAM traffic has distinguishable time-domain signatures and is the only
-stage evaluated experimentally below. Active recognition asks how a declared
+whether LAM traffic has distinguishable time-domain signatures; below, measured
+traces motivate a planned segment-classification experiment. Active recognition asks how a declared
 class should be verified and sorted after commercial agreement; it is presented
 as a deployment framework rather than an experimental result.
 
 \subsection{Phase I: Passive Traffic Recognition Experiment}
 \subsubsection{Prototype and trace construction}
-Fig.~\ref{fig:case_prototype} follows the planned prototype. Two laptop
+Fig.~\ref{fig:case_prototype} shows the experimental platform. Two laptop
 terminals generate representative generative and agentic sessions, while a
 Unitree Go2 equipped with a Jetson edge module provides the embodied terminal.
-All terminals traverse the same access gateway. A monitor port exports packet
-timestamps, sizes, directions, and flow identifiers to a workstation for trace
-construction and offline classification; encrypted payload bytes are neither
-decrypted nor inspected. On the workstation, we locally deploy Qwen3-8B \cite{} and Janus-Pro-7B \cite{} as generative LAMs for text Q\&A, image understanding and image generation, respectively; we locally deploy OpenClaw with Qwen3-8B as agentic LAMs for file creation, file move and code writing; we locally deploy InternVLA-N1-DualVLN \cite{} as embodied LAMs for visual-language navigation. 
+All terminals traverse the same access gateway. A monitor port supplies packet
+timestamps, sizes, and directions for trace construction and offline
+classification; packet payloads are not inspected. The workstation hosts the large-model inference
+services: Qwen3-8B~\cite{qwen3} for text Q\&A and
+Janus-Pro-7B~\cite{janus,januspro} for image understanding and image generation.
+For agentic workloads, we deploy OpenClaw with Qwen3-8B for file creation,
+file moving, and code writing; for embodied navigation, we deploy
+InternVLA-N1-DualVLN~\cite{dualvln}. To construct the traces, we aggregate
+captured packet sizes separately for uplink and downlink into 20-ms bins and
+report the traffic volume in kbit per bin, with timestamps measured relative
+to the start of each workload.
 
 \begin{figure}[t]
 \centering
@@ -1367,32 +1374,23 @@ traffic traces for passive-recognition analysis.}
 \label{fig:case_prototype}
 \end{figure}
 
-% For bin duration $\Delta$, the basic time series are the directional rates
-% \begin{equation}
-% r^{\rm ul}[n]=\frac{8B^{\rm ul}[n]}{\Delta},\qquad
-% r^{\rm dl}[n]=\frac{8B^{\rm dl}[n]}{\Delta},
-% \label{eq:case_rates}
-% \end{equation}
-% where $B^{\rm ul}[n]$ and $B^{\rm dl}[n]$ are the uplink and downlink bytes in
-% bin $n$. Packet counts, active-flow counts, and burst boundaries are recorded
-% on the same clock. The final data set should vary prompt/output length, number
-% of agent steps and retries, robot control period, radio condition, and
-% background load. Train, validation, and test partitions must be separated by
-% complete session---and preferably by terminal or task configuration---rather
-% than by randomly splitting adjacent windows, which would leak nearly identical
-% traffic segments across partitions.
-
 \subsubsection{Time-domain payload characteristics}
-Fig.~\ref{fig:case_lam_traces} translates the whiteboard sketch into three
-testable traffic signatures. It is schematic at this stage; the curves will be
-replaced by measured $r^{\rm ul}[n]$ and $r^{\rm dl}[n]$ traces. A generative
-session is expected to show a short prompt/context uplink followed by a delayed,
-usually larger downlink response whose duration depends on output length. An
-agentic session alternates model, tool, memory, and verifier exchanges, creating
-irregular bidirectional bursts, silent tool-execution intervals, and possible
-retry clusters. An embodied session combines a dense or periodic sensor uplink
-with small, frequent action downlinks; contact and environmental change can
-superimpose event-triggered bursts on the periodic background.
+Fig.~\ref{fig:case_lam_traces} presents the measured traffic traces.
+\emph{Generative} traffic depends on the input and output modalities: text
+Q\&A comprises a short request upload followed by a streamed text response;
+image understanding requires a larger image upload before the text response;
+image generation exhibits a long interval with little traffic before a
+concentrated image download. \emph{Agentic} file creation, file moving, and code
+writing follow a multi-round sequence: context upload, a streamed tool-call
+response, local tool execution, a second upload containing context and tool
+results, and a final reply. The file-moving trace makes this
+traffic-silent execution interval particularly visible. \emph{Embodied}
+navigation exhibits recurrent large RGB-frame uplink bursts interleaved with
+much smaller action/trajectory downlinks throughout the task, reflecting
+repeated perception--action exchanges. These measurements corroborate the
+traffic characteristics discussed in Section~\ref{sec:qos} for the tested
+workloads: modality-dependent asymmetry and burstiness, task-driven
+intermittent exchanges, and sustained sensor--action coupling, respectively.
 
 \begin{figure*}[t]
 \centering\includegraphics[width=\linewidth, trim=10 10 10 10, clip]{lam-network-dataflow-1.pdf}
@@ -1437,100 +1435,120 @@ superimpose event-triggered bursts on the periodic background.
 %   \node[caseul,right] at (12.55,5.25) {UL trace};
 %   \node[casedl,right] at (12.55,4.70) {DL trace};
 % \end{tikzpicture}
-\caption{Schematic uplink/downlink payload characteristics to be replaced by
-measured traces. The morphology---request/response asymmetry, irregular
-multi-round bursts, or periodic/event-triggered closed-loop traffic---defines
-the passive-recognition hypotheses rather than a claimed experimental result.}
+\caption{Measured traffic traces for three generative workloads (text Q\&A,
+image understanding, and image generation), three agentic workloads (file
+creation, file moving, and code writing), and embodied vision-and-language
+navigation. Blue and green bars show uplink and downlink traffic volumes in
+20-ms bins, plotted above and below zero, respectively. Each panel uses local
+elapsed time and its own vertical scale; annotations identify the observed
+request, response, tool-execution, and sensing/action phases.}
 \label{fig:case_lam_traces}
 \end{figure*}
 
-The reference set also includes conventional video streaming and IoT traffic.
-Video is predominantly downlink and often follows segment-fetch bursts; IoT is
-commonly low-rate, uplink-heavy, and periodic. These controls prevent a
-classifier from equating every downlink burst with generation or every periodic
-flow with embodiment. Fig.~\ref{fig:case_mixed_trace} illustrates the intended
-mixed-payload test, in which fixed observation windows may contain overlapping
-LAM and conventional flows.
+\subsubsection{Blind segment-classification protocol}
+The classification experiment will use independent 10-s observations with
+three labels: generative (G), agentic (A), and embodied (E). Each segment comes
+from one recorded workload execution; different workloads are neither
+superimposed nor concatenated. The collection target is at least 1,000 segments
+per class, preferably 1,200--1,500. Complete 10-s intervals will be recorded
+even when a task finishes earlier, retaining observed idle time instead of
+artificial padding. Longer recordings can provide nonoverlapping segments.
+Training, validation, and test sets will follow a 70\%/10\%/20\% split grouped
+by original task/session, with approximately balanced classes. All segments
+from a session stay in one partition to prevent leakage. Task logs supply
+labels and grouping information only.
 
-% \begin{figure}[t]
-% \centering
-% % \definecolor{casevideo}{RGB}{115,90,160}
-% % \definecolor{caseiot}{RGB}{60,150,95}
-% % \begin{tikzpicture}[x=0.50cm,y=0.56cm,font=\scriptsize,>=stealth]
-% %   \foreach \y/\name in {4/Video,2/IoT,0/Mixed}{
-% %     \draw[->,gray!70] (0,\y)--(7.7,\y) node[right] {$t$};
-% %     \node[left] at (0,\y) {\name};
-% %   }
-% %   \draw[casevideo,very thick] (0.2,4)--(0.8,4)--(0.8,3.35)--(2.1,3.35)--
-% %     (2.1,4)--(2.7,4)--(2.7,3.48)--(4.0,3.48)--(4.0,4)--
-% %     (4.7,4)--(4.7,3.38)--(6.2,3.38)--(6.2,4)--(7.4,4);
-% %   \draw[caseiot,very thick] (0.2,2)--(0.65,2.38)--(0.82,2)--
-% %     (1.65,2.38)--(1.82,2)--(2.65,2.38)--(2.82,2)--
-% %     (3.65,2.38)--(3.82,2)--(4.65,2.38)--(4.82,2)--
-% %     (5.65,2.38)--(5.82,2)--(6.65,2.38)--(6.82,2)--(7.4,2);
-% %   \draw[black,very thick] (0.2,0)--(0.55,0.55)--(0.8,0)--(1.0,-0.35)--
-% %     (1.45,-0.35)--(1.7,0.82)--(1.9,0)--(2.2,-0.72)--(2.75,-0.72)--
-% %     (3.0,0.38)--(3.25,0)--(3.55,0.64)--(3.8,-0.30)--(4.2,0)--
-% %     (4.5,0.92)--(4.75,0)--(5.0,-0.58)--(5.5,-0.58)--(5.8,0.45)--
-% %     (6.05,0)--(6.35,0.72)--(6.6,0)--(6.9,-0.42)--(7.4,0);
-% %   \foreach \x in {1.5,3.0,4.5,6.0}{
-% %     \draw[dashed,gray!55] (\x,-0.95)--(\x,0.95);
-% %   }
-% %   \node[above] at (0.75,0.75) {$W_1$};
-% %   \node[above] at (2.25,0.75) {$W_2$};
-% %   \node[above] at (3.75,0.75) {$W_3$};
-% %   \node[above] at (5.25,0.75) {$W_4$};
-% %   \node[above] at (6.75,0.75) {$W_5$};
-% % \end{tikzpicture}
-% \caption{Planned reference and mixed-payload traces. Video and IoT provide
-% legacy mobile controls; dashed boundaries indicate online classification
-% windows whose labels are hidden from the passive detector.}
-% \label{fig:case_mixed_trace}
-% \end{figure}
+All three baselines will use the same observations: packet arrival time, size,
+and uplink/downlink direction. IP addresses, ports, SNI, domain names,
+application identifiers, and payloads are excluded. Each 10-s segment is divided
+into 500 bins of 20~ms, yielding
+\begin{equation}
+\mathbf{x}_t=[B_t^{\rm UL},B_t^{\rm DL},N_t^{\rm UL},N_t^{\rm DL}],
+\quad \mathbf{X}\in\mathbb{R}^{500\times4},
+\label{eq:segment_input}
+\end{equation}
+where $B_t$ and $N_t$ are byte and packet counts. For learned models, byte
+channels undergo $\log(1+B_t)$ transformation, followed by channel-wise
+standardization using training-set statistics only. No packet-count padding
+is needed. The annotations in Fig.~\ref{fig:case_lam_traces} explain the
+measurements and are not classifier inputs.
 
 \subsubsection{Baselines and analysis protocol}
-For each window $W_t$, the classifier receives directional byte/packet-rate
-sequences and traffic-only summaries: uplink/downlink ratio, peak-to-mean ratio,
-burst duration and count, inter-arrival variation, duty factor, autocorrelation,
-and the number of active flows. The planned baselines in
-Table~\ref{tab:passive_baselines} span a transparent rule system, conventional
-feature-based classifiers, and a sequence model that consumes the raw binned
-curves. Accuracy is the primary quantity requested by this case study. Macro-F1
-and the confusion matrix should be retained as diagnostics because the mixed
-trace may be class-imbalanced.
+The three baselines compare interpretable statistics, local traffic patterns,
+and temporal dependencies. The \emph{rule-based classifier} uses directional
+byte totals and their ratio, direction-switch and burst counts, and uplink
+autocorrelation at nonzero lags. A burst is a contiguous run of bins above a
+traffic threshold; switches are counted between nonidle bins with unequal
+directional byte counts. Strong periodicity predicts E; otherwise, frequent
+direction switches or multiple bursts predict A; remaining segments predict G.
+Thresholds and the autocorrelation lag range are selected on validation data
+only, and constant sequences receive a zero periodicity score.
+
+The \emph{1D-CNN} consumes the four-channel sequence through three convolutional
+layers with 64/128/128 channels and kernel sizes 5/5/3, ReLU activations, and
+max-pooling after the first two layers. Global average pooling and a
+128-unit fully connected layer precede the three-class softmax.
+The \emph{LSTM} uses the same input, one 128-unit recurrent layer, its final
+hidden state, a 64-unit fully connected layer, and a three-class softmax.
+Both learned baselines use cross-entropy loss and Adam with initial learning
+rate $10^{-3}$, batch size 64, and at most 100 epochs. Validation loss controls
+learning-rate reduction and early stopping with patience 10; the test set is
+reserved for final evaluation.
+
+Macro-F1, the mean of the three class-wise F1 scores, is the primary metric.
+Table~\ref{tab:passive_baselines} will also report segment-level accuracy and
+per-class F1; class-wise precision and recall provide supporting diagnostics.
+The learning-based model selected by validation Macro-F1 will be examined using
+the row-normalized test confusion matrix in Fig.~\ref{fig:case_confusion}.
 
 \begin{table}[t]
-\caption{Planned Baselines for Passive Traffic Recognition}
+\caption{Planned Three-Class Segment-Classification Results (\%)}
 \label{tab:passive_baselines}
 \centering
 \scriptsize
 \renewcommand{\arraystretch}{1.15}
 \setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{|p{0.25\columnwidth}|p{0.48\columnwidth}|p{0.16\columnwidth}|}
+\begin{tabular}{|l|c|c|c|c|c|}
 \hline
-\textbf{Baseline} & \textbf{Input} & \textbf{Accuracy (\%)} \\ \hline
-Burst-threshold rules & Directionality, periodicity, burst count & -- \\ \hline
-Logistic regression & Window-level statistical features & -- \\ \hline
-RBF-SVM & Standardized statistical features & -- \\ \hline
-Random forest & Statistical and flow-count features & -- \\ \hline
-1-D CNN & Raw UL/DL byte- and packet-rate sequences & -- \\ \hline
+\textbf{Method} & \textbf{Accuracy} & \textbf{F1-G} & \textbf{F1-A} &
+\textbf{F1-E} & \textbf{Macro-F1} \\ \hline
+Rule-based & -- & -- & -- & -- & -- \\ \hline
+1D-CNN & -- & -- & -- & -- & -- \\ \hline
+LSTM & -- & -- & -- & -- & -- \\ \hline
 \end{tabular}
 \vspace{2pt}
 
-\parbox{0.96\columnwidth}{\scriptsize ``--'' denotes a result to be populated
-after the planned trace collection; no synthetic accuracy is reported.}
+\parbox{0.96\columnwidth}{\scriptsize G/A/E denote generative/agentic/embodied
+LAMs. ``--'' marks a result pending classification experiments.}
 \end{table}
 
-The analysis should test three specific separability hypotheses. First,
-generative and video sessions can both be downlink-heavy, but generative traffic
-should exhibit a request-conditioned delay and response-length variability
-rather than regular media-segment fetching. Second, embodied and IoT traffic can
-both be periodic and uplink-heavy, but embodied traffic should show a denser
-bidirectional coupling between sensor releases and action chunks. Third,
-agentic traffic should be distinguished by irregular multi-round burst count,
-changing active-flow degree, and retry-induced clusters. Errors should be
-reported by class and workload condition so that a high aggregate accuracy
-cannot hide systematic confusion precisely where QoS requirements differ.
+\begin{figure}[t]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c|ccc}
+ & \multicolumn{3}{c}{Predicted class} \\
+True class & G & A & E \\ \hline
+G & -- & -- & -- \\
+A & -- & -- & -- \\
+E & -- & -- & --
+\end{tabular}
+\caption{Template for the row-normalized test confusion matrix of the
+learning-based baseline selected by validation Macro-F1. G, A, and E denote
+generative, agentic, and embodied LAMs. Entries will report percentages;
+``--'' indicates that classification results are not yet available.}
+\label{fig:case_confusion}
+\end{figure}
+
+The analysis will test whether local traffic patterns or longer interaction
+dependencies better distinguish the classes. G--A confusion is of particular
+interest because an agentic task combines model exchanges with tool execution,
+whereas E may be more separable through recurrent sensor--action coupling.
+These are hypotheses to evaluate, not conclusions from the illustrative
+traces alone. A granularity sensitivity experiment will retain the same 10-s
+segments and session partitions while re-aggregating at 20, 50, 100, and
+200~ms. Baselines will be retuned or retrained under the same protocol for each
+resolution, and their test Macro-F1 will quantify how much temporal detail is
+needed for blind LAM identification.
 
 \subsection{Phase II: Active Recognition and QoS Mapping}
 \begin{figure*}
@@ -2100,6 +2118,22 @@ communication-sensing-control systems,'' arXiv:2512.19177, Dec. 2025.
 Z. Han, X. Li, G. Zhu, K. Huang, Y. Gong, and Q. Zhang, ``An energy-efficient
 wireless communication and control co-design for WNCS,'' \emph{IEEE Trans.
 Wireless Commun.}, vol. 25, pp. 1798--1812, 2026.
+
+\bibitem{qwen3}
+Qwen Team, ``Qwen3 technical report,'' arXiv:2505.09388, May 2025.
+
+\bibitem{janus}
+C. Wu \etal, ``Janus: Decoupling visual encoding for unified multimodal
+understanding and generation,'' arXiv:2410.13848, Oct. 2024.
+
+\bibitem{januspro}
+X. Chen, Z. Wu, X. Liu, Z. Pan, W. Liu, Z. Xie, X. Yu, and C. Ruan,
+``Janus-Pro: Unified multimodal understanding and generation with data and
+model scaling,'' arXiv:2501.17811, Jan. 2025.
+
+\bibitem{dualvln}
+M. Wei \etal, ``Ground slow, move fast: A dual-system foundation model for
+generalizable vision-and-language navigation,'' in \emph{Proc. ICLR}, 2026.
 
 \end{thebibliography}
 
