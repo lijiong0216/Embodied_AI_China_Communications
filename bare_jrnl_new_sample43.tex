@@ -30,33 +30,34 @@ Information Engineering, Shanghai University, Shanghai 200444, China.
 \thanks{Q. Wu is with the Department of Electronic Engineering, Shanghai Jiao Tong
 University, Shanghai 200240, China. }}
 
-\markboth{IEEE Communications Surveys \& Tutorials,~Preprint}%
+\markboth{Journal of \LaTeX\ Class Files,~Vol.~18, No.~9, September~2020}%
 {Li \MakeLowercase{\textit{et al.}}: From Generative to Embodied Intelligence}
 
 \maketitle
 
 \begin{abstract}
-Large AI models are evolving from generators that return digital content, to
-agents that execute multi-step workflows, and further to embodied agents that
-perceive, decide, and act in the physical world. This evolution changes the
-volume, temporal structure, reliability target, and failure cost of network
-traffic. A generative request tolerates elastic delivery if response quality is
-preserved; an agentic workflow accumulates failure probability over tool calls;
-and an embodied loop can become unsafe when multimodal observations or action
-tokens are late, asynchronous, or distorted. This survey develops a
-network-centric comparative framework across these three stages. It shows that
-the same base network quantities---latency, rate, reliability, traffic density,
-and connection density---remain relevant but increase by orders of magnitude,
-while model-side emphasis moves from content fidelity, through end-to-end task
-success, to closed-loop control and safety. It then traces architecture from
-cloud-centric inference to stateful edge orchestration and hierarchical,
-partially decentralized multi-agent control. Enabling technologies are mapped
-to a token plane, a transport plane, and a coordination plane. A token-
-recognition case study translates observable traffic and endpoint-declared
-metadata into deployable service classes without requiring payload inspection.
-Finally, the paper identifies tokenizer compatibility and incrementally
-deployable token-aware protocols as prerequisites for networks that connect
-distributed intelligence rather than merely transport bits.
+Large AI models (LAMs) are evolving from content generators to tool-using
+agents and embodied systems that interact with the physical world. This
+evolution changes both network traffic and the consequences of delayed or
+incorrect information. This survey develops a network-centric comparison of
+generative, agentic, and embodied LAMs, linking model metrics and benchmarks
+to communication requirements. Generative services create asymmetric,
+bursty multimodal demand; agentic workflows introduce repeated context
+exchange, branching, and retry-amplified load; embodied systems couple
+sensing and action traffic through closed-loop deadlines and control
+performance. We compare scenario-dependent quality-of-service requirements,
+trace architecture evolution from cloud-centric inference to stateful edge
+orchestration and hierarchical control, and organize enabling technologies
+across token, transport, and coordination planes. A prototype case study
+evaluates blind recognition of 2,300 individual 10-s traffic segments using
+only packet timing, size, and direction. On the 460-segment test set,
+statistical linear, convolutional, and bidirectional recurrent classifiers
+achieve 99.83--100\% Macro-F1, demonstrating distinguishable traffic dynamics
+under the evaluated capture conditions. A complementary, proposed active
+recognition stage uses endpoint-declared descriptors for QoS mapping.
+Finally, we identify tokenizer compatibility, token-native protocols, and
+joint network--model--control evaluation as open directions for connecting
+distributed intelligence.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -77,13 +78,14 @@ foundation-model-based systems, including large language models (LLMs),
 multimodal large language models (MLLMs), world models, and
 vision--language--action (VLA) models. The three stages are not mutually
 exclusive model families. Rather, they represent increasingly stringent
-interaction contracts between intelligence, a network, and an environment.
+interaction contracts between intelligence, a network, and an environment:
+content delivery, task completion, and closed-loop physical interaction.
 
 Mobile and edge networks are therefore changing roles. In the generative
 stage, a network primarily transports prompts, context, and output tokens to a
 remote accelerator. In the agentic stage, it also binds tools, model context,
 persistent memory, and multiple expert models into a reliable transaction.
-In the embodied stage, the network becomes part of the plant: it carries
+In the embodied stage, the network becomes part of the control loop: it carries
 camera, depth, point-cloud, inertial, joint-state, and action streams whose age
 and synchronization affect the next physical state. The ongoing 3GPP study on
 6G use cases explicitly includes AI-agent communication and network-supported
@@ -103,20 +105,22 @@ communication-oriented studies cover mobile-edge LLM inference
 \cite{edgeLLMsurvey}, semantic and token communications
 \cite{semanticclassic,tokcom}, and integrated sensing and edge AI \cite{isea}.
 These streams provide essential components, but use different units of
-evaluation---content, task trajectory, and physical episode---which motivates a
-cross-stage synthesis.
+evaluation---content, task trajectory, and physical episode. A cross-stage
+synthesis is needed to relate these units to observable traffic, QoS
+requirements, architecture, and applicable communication mechanisms.
 
 This transition exposes a mismatch between conventional communication
 objectives and application value at every LAM stage. For a generative service,
-average throughput does not reveal whether an interactive first token is late,
-whether a variable-length multimodal response can be sustained, or whether the
-delivered representation retains the required content quality. For an agentic
-service, a stale tool result or one failed step can invalidate a long,
-branching trajectory, while retries and growing memory make resource demand and
-completion time highly variable. For an embodied service, a missing visual
-patch may hide a grasp point and jitter may destabilize a fast control loop;
-yet transporting every camera, range, joint-state, and action sample with
-uniform fidelity is often infeasible. The central design question is therefore:
+average throughput obscures modality-dependent uplink/downlink asymmetry and
+coincident bursts, while the delivered representation must still preserve
+content quality. For an agentic service, repeated context exchange, tool
+invocations, branching, and retries amplify traffic and broaden task-completion
+time; a stale result or failed step can invalidate the whole workflow. For an
+embodied service, sensor uplinks and action downlinks share an end-to-end loop
+budget with encoding and inference, so delay, jitter, and cross-modal skew
+must be evaluated together with control performance. The relevant QoS scales
+depend on the deployment and task, rather than constituting universal
+requirements for each model category. The central design question is therefore:
 \emph{which information must be delivered, to which model or actuator, by
 what deadline, and with what task-level loss when resources are limited?}
 
@@ -222,29 +226,31 @@ token sources, interaction patterns, benchmarks, failure consequences, and
 network operating bottlenecks. 
 % The contribution is the cross-stage mapping, not a claim that the three model categories are introduced here.
 \item It maps AI-side evaluation to network-side quality of service (QoS).
-The resulting metric ladder progresses from time to first token and content
-quality, to transaction success and long-horizon tail latency, and finally to
-task distortion, robust loop period, and control cost.
+The comparison connects content fidelity and bursty directional demand,
+task success and retry-amplified tail latency, and physical performance under
+joint loop-delay, jitter, and reliability constraints. Numerical QoS anchors
+are interpreted as illustrative deployment scenarios.
 \item It organizes enabling technologies into token, transport, and
 coordination planes and maps them back to the QoS and topology of each stage.
 For embodied agents specifically, the synthesis exposes two transfer gaps:
 compression is commonly perception-oriented rather than control-oriented, and
 deterministic transmission is commonly source-independent rather than
 task-coupled.
-\item It develops a deployable token-recognition case study that combines
-passive classification of individual uplink/downlink traffic segments with
-descriptor-assisted service recognition. The prototype measures generative,
-agentic, and embodied traffic and evaluates statistical linear, convolutional,
-and bidirectional recurrent classifiers for blind three-class recognition.
-It also shows how compact authenticated descriptors can support stage-specific QoS mapping without
-revealing payload semantics.
+\item It presents a two-stage traffic-recognition case study. The measured
+passive stage evaluates statistical linear, convolutional, and bidirectional
+recurrent classifiers on 2,300 individual 10-s segments, obtaining
+99.83--100\% test Macro-F1 without payload or application identifiers.
+The proposed active stage complements this coarse traffic classification
+with authenticated endpoint descriptors for stage-specific QoS mapping;
+it is not part of the reported classification experiment.
 \end{itemize}
 
 Section~\ref{sec:model_evolution} reviews model evolution and benchmarks.
 Sections~\ref{sec:qos} and~\ref{sec:architecture} study metric and architecture
 evolution, respectively. Section~\ref{sec:enablers} surveys enabling
 technologies, Section~\ref{sec:case} presents the case study, and
-Section~\ref{sec:future} discusses open challenges. The architecture of the main sections of the paper is presented in Fig.~\ref{fig:roadmap}. 
+Section~\ref{sec:future} discusses open challenges. Figure~\ref{fig:roadmap}
+summarizes this organization.
 
 \section{From Generative to Embodied LAMs: Performance Metrics, Benchmarks, and Model Evolution}
 \label{sec:model_evolution}
@@ -1098,8 +1104,8 @@ representation sharing reduces inter-agent traffic, and cache reuse reduces
 redundant inference. Their use still requires compatible model state and
 application-controlled access to shared context.
 
-Adaptive repeat-query systems learn whether another response is likely to
-move the latent solution toward a correct concept \cite{garq}. More generally,
+Adaptive repeat querying provides a mechanism for reliable inference with
+heterogeneous edge LLMs \cite{garq}. More generally,
 an agent should stop when the expected value of another message is lower than
 its marginal compute, token, and latency cost. Network schedulers can use
 confidence and disagreement as hints, but final verification must remain
@@ -1128,28 +1134,13 @@ application-controlled because confidence is not a safety certificate.
 
 \subsection{Enablers for Embodied-LAM Networks}
 \subsubsection{Control-loss-aware token selection}
-Embodied compression should estimate the marginal increase in control cost
-caused by removing, quantizing, delaying, or reusing token $z_k$:
-\begin{equation}
-s_k(t)=
-\frac{\mathbb{E}[\Delta J_{\rm c}\mid z_k,x_t,g_t]}
-{\Delta b_k+\alpha\Delta f_k+\beta\Delta e_k},
-\label{eq:token_value}
-\end{equation}
-where the denominator is saved communication, compute, and energy resource.
-Tokens with high $s_k$ receive stronger coding or earlier service. The score
-changes with control phase: background visual patches can be pruned during
-free motion, contact geometry becomes critical at grasp time, and action
-reuse is safest inside stable segments. Channel-wise VLA quantization studies
-also indicate that channels have unequal action sensitivity \cite{qvla}.
-FlashVLA instantiates this principle through visual-token pruning and action
-reuse \cite{flashvla}, while DaDu-Corki couples the embodied algorithm and
-accelerator architecture to meet real-time inference constraints \cite{dadu}.
-
-Existing methods provide concrete, but different, importance measures:
+Existing VLA acceleration methods use task-related importance measures
+rather than a common analytical token-value metric.
 FlashVLA selects visual tokens and reuses actions to reduce redundant
 inference \cite{flashvla}, whereas QVLA allocates precision according to
-channel sensitivity measured at the action output \cite{qvla}. These results
+channel sensitivity measured at the action output \cite{qvla}. DaDu-Corki
+jointly designs the embodied algorithm and accelerator architecture to
+reduce inference latency \cite{dadu}. These results
 motivate evaluating compression by its effect on actions and task success,
 rather than representation fidelity alone. A remaining problem is to extend
 such empirical sensitivity measures to bounds on closed-loop control loss
@@ -1261,8 +1252,8 @@ KV quantization/selection, semantic cache reuse, machine/latent-state exchange
 \cite{qkvcomm,kvcomm,semsharekv,latentcomm} &
 Transactional partial reliability; cache affinity; early exit, heterogeneous
 retry, and joint network--compute--storage admission &
-Capability discovery, minimum reliable debate graph, model routing, and
-rollback \cite{netmcp,garq}; open gap is reliable interoperability without
+Network-aware tool routing and adaptive repeat querying
+\cite{netmcp,garq}; open gap is reliable interoperability without
 exposing private plans or memory \\ \hline
 Embodied &
 $1$-ms/$10^5$-token/s/$99.999\%$ anchors; loop tail, jitter, synchronized
@@ -1654,22 +1645,64 @@ distributed LAM intelligence to physical systems.
 \begin{thebibliography}{99}
 
 \bibitem{nvidiagenai}
-NVIDIA, ``What is generative AI?'' [Online]. Available:
-\url{https://www.nvidia.com/en-us/glossary/generative-ai/}. Accessed:
-Sep. 10, 2026.
+NVIDIA, ``What is generative AI?'' Accessed: Oct. 1, 2026. [Online]. Available:
+\url{https://www.nvidia.com/en-us/glossary/generative-ai/}
 
 \bibitem{3gpp22870}
 3GPP, ``Study on 6G use cases and service requirements,'' 3rd Generation
-Partnership Project (3GPP), Tech. Rep. 22.870, Rel. 20, 2026.
+Partnership Project (3GPP), Tech. Rep. 22.870, ver. 20.0.0, Rel. 20,
+Mar. 2026.
 
 \bibitem{gpt3}
 T. B. Brown \etal, ``Language models are few-shot learners,'' in
 \emph{Proc. NeurIPS}, vol. 33, 2020, pp. 1877--1901.
 
 \bibitem{dalle}
-A. Ramesh, M. Pavlov, G. Goh, S. Gray, C. Voss, A. Radford, M. Chen, and
-I. Sutskever, ``Zero-shot text-to-image generation,'' in \emph{Proc. ICML},
+A. Ramesh \etal, ``Zero-shot text-to-image generation,'' in \emph{Proc. ICML},
 2021, pp. 8821--8831.
+
+\bibitem{mmlu}
+D. Hendrycks \etal, ``Measuring massive multitask language understanding,'' in
+\emph{Proc. ICLR}, 2021.
+
+\bibitem{bigbench}
+A. Srivastava \etal, ``Beyond the imitation game: Quantifying and extrapolating
+the capabilities of language models,'' \emph{Trans. Mach. Learn. Res.},
+May 2023.
+
+\bibitem{agentbench}
+X. Liu \etal, ``AgentBench: Evaluating LLMs as agents,'' in \emph{Proc. ICLR},
+2024.
+
+\bibitem{react}
+S. Yao \etal, ``ReAct: Synergizing reasoning and acting in language models,'' in
+\emph{Proc. ICLR}, 2023.
+
+\bibitem{reflexion}
+N. Shinn, F. Cassano, A. Gopinath, K. Narasimhan, and S. Yao, ``Reflexion:
+Language agents with verbal reinforcement learning,'' in \emph{Proc. NeurIPS},
+vol. 36, 2023, pp. 8634--8652.
+
+\bibitem{metaworld}
+T. Yu \etal, ``Meta-World: A benchmark and evaluation for multi-task and
+meta reinforcement learning,'' in \emph{Proc. Conf. Robot Learn.}, 2020,
+pp. 1094--1100.
+
+\bibitem{rt2}
+B. Zitkovich \etal, ``RT-2: Vision-language-action models transfer web
+knowledge to robotic control,'' in \emph{Proc. Conf. Robot Learn.}, 2023,
+pp. 2165--2183.
+
+\bibitem{libero}
+B. Liu \etal, ``LIBERO:
+Benchmarking knowledge transfer for lifelong robot learning,'' in
+\emph{Proc. NeurIPS}, vol. 36, 2023, pp. 44776--44791.
+
+\bibitem{edgeLLMsurvey}
+G. Qu, Q. Chen, W. Wei, Z. Lin, X. Chen, and K. Huang, ``Mobile edge
+intelligence for large language models: A contemporary survey,'' \emph{IEEE
+Commun. Surveys Tuts.}, vol. 27, no. 6, pp. 3820--3860, Dec. 2025,
+doi: 10.1109/COMST.2025.3527641.
 
 \bibitem{semanticclassic}
 H. Xie, Z. Qin, G. Y. Li, and B.-H. Juang, ``Deep learning enabled semantic
@@ -1684,16 +1717,8 @@ vol. 32, no. 5, pp. 80--88, Oct. 2025.
 
 \bibitem{isea}
 Z. Liu \etal, ``Integrated sensing and edge AI: Realizing intelligent
-perception in 6G,'' \emph{IEEE Commun. Surveys Tuts.}, early access, 2025.
-
-\bibitem{mmlu}
-D. Hendrycks, C. Burns, S. Basart, A. Zou, M. Mazeika, D. Song, and
-J. Steinhardt, ``Measuring massive multitask language understanding,'' in
-\emph{Proc. ICLR}, 2021.
-
-\bibitem{bigbench}
-BIG-bench Authors, ``Beyond the imitation game: Quantifying and extrapolating
-the capabilities of language models,'' \emph{Trans. Mach. Learn. Res.}, 2023.
+perception in 6G,'' \emph{IEEE Commun. Surveys Tuts.}, vol. 28,
+pp. 2725--2770, 2026, doi: 10.1109/COMST.2025.3592989.
 
 \bibitem{bleu}
 K. Papineni, S. Roukos, T. Ward, and W.-J. Zhu, ``BLEU: A method for
@@ -1712,94 +1737,55 @@ image recognition at scale,'' in \emph{Proc. ICLR}, 2021.
 J. Ho, A. Jain, and P. Abbeel, ``Denoising diffusion probabilistic models,''
 in \emph{Proc. NeurIPS}, vol. 33, 2020, pp. 6840--6851.
 
+\bibitem{du_debate}
+Y. Du, S. Li, A. Torralba, J. B. Tenenbaum, and I. Mordatch, ``Improving
+factuality and reasoning in language models through multiagent debate,''
+in \emph{Proc. ICML}, 2024, pp. 11733--11763.
+
 \bibitem{cot}
 J. Wei \etal, ``Chain-of-thought prompting elicits reasoning in large language
 models,'' in \emph{Proc. NeurIPS}, vol. 35, 2022, pp. 24824--24837.
 
 \bibitem{tot}
-S. Yao, D. Yu, J. Zhao, I. Shafran, T. L. Griffiths, Y. Cao, and
-K. Narasimhan, ``Tree of thoughts: Deliberate problem solving with large
-language models,'' in \emph{Proc. NeurIPS}, vol. 36, 2023.
+S. Yao \etal, ``Tree of thoughts: Deliberate problem solving with large
+language models,'' in \emph{Proc. NeurIPS}, vol. 36, 2023, pp. 11809--11822.
 
 \bibitem{rag}
 P. Lewis \etal, ``Retrieval-augmented generation for knowledge-intensive NLP
 tasks,'' in \emph{Proc. NeurIPS}, vol. 33, 2020, pp. 9459--9474.
 
-\bibitem{agentbench}
-X. Liu \etal, ``AgentBench: Evaluating LLMs as agents,'' in \emph{Proc. ICLR},
-2024.
+\bibitem{agentprotocols}
+A. Ehtesham, A. Singh, G. K. Gupta, and S. Kumar, ``A survey of agent
+interoperability protocols: Model Context Protocol (MCP), Agent Communication
+Protocol (ACP), Agent-to-Agent Protocol (A2A), and Agent Network Protocol
+(ANP),'' arXiv:2505.02279, May 2025.
 
 \bibitem{webarena}
 S. Zhou \etal, ``WebArena: A realistic web environment for building
 autonomous agents,'' in \emph{Proc. ICLR}, 2024.
 
 \bibitem{swebench}
-C. E. Jimenez, J. Yang, A. Wettig, S. Yao, K. Pei, O. Press, and
-K. Narasimhan, ``SWE-bench: Can language models resolve real-world GitHub
+C. E. Jimenez \etal, ``SWE-bench: Can language models resolve real-world GitHub
 issues?'' in \emph{Proc. ICLR}, 2024.
-
-\bibitem{react}
-S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, and Y. Cao,
-``ReAct: Synergizing reasoning and acting in language models,'' in
-\emph{Proc. ICLR}, 2023.
-
-\bibitem{reflexion}
-N. Shinn, F. Cassano, A. Gopinath, K. Narasimhan, and S. Yao, ``Reflexion:
-Language agents with verbal reinforcement learning,'' in \emph{Proc. NeurIPS},
-vol. 36, 2023.
-
-\bibitem{du_debate}
-Y. Du, S. Li, A. Torralba, J. B. Tenenbaum, and I. Mordatch, ``Improving
-factuality and reasoning in language models through multiagent debate,''
-arXiv:2305.14325, May 2023.
-
-\bibitem{vllm}
-W. Kwon, Z. Li, S. Zhuang, Y. Sheng, L. Zheng, C. H. Yu,
-J. E. Gonzalez, H. Zhang, and I. Stoica, ``Efficient memory management for
-large language model serving with PagedAttention,'' in \emph{Proc. ACM SOSP},
-2023, pp. 611--626.
-
-\bibitem{estornell}
-A. Estornell and Y. Liu, ``Multi-LLM debate: Framework, principals, and
-interventions,'' in \emph{Proc. NeurIPS}, 2024.
-
-\bibitem{garq}
-T. Wang, T. Yu, K. Huang, J. Li, H. Pervaiz, G. Zheng, and S. Zhang,
-``Edge heterogeneous LLMs collaborative reliable inference based on adaptive
-repeat query,'' in \emph{Proc. IEEE ICC Workshops}, 2026, pp. 1--6,
-doi: 10.1109/ICCWorkshops63917.2026.11586445.
-
-\bibitem{groot}
-NVIDIA \etal, ``GR00T N1: An open foundation model for generalist humanoid
-robots,'' arXiv:2503.14734, Mar. 2025.
 
 \bibitem{palme}
 D. Driess \etal, ``PaLM-E: An embodied multimodal language model,'' in
-\emph{Proc. ICML}, vol. 202, 2023, pp. 8469--8488.
+\emph{Proc. ICML}, 2023, pp. 8469--8488.
 
 \bibitem{dreamer3}
-D. Hafner, J. Pasukonis, J. Ba, and T. Lillicrap, ``Mastering diverse domains
-through world models,'' arXiv:2301.04104, Jan. 2023.
+D. Hafner, J. Pasukonis, J. Ba, and T. Lillicrap, ``Mastering diverse control
+tasks through world models,'' \emph{Nature}, vol. 640, pp. 647--653,
+Apr. 2025, doi: 10.1038/s41586-025-08744-2.
 
-\bibitem{metaworld}
-T. Yu \etal, ``Meta-World: A benchmark and evaluation for multi-task and
-meta reinforcement learning,'' in \emph{Proc. Conf. Robot Learn.}, 2020,
-pp. 1094--1100.
-
-\bibitem{rt2}
-B. Zitkovich \etal, ``RT-2: Vision-language-action models transfer web
-knowledge to robotic control,'' in \emph{Proc. Conf. Robot Learn.}, 2023,
-pp. 2165--2183.
-
-\bibitem{libero}
-B. Liu, Y. Zhu, C. Gao, Y. Feng, Q. Liu, Y. Zhu, and P. Stone, ``LIBERO:
-Benchmarking knowledge transfer for lifelong robot learning,'' in
-\emph{Proc. NeurIPS}, vol. 36, 2023.
+\bibitem{groot}
+J. Bjorck \etal, ``GR00T N1: An open foundation model for generalist humanoid
+robots,'' arXiv:2503.14734, Mar. 2025.
 
 \bibitem{humanoidbench}
 C. Sferrazza, D.-M. Huang, X. Lin, Y. Lee, and P. Abbeel,
 ``HumanoidBench: Simulated humanoid benchmark for whole-body locomotion and
-manipulation,'' arXiv:2403.10506, Mar. 2024.
+manipulation,'' in \emph{Proc. Robot.: Sci. Syst. (RSS)}, Jul. 2024,
+doi: 10.15607/RSS.2024.XX.061.
 
 \bibitem{habitat3}
 X. Puig \etal, ``Habitat 3.0: A co-habitat for humans, avatars, and robots,''
@@ -1810,56 +1796,10 @@ Y. Chen, W. Zhang, and X. Li, ``Reflex: Enabling fast and predictive
 vision-language-action models for reaction-critical manipulation,''
 arXiv:2608.14379, Aug. 2026.
 
-\bibitem{fang}
-X. Fang \etal, ``Sensing-communication-computing-control closed-loop
-optimization for 6G digital twin-empowered robotic systems,'' \emph{IEEE J.
-Sel. Areas Commun.}, vol. 43, no. 10, pp. 3330--3346, Oct. 2025.
-
-\bibitem{pang}
-G. Pang, W. Liu, D. Niyato, B. Vucetic, and Y. Li,
-``Communication-control codesign for large-scale wireless networked control
-systems,'' \emph{IEEE J. Sel. Areas Commun.}, vol. 43, no. 10,
-pp. 3295--3312, Oct. 2025.
-
-\bibitem{systemid}
-Z. Han, X. Li, Z. Zhou, K. Huang, Y. Gong, and Q. Zhang, ``Wireless
-communication and control co-design for system identification,'' \emph{IEEE
-Trans. Wireless Commun.}, vol. 23, no. 5, pp. 4114--4126, May 2024.
-
-\bibitem{flashvla}
-X. Tan, Y. Yang, P. Ye, J. Zheng, B. Bai, X. Wang, J. Hao, and T. Chen,
-``Think twice, act once: Token-aware compression and action reuse for
-efficient inference in vision-language-action models,'' arXiv:2505.21200,
-May 2025.
-
-\bibitem{dadu}
-Y. Huang \etal, ``DaDu-Corki: Algorithm-architecture co-design for embodied
-AI-powered robotic manipulation,'' in \emph{Proc. ACM/IEEE ISCA}, 2025,
-pp. 327--343.
-
 \bibitem{evatok}
 T. Xiong, J. H. Liew, Z. Huang, Z. Lin, J. Feng, and X. Liu, ``EVATok:
 Adaptive length video tokenization for efficient visual autoregressive
-generation,'' arXiv:2603.12267, Mar. 2026.
-
-\bibitem{edgeLLMsurvey}
-G. Qu, Q. Chen, W. Wei, Z. Lin, X. Chen, and K. Huang, ``Mobile edge
-intelligence for large language models: A contemporary survey,'' \emph{IEEE
-Commun. Surveys Tuts.}, vol. 27, pp. 3820--3860, 2025,
-doi: 10.1109/COMST.2025.3527641.
-
-\bibitem{netmcp}
-E. Li, H. Du, and K. Huang, ``NetMCP: Network-aware model context protocol
-platform for LLM capability extension,'' arXiv:2510.13467, Oct. 2025.
-
-\bibitem{qkvcomm}
-B. Kriuk and L. Ng, ``Q-KVComm: Efficient multi-agent communication via
-adaptive KV cache compression,'' arXiv:2512.17914, Nov. 2025.
-
-\bibitem{kvcomm}
-X. Shi, M. Chiesa, G. Q. Maguire, Jr., and D. Kosti\'c, ``KVComm: Enabling
-efficient LLM communication through selective KV sharing,'' in \emph{Proc.
-ICLR}, 2026.
+generation,'' in \emph{Proc. IEEE/CVF CVPR}, Jun. 2026, pp. 23249--23259.
 
 \bibitem{wdmoe}
 N. Xue \etal, ``WDMoE: Wireless distributed mixture of experts for large
@@ -1869,7 +1809,7 @@ pp. 559--572, 2026.
 \bibitem{pipeline}
 J. Jiang, Z. Chen, H. Shin, and A. Nallanathan, ``Edge inference for large
 language models with pipeline parallelism and batching,'' \emph{IEEE Trans.
-Commun.}, early access, 2026.
+Commun.}, vol. 74, pp. 8390--8406, 2026, doi: 10.1109/TCOMM.2026.3686718.
 
 \bibitem{progressive}
 Q. Lan, Q. Zeng, P. Popovski, D. G\"und\"uz, and K. Huang, ``Progressive
@@ -1882,18 +1822,16 @@ X. Zheng \etal, ``Exploring multi-agent dynamics for generative AI and large
 language models in mobile edge networks,'' \emph{IEEE Wireless Commun.},
 vol. 32, no. 6, pp. 69--78, Dec. 2025.
 
-\bibitem{agentprotocols}
-A. Ehtesham, A. Singh, G. K. Gupta, and S. Kumar, ``A survey of agent
-interoperability protocols: MCP, ACP, A2A, and ANP,'' arXiv:2505.02279,
-May 2025.
+\bibitem{estornell}
+A. Estornell and Y. Liu, ``Multi-LLM debate: Framework, principals, and
+interventions,'' in \emph{Proc. NeurIPS}, vol. 37, 2024, pp. 28938--28964.
 
 \bibitem{thoughtcomm}
-Y. Zheng, Z. Zhao, Z. Li, Y. Xie, M. Gao, L. Zhang, and K. Zhang, ``Thought
-communication in multiagent collaboration,'' arXiv:2510.20733, Oct. 2025.
+Y. Zheng \etal, ``Thought communication in multiagent collaboration,'' in
+\emph{Proc. NeurIPS}, vol. 38, 2025, pp. 123389--123418.
 
 \bibitem{latentcomm}
-Z. Du, R. Wang, H. Bai, Z. Cao, X. Zhu, Y. Cheng, B. Zheng, W. Chen, and
-H. Ying, ``Enabling agents to communicate entirely in latent space,'' in
+Z. Du \etal, ``Enabling agents to communicate entirely in latent space,'' in
 \emph{Proc. ACL}, 2026, pp. 27106--27129.
 
 \bibitem{hybrid}
@@ -1901,26 +1839,10 @@ S. Oh, J. Kim, J. Park, S.-W. Ko, T. Q. S. Quek, and S.-L. Kim,
 ``Uncertainty-aware hybrid inference with on-device small and remote large
 language models,'' in \emph{Proc. IEEE ICMLCN}, 2025, pp. 1--7.
 
-\bibitem{multitier}
-D. V. Huynh, V.-D. Nguyen, S. Chatzinotas, S. R. Khosravirad, H. V. Poor,
-and T. Q. Duong, ``Joint communication and computation offloading for
-ultra-reliable and low-latency with multi-tier computing,'' \emph{IEEE J.
-Sel. Areas Commun.}, vol. 41, no. 2, pp. 521--537, Feb. 2023.
-
-\bibitem{edgeinference}
-Z. Wang, A. E. Kal{\o}r, Y. Zhou, P. Popovski, and K. Huang,
-``Ultra-low-latency edge inference for distributed sensing,'' \emph{IEEE
-Trans. Wireless Commun.}, early access, 2025.
-
-\bibitem{offloading}
-C.-F. Liu, M. Bennis, M. Debbah, and H. V. Poor, ``Dynamic task offloading
-and resource allocation for ultra-reliable low-latency edge computing,''
-\emph{IEEE Trans. Commun.}, vol. 67, no. 6, pp. 4132--4150, Jun. 2019.
-
 \bibitem{todma}
 L. Qiao, M. B. Mashhadi, Z. Gao, R. Schober, and D. G\"und\"uz, ``ToDMA:
-Large model-driven token-domain multiple access for semantic communications,''
-arXiv:2505.10946, May 2025.
+Large model-driven massive token communications for semantic multiple access,''
+arXiv:2505.10946v3, Jul. 2026.
 
 \bibitem{distributedllm}
 K. Zhang, H. He, S. Song, J. Zhang, and K. B. Letaief,
@@ -1942,7 +1864,7 @@ Apr. 2025.
 \bibitem{avery}
 R. Bhattacharjya \etal, ``AVERY: Intent-driven adaptive VLM split computing
 via embodied self-awareness for efficient disaster response systems,''
-arXiv:2511.18151, Mar. 2026.
+arXiv:2511.18151v3, Mar. 2026.
 
 \bibitem{specdecode}
 Y. Leviathan, M. Kalman, and Y. Matias, ``Fast inference from transformers
@@ -1951,16 +1873,41 @@ via speculative decoding,'' in \emph{Proc. ICML}, 2023, pp. 19274--19286.
 \bibitem{actiondeviation}
 J. Park, Y. Lim, S. Oh, J. Park, J. Choi, and S.-L. Kim, ``Action
 deviation-aware inference for low-latency wireless robots,''
-arXiv:2510.02851, Nov. 2025.
+arXiv:2510.02851v2, Nov. 2025.
+
+\bibitem{qkvcomm}
+B. Kriuk and L. Ng, ``Q-KVComm: Efficient multi-agent communication via
+adaptive KV cache compression,'' arXiv:2512.17914, Nov. 2025.
+
+\bibitem{kvcomm}
+X. Shi, M. Chiesa, G. Q. Maguire Jr., and D. Kosti\'c, ``KVComm: Enabling
+efficient LLM communication through selective KV sharing,'' in \emph{Proc.
+ICLR}, 2026.
 
 \bibitem{semsharekv}
 X. Zhao and S. Mastorakis, ``SemShareKV: Efficient KVCache sharing for
-semantically similar prompts via token-level LSH matching,'' in \emph{Proc.
-IJCNLP--AACL}, 2025, pp. 432--445.
+semantically similar prompts via token-level LSH matching,'' in \emph{Findings
+Assoc. Comput. Linguistics: IJCNLP--AACL}, Dec. 2025, pp. 432--445,
+doi: 10.18653/v1/2025.findings-ijcnlp.25.
+
+\bibitem{garq}
+T. Wang \etal, ``Edge heterogeneous LLMs collaborative reliable inference based on adaptive
+repeat query,'' in \emph{Proc. IEEE ICC Workshops}, 2026, pp. 1--6,
+doi: 10.1109/ICCWorkshops63917.2026.11586445.
+
+\bibitem{flashvla}
+X. Tan \etal, ``Think twice, act once: Token-aware compression and action reuse for
+efficient inference in vision-language-action models,'' arXiv:2505.21200,
+May 2025.
 
 \bibitem{qvla}
 Y. Xu \etal, ``QVLA: Not all channels are equal in vision-language-action
-model's quantization,'' arXiv:2602.03782, Feb. 2026.
+model's quantization,'' in \emph{Proc. ICLR}, 2026.
+
+\bibitem{dadu}
+Y. Huang \etal, ``DaDu-Corki: Algorithm-architecture co-design for embodied
+AI-powered robotic manipulation,'' in \emph{Proc. ACM/IEEE ISCA}, 2025,
+pp. 327--343.
 
 \bibitem{polyanskiy}
 Y. Polyanskiy, H. V. Poor, and S. Verd\'u, ``Channel coding rate in the finite
@@ -2032,10 +1979,30 @@ G. Pan, A. \"Oz\c{c}elikkale, C. H\"ager, M. F. Keskin, and H. Wymeersch,
 ``Semantic communication for rate-limited closed-loop distributed
 communication-sensing-control systems,'' arXiv:2512.19177, Dec. 2025.
 
+\bibitem{fang}
+X. Fang \etal, ``Sensing-communication-computing-control closed-loop
+optimization for 6G digital twin-empowered robotic systems,'' \emph{IEEE J.
+Sel. Areas Commun.}, vol. 43, no. 10, pp. 3330--3346, Oct. 2025.
+
+\bibitem{pang}
+G. Pang, W. Liu, D. Niyato, B. Vucetic, and Y. Li,
+``Communication-control codesign for large-scale wireless networked control
+systems,'' \emph{IEEE J. Sel. Areas Commun.}, vol. 43, no. 10,
+pp. 3295--3312, Oct. 2025.
+
+\bibitem{systemid}
+Z. Han, X. Li, Z. Zhou, K. Huang, Y. Gong, and Q. Zhang, ``Wireless
+communication and control co-design for system identification,'' \emph{IEEE
+Trans. Wireless Commun.}, vol. 23, no. 5, pp. 4114--4126, May 2024.
+
 \bibitem{energywncs}
 Z. Han, X. Li, G. Zhu, K. Huang, Y. Gong, and Q. Zhang, ``An energy-efficient
 wireless communication and control co-design for WNCS,'' \emph{IEEE Trans.
 Wireless Commun.}, vol. 25, pp. 1798--1812, 2026.
+
+\bibitem{netmcp}
+E. Li, H. Du, and K. Huang, ``NetMCP: Network-aware model context protocol
+platform for LLM capability extension,'' arXiv:2510.13467, Oct. 2025.
 
 \bibitem{qwen3}
 Qwen Team, ``Qwen3 technical report,'' arXiv:2505.09388, May 2025.
@@ -2045,8 +2012,7 @@ C. Wu \etal, ``Janus: Decoupling visual encoding for unified multimodal
 understanding and generation,'' arXiv:2410.13848, Oct. 2024.
 
 \bibitem{januspro}
-X. Chen, Z. Wu, X. Liu, Z. Pan, W. Liu, Z. Xie, X. Yu, and C. Ruan,
-``Janus-Pro: Unified multimodal understanding and generation with data and
+X. Chen \etal, ``Janus-Pro: Unified multimodal understanding and generation with data and
 model scaling,'' arXiv:2501.17811, Jan. 2025.
 
 \bibitem{dualvln}
@@ -2059,7 +2025,7 @@ Learning: Data Mining, Inference, and Prediction}, 2nd ed. New York, NY, USA:
 Springer, 2009, ch. 4, pp. 101--137.
 
 \bibitem{trafficcnn}
-W. Wang \etal, ``End-to-end encrypted traffic classification with
+W. Wang, M. Zhu, J. Wang, X. Zeng, and Z. Yang, ``End-to-end encrypted traffic classification with
 one-dimensional convolution neural networks,'' in \emph{Proc. IEEE ISI},
 2017, pp. 43--48, doi: 10.1109/ISI.2017.8004872.
 
@@ -2068,10 +2034,33 @@ A. Graves and J. Schmidhuber, ``Framewise phoneme classification with
 bidirectional LSTM and other neural network architectures,'' \emph{Neural
 Networks}, vol. 18, nos. 5--6, pp. 602--610, 2005.
 
-\bibitem{rifl}
-C. Lee, S. J. Park, A. Kejriwal, S. Matsushita, and J. Ousterhout,
-``Implementing linearizability at large scale and low latency,'' in
-\emph{Proc. ACM SOSP}, 2015, pp. 71--86.
+% Retained for recovery only: not cited in the current uncommented manuscript.
+% \bibitem{edgeinference}
+% Z. Wang, A. E. Kal{\o}r, Y. Zhou, P. Popovski, and K. Huang,
+% ``Ultra-low-latency edge inference for distributed sensing,'' \emph{IEEE
+% Trans. Wireless Commun.}, early access, 2025.
+%
+% \bibitem{multitier}
+% D. V. Huynh, V.-D. Nguyen, S. Chatzinotas, S. R. Khosravirad, H. V. Poor,
+% and T. Q. Duong, ``Joint communication and computation offloading for
+% ultra-reliable and low-latency with multi-tier computing,'' \emph{IEEE J.
+% Sel. Areas Commun.}, vol. 41, no. 2, pp. 521--537, Feb. 2023.
+%
+% \bibitem{offloading}
+% C.-F. Liu, M. Bennis, M. Debbah, and H. V. Poor, ``Dynamic task offloading
+% and resource allocation for ultra-reliable low-latency edge computing,''
+% \emph{IEEE Trans. Commun.}, vol. 67, no. 6, pp. 4132--4150, Jun. 2019.
+%
+% \bibitem{rifl}
+% C. Lee, S. J. Park, A. Kejriwal, S. Matsushita, and J. Ousterhout,
+% ``Implementing linearizability at large scale and low latency,'' in
+% \emph{Proc. ACM SOSP}, 2015, pp. 71--86.
+%
+% \bibitem{vllm}
+% W. Kwon, Z. Li, S. Zhuang, Y. Sheng, L. Zheng, C. H. Yu,
+% J. E. Gonzalez, H. Zhang, and I. Stoica, ``Efficient memory management for
+% large language model serving with PagedAttention,'' in \emph{Proc. ACM SOSP},
+% 2023, pp. 611--626.
 
 \end{thebibliography}
 
