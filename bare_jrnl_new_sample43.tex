@@ -23,7 +23,7 @@
 \author{Jihong Li,~\IEEEmembership{Student Member,~IEEE,}, Changming Li, Bo Li,~\IEEEmembership{Student Member,~IEEE,}, Zisong Ma, 
 Qingqing Wu,~\IEEEmembership{Senior Member,~IEEE,}
 and Shunqing Zhang,~\IEEEmembership{Senior Member,~IEEE}%
-\thanks{J. Li, B. Li, and S. Zhang are with the School of Communication and
+\thanks{J. Li, C. Li, B. Li, Z. Ma and S. Zhang are with the School of Communication and
 Information Engineering, Shanghai University, Shanghai 200444, China.
 Q. Wu is with the Department of Electronic Engineering, Shanghai Jiao Tong
 University, Shanghai 200240, China. (Corresponding author: Shunqing Zhang.)}}
@@ -1439,18 +1439,15 @@ intermittent exchanges, and sustained sensor--action coupling, respectively.
 image understanding, and image generation), three agentic workloads (file
 creation, file moving, and code writing), and embodied vision-and-language
 navigation. Blue and green bars show uplink and downlink traffic volumes in
-20-ms bins, plotted above and below zero, respectively. Each panel uses local
-elapsed time and its own vertical scale; annotations identify the observed
-request, response, tool-execution, and sensing/action phases.}
+20-ms bins, respectively. }
 \label{fig:case_lam_traces}
 \end{figure*}
 
 \subsubsection{Blind segment-classification protocol}
-The dataset contains 2,300 individual 10-s traffic segments: 1,000 generative
-(G), 1,000 agentic (A), and 300 embodied (E) segments. Each segment is classified
-separately, without mixing traffic from different LAM classes. A fixed
+The dataset contains 2,300 individual 10s traffic segments: 1,000 generative
+(G), 1,000 agentic (A), and 300 embodied (E) segments. A fixed
 70\%/10\%/20\% split yields 1,610 training, 230 validation, and 460 test samples;
-the test set contains 200 G, 200 A, and 60 E samples. Each segment is aggregated
+the test set contains 200 generative, 200 agentic, and 60 embodied samples. Each segment is aggregated
 into 500 bins of 20~ms, yielding
 \begin{equation}
 \mathbf{x}_t=[B_t^{\rm UL},B_t^{\rm DL},N_t^{\rm UL},N_t^{\rm DL}],
@@ -1501,9 +1498,9 @@ LAMs. Test support is 200/200/60 segments, respectively.}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{lam-classification-confusion.png}
+\includegraphics[width=0.8\linewidth]{lam-classification-confusion.png}
 \caption{Test confusion matrix of the validation-selected statistical linear
-baseline. Entries show counts and row-normalized percentages ($n=460$).}
+baseline. ($n=460$).}
 \label{fig:case_confusion}
 \end{figure}
 
@@ -1560,24 +1557,24 @@ left to a later deployment study, as specified in the two-stage design.
 \section{Challenges and Future Directions}
 \label{sec:future}
 
-\subsection{Open Problems in Token Recognition}
-Section~\ref{sec:case} deliberately stops at endpoint-declared, authenticated
-classes. The harder research problem is to estimate task value within a trusted
-model/vertical without turning the carrier into an application controller.
-Attention, activation magnitude, entropy, or gradient saliency can correlate
-with value but can fail under distribution shift. Counterfactual estimators ask
-how task or control cost changes if a token is delayed, quantized, predicted,
-or omitted; world-model rollouts can approximate the answer, while conformal
-or robust bounds express uncertainty. Rare safety-critical events remain the
-difficult case.
+% \subsection{Open Problems in Token Recognition}
+% Section~\ref{sec:case} deliberately stops at endpoint-declared, authenticated
+% classes. The harder research problem is to estimate task value within a trusted
+% model/vertical without turning the carrier into an application controller.
+% Attention, activation magnitude, entropy, or gradient saliency can correlate
+% with value but can fail under distribution shift. Counterfactual estimators ask
+% how task or control cost changes if a token is delayed, quantized, predicted,
+% or omitted; world-model rollouts can approximate the answer, while conformal
+% or robust bounds express uncertainty. Rare safety-critical events remain the
+% difficult case.
 
-Deployment needs verifiable delegation: the application computes rich value,
-a trusted gateway maps it to a few tariff/SLO bins, and the operator meters the
-bins against an admitted envelope. Research should quantify how much gain is
-lost at each coarser granularity and whether the gain covers authentication,
-header, scheduling, and dispute-resolution cost. Traffic-only inference may
-detect abuse, but must never silently promote an encrypted flow to a
-safety-critical class.
+% Deployment needs verifiable delegation: the application computes rich value,
+% a trusted gateway maps it to a few tariff/SLO bins, and the operator meters the
+% bins against an admitted envelope. Research should quantify how much gain is
+% lost at each coarser granularity and whether the gain covers authentication,
+% header, scheduling, and dispute-resolution cost. Traffic-only inference may
+% detect abuse, but must never silently promote an encrypted flow to a
+% safety-critical class.
 
 \subsection{Tokenizer Compatibility}
 Token communications assumes that sender and receiver agree on token
