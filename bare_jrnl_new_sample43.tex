@@ -495,7 +495,7 @@ information can be worse than missing information \\ \hline
 \end{tabular}
 \end{table*}
 
-\subsection{Development Trends and Networking Implications}
+\subsection{Key Trends in LAM Evolution}
 Table~\ref{tab:modeltaxonomy} reveals four recurring development laws. 
 \begin{itemize}
     \item Interaction frequency and coupling increase: a prompt is weakly coupled to the next request, an agent trajectory is logically coupled across steps, and an embodied trajectory is both logically and dynamically coupled through the environment.
@@ -503,18 +503,6 @@ Table~\ref{tab:modeltaxonomy} reveals four recurring development laws.
     \item The computational path evolves from one-pass generation, to iterative stateful trajectories, and then to continuous multi-rate perception--action loops. The dominant bottleneck consequently shifts from sequential decoding and key--value memory, to repeated inference and context expansion, and finally to concurrent multimodal fusion under a per-cycle deadline.
     \item The exploitable structure becomes richer: generative tokens mainly expose statistical redundancy, agentic trajectories add repeated context and workflow redundancy, and embodied streams add geometry-, kinematics-, and task-induced constraints. Selective computation and reuse therefore become more structured, but their validity must be judged at the response, trajectory, or closed-loop episode level.
 \end{itemize}
-
-An intuitive, but deliberately non-normative, interpretation is a
-\emph{regression heuristic}. Artificial systems have scaled capabilities in an
-order that is roughly opposite to the layering of human competence: codified
-knowledge and content generation first, explicit planning and tool use next,
-and robust sensorimotor interaction last. Conversely, loss of higher explicit
-reasoning can leave basic procedural or reflexive behavior intact. The analogy
-helps explain why generating fluent text does not imply reliable tool use, and
-why either capability does not imply safe physical intelligence. It is neither
-a biological law nor an originality claim; its engineering implication is only
-that later stages inherit earlier representation and generation abilities while
-adding state, timing, interaction, and physical grounding. And the embodied system requires more sophisticated training and ingenious system optimization. 
 
 % \subsection{Benchmark Design Across Stages}
 % Stressors must be injected at the model interface under study.
