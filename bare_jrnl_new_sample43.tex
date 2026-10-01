@@ -69,17 +69,16 @@ ultra-reliable low-latency communications.
 \section{Introduction}
 \label{sec:introduction}
 \IEEEPARstart{L}{arge} AI models (LAMs) are extending networked services from
-content generation to autonomous task execution and physical interaction.
+content generation to autonomous task execution and physical interaction\footnote{Here, LAM denotes foundation-model-based systems,
+including large language models (LLMs), multimodal large language models
+(MLLMs), world models, and vision--language--action (VLA) models. }.
 Generative systems produce text, images, audio, and video
 \cite{nvidiagenai}; agentic systems invoke tools, retrieve memory, and
 coordinate multiple models; embodied systems couple multimodal perception
-with physical actuation. Here, LAM denotes foundation-model-based systems,
-including large language models (LLMs), multimodal large language models
-(MLLMs), world models, and vision--language--action (VLA) models. The stages
-describe overlapping capabilities, not disjoint model families.
-
-Existing research provides foundations for this evolution. Autoregressive
-language and text--image models enable
+with physical actuation. 
+% The stages describe overlapping capabilities, not disjoint model families.
+% Existing research provides foundations for this evolution. 
+Autoregressive language and text--image models enable
 scalable token-based generation \cite{gpt3,dalle}, while MMLU and BIG-bench
 evaluate capabilities across diverse tasks \cite{mmlu,bigbench}. AgentBench
 extends evaluation to tool-using trajectories \cite{agentbench}, and ReAct
@@ -102,7 +101,7 @@ projections, rather than guaranteed growth rates, motivate examining how
 multimodal uploads, agent interactions, and sensor streams change network
 load and its temporal structure.
 
-Standardization is recognizing these changes. ITU-R Recommendation
+Standardization also recognizes these changes. ITU-R Recommendation
 M.2160-0 identifies artificial intelligence and communication as one of
 six IMT-2030 usage scenarios, encompassing distributed inference,
 computation offloading, and computing-resource orchestration
@@ -122,9 +121,7 @@ goal-oriented communication, including distributed reasoning and
 time-sensitive information exchange \cite{6ggoals}. Their complementary
 emphases on integrated infrastructure and task-relevant transmission
 motivate a joint view of what intelligence needs to communicate and how
-networks should support it.
-
-Industry initiatives further connect these research directions to
+networks should support it. Industry initiatives further connect these research directions to
 deployment. The AI-RAN Alliance, which reported 132 members in February
 2026, distinguishes AI-based RAN optimization, shared AI/RAN computing,
 and edge-hosted AI applications through its AI-for-RAN, AI-and-RAN, and
@@ -177,7 +174,7 @@ control. Comparing traffic structure, failure consequences, and evaluation
 criteria across these stages helps identify which existing mechanisms can
 be reused and which require adaptation.
 
-Motivated by this transition, we connect model objectives and benchmarks to
+Motivated by these, we connect model objectives and benchmarks to
 traffic, quality of service (QoS), architectures, and enabling technologies
 within one generative--agentic--embodied framework. Numerical QoS scales are
 interpreted as deployment-dependent scenarios. This perspective supports
