@@ -4,7 +4,7 @@
 \usepackage{array}
 \usepackage{url}
 \usepackage{graphicx}
-\usepackage{cite}
+\usepackage[nocompress]{cite}
 \usepackage{xcolor}
 \usepackage{tikz}
 
@@ -18,7 +18,8 @@
 
 \begin{document}
 
-\title{From Generative to Embodied Intelligence: Network Evolution for Large-AI-Model Agents}
+% Restore the standard IEEEtran journal title size; the local class sets \Huge to 18 pt.
+\title{\fontsize{24}{28}\selectfont From Generative to Embodied Intelligence: Network Evolution for Large-AI-Model Agents}
 
 \author{Jihong Li,~\IEEEmembership{Student Member,~IEEE,}, Changming Li, Bo Li,~\IEEEmembership{Student Member,~IEEE,}, Zisong Ma, 
 Qingqing Wu,~\IEEEmembership{Senior Member,~IEEE,}
@@ -147,32 +148,28 @@ directional load, task-level reliability, and timely physical feedback
 alongside communication and computing costs, rather than average throughput
 alone.
 
-Several surveys provide complementary foundations. Xi \etal\ review
-LLM-based agent construction, applications, and agent societies
-\cite{agentsurvey}; Y. Liu \etal\ organize embodied AI around robots and
-simulators, perception, interaction, agents, and sim-to-real adaptation
-\cite{embodiedsurvey}. These model- and application-oriented perspectives
+Several surveys provide complementary foundations. \cite{agentsurvey}
+reviews LLM-based agent construction, applications, and agent societies;
+\cite{embodiedsurvey} organizes embodied AI around robots and simulators,
+perception, interaction, agents, and sim-to-real adaptation.
+These model- and application-oriented perspectives
 explain how intelligence is constructed and evaluated. On the networking
-side, Qu \etal\ survey edge LLM caching, delivery, training, and inference
-\cite{edgeLLMsurvey}. Guo \etal\ examine semantic communication networks
+side, \cite{edgeLLMsurvey} surveys edge LLM caching, delivery, training, and
+inference. \cite{semcomnetsurvey} examines semantic communication networks
 for multi-agent interaction, including architecture, security, and privacy
-\cite{semcomnetsurvey}; Z. Liu \etal\ survey integrated sensing and edge AI,
-including joint sensing--communication--computation design and its metrics
-\cite{isea}. Semantic and token communication frameworks further connect
-transmitted representations to information relevance
-\cite{semanticclassic,tokcom}.
+while \cite{isea} surveys integrated sensing and edge AI, including joint
+sensing--communication--computation design and its metrics. Furthermore,
+\cite{semanticclassic,tokcom} connect transmitted representations to
+information relevance through semantic and token communication frameworks.
 
-These works already address distributed intelligence and task-oriented
-communication, but organize the literature around different system
-boundaries: agent construction, model deployment, semantic networking, or
-intelligent perception. Our complementary focus is the change in the
-communication problem across LAM capabilities: from delivering generated
-content, through completing a branching tool-using workflow, to maintaining
-timely sensing and action. Efficient delivery of one generative response
-does not by itself ensure workflow completion or successful physical
-control. Comparing traffic structure, failure consequences, and evaluation
-criteria across these stages helps identify which existing mechanisms can
-be reused and which require adaptation.
+However, these surveys focus on individual model or networking domains
+rather than a unified comparison of traffic, reliability, and timing
+requirements across generative, agentic, and embodied LAMs. Driven by the
+growing demand for diverse LAM services, this survey systematically examines
+their differentiated network requirements from the perspective of LAM
+evolution and investigates whether and how future wireless networks can
+identify LAM workloads and better support them through workload-specific
+architectural adaptation and joint optimization.
 
 Motivated by these, we connect model objectives and benchmarks to
 traffic, quality of service (QoS), architectures, and enabling technologies
@@ -1768,8 +1765,8 @@ Ericsson, ``The rise of uplink demand in AI-driven mobile networks,''
 \url{https://www.ericsson.com/en/reports-and-papers/mobility-report/articles/rising-uplink-demand-ai-driven-mobile-networks}\endgroup
 
 \bibitem{itu2160}
-ITU-R, ``Framework and overall objectives of the future development of IMT
-for 2030 and beyond,'' Recommendation ITU-R M.2160-0, Nov. 2023.
+\emph{Framework and Overall Objectives of the Future Development of IMT
+for 2030 and Beyond}, Rec. ITU-R M.2160-0, Nov. 2023.
 
 \bibitem{3gpp22870}
 3GPP, ``Study on 6G use cases and service requirements,'' 3rd Generation
@@ -1802,12 +1799,12 @@ Jun. 23, 2025. Accessed: Oct. 1, 2026. [Online]. Available:
 
 \bibitem{groot}
 J. Bjorck \etal, ``GR00T N1: An open foundation model for generalist humanoid
-robots,'' arXiv:2503.14734, Mar. 2025.
+robots,'' 2025, arXiv:2503.14734.
 
 \bibitem{agentsurvey}
 Z. Xi \etal, ``The rise and potential of large language model based agents:
-A survey,'' \emph{Sci. China Inf. Sci.}, vol. 68, no. 2, Art. no. 121101,
-2025, doi: 10.1007/s11432-024-4222-0.
+A survey,'' \emph{Sci. China Inf. Sci.}, vol. 68, no. 2, 2025,
+Art. no. 121101, doi: 10.1007/s11432-024-4222-0.
 
 \bibitem{embodiedsurvey}
 Y. Liu \etal, ``Aligning cyber space with physical world: A comprehensive
@@ -1879,7 +1876,7 @@ tasks,'' in \emph{Proc. NeurIPS}, vol. 33, 2020, pp. 9459--9474.
 A. Ehtesham, A. Singh, G. K. Gupta, and S. Kumar, ``A survey of agent
 interoperability protocols: Model Context Protocol (MCP), Agent Communication
 Protocol (ACP), Agent-to-Agent Protocol (A2A), and Agent Network Protocol
-(ANP),'' arXiv:2505.02279, May 2025.
+(ANP),'' 2025, arXiv:2505.02279.
 
 \bibitem{webarena}
 S. Zhou \etal, ``WebArena: A realistic web environment for building
@@ -1911,7 +1908,7 @@ in \emph{Proc. ICLR}, 2024.
 \bibitem{reflexbench}
 Y. Chen, W. Zhang, and X. Li, ``Reflex: Enabling fast and predictive
 vision-language-action models for reaction-critical manipulation,''
-arXiv:2608.14379, Aug. 2026.
+2026, arXiv:2608.14379.
 
 \bibitem{evatok}
 T. Xiong, J. H. Liew, Z. Huang, Z. Lin, J. Feng, and X. Liu, ``EVATok:
@@ -1959,7 +1956,7 @@ language models,'' in \emph{Proc. IEEE ICMLCN}, 2025, pp. 1--7.
 \bibitem{todma}
 L. Qiao, M. B. Mashhadi, Z. Gao, R. Schober, and D. G\"und\"uz, ``ToDMA:
 Large model-driven massive token communications for semantic multiple access,''
-arXiv:2505.10946v3, Jul. 2026.
+2026, arXiv:2505.10946v3.
 
 \bibitem{distributedllm}
 K. Zhang, H. He, S. Song, J. Zhang, and K. B. Letaief,
@@ -1981,7 +1978,7 @@ Apr. 2025.
 \bibitem{avery}
 R. Bhattacharjya \etal, ``AVERY: Intent-driven adaptive VLM split computing
 via embodied self-awareness for efficient disaster response systems,''
-arXiv:2511.18151v3, Mar. 2026.
+2026, arXiv:2511.18151v3.
 
 \bibitem{specdecode}
 Y. Leviathan, M. Kalman, and Y. Matias, ``Fast inference from transformers
@@ -1990,11 +1987,11 @@ via speculative decoding,'' in \emph{Proc. ICML}, 2023, pp. 19274--19286.
 \bibitem{actiondeviation}
 J. Park, Y. Lim, S. Oh, J. Park, J. Choi, and S.-L. Kim, ``Action
 deviation-aware inference for low-latency wireless robots,''
-arXiv:2510.02851v2, Nov. 2025.
+2025, arXiv:2510.02851v2.
 
 \bibitem{qkvcomm}
 B. Kriuk and L. Ng, ``Q-KVComm: Efficient multi-agent communication via
-adaptive KV cache compression,'' arXiv:2512.17914, Nov. 2025.
+adaptive KV cache compression,'' 2025, arXiv:2512.17914.
 
 \bibitem{kvcomm}
 X. Shi, M. Chiesa, G. Q. Maguire Jr., and D. Kosti\'c, ``KVComm: Enabling
@@ -2014,8 +2011,8 @@ doi: 10.1109/ICCWorkshops63917.2026.11586445.
 
 \bibitem{flashvla}
 X. Tan \etal, ``Think twice, act once: Token-aware compression and action reuse for
-efficient inference in vision-language-action models,'' arXiv:2505.21200,
-May 2025.
+efficient inference in vision-language-action models,'' 2025,
+arXiv:2505.21200.
 
 \bibitem{qvla}
 Y. Xu \etal, ``QVLA: Not all channels are equal in vision-language-action
@@ -2094,7 +2091,7 @@ pp. 18903--18915, Dec. 2024.
 \bibitem{semanticclosedloop}
 G. Pan, A. \"Oz\c{c}elikkale, C. H\"ager, M. F. Keskin, and H. Wymeersch,
 ``Semantic communication for rate-limited closed-loop distributed
-communication-sensing-control systems,'' arXiv:2512.19177, Dec. 2025.
+communication-sensing-control systems,'' 2025, arXiv:2512.19177.
 
 \bibitem{fang}
 X. Fang \etal, ``Sensing-communication-computing-control closed-loop
@@ -2119,18 +2116,18 @@ Wireless Commun.}, vol. 25, pp. 1798--1812, 2026.
 
 \bibitem{netmcp}
 E. Li, H. Du, and K. Huang, ``NetMCP: Network-aware model context protocol
-platform for LLM capability extension,'' arXiv:2510.13467, Oct. 2025.
+platform for LLM capability extension,'' 2025, arXiv:2510.13467.
 
 \bibitem{qwen3}
-Qwen Team, ``Qwen3 technical report,'' arXiv:2505.09388, May 2025.
+Qwen Team, ``Qwen3 technical report,'' 2025, arXiv:2505.09388.
 
 \bibitem{janus}
 C. Wu \etal, ``Janus: Decoupling visual encoding for unified multimodal
-understanding and generation,'' arXiv:2410.13848, Oct. 2024.
+understanding and generation,'' 2024, arXiv:2410.13848.
 
 \bibitem{januspro}
 X. Chen \etal, ``Janus-Pro: Unified multimodal understanding and generation with data and
-model scaling,'' arXiv:2501.17811, Jan. 2025.
+model scaling,'' 2025, arXiv:2501.17811.
 
 \bibitem{dualvln}
 M. Wei \etal, ``Ground slow, move fast: A dual-system foundation model for
