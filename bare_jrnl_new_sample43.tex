@@ -68,59 +68,121 @@ ultra-reliable low-latency communications.
 
 \section{Introduction}
 \label{sec:introduction}
-\IEEEPARstart{L}{arge} AI models are moving beyond a single prompt--response
-exchange. Generative models synthesize text, images, audio, and video
-\cite{nvidiagenai};
-agentic models decompose goals, invoke tools, retrieve memory, and cooperate
-with other models; embodied models close the loop between multimodal sensing
-and physical actuation. We use \emph{\LAM} (LAM) as an umbrella term for these
-foundation-model-based systems, including large language models (LLMs),
-multimodal large language models (MLLMs), world models, and
-vision--language--action (VLA) models. The three stages are not mutually
-exclusive model families. Rather, they represent increasingly stringent
-interaction contracts between intelligence, a network, and an environment:
-content delivery, task completion, and closed-loop physical interaction.
+\IEEEPARstart{L}{arge} AI models (LAMs) are extending networked services from
+content generation to autonomous task execution and physical interaction.
+Generative systems produce text, images, audio, and video
+\cite{nvidiagenai}; agentic systems invoke tools, retrieve memory, and
+coordinate multiple models; embodied systems couple multimodal perception
+with physical actuation. Here, LAM denotes foundation-model-based systems,
+including large language models (LLMs), multimodal large language models
+(MLLMs), world models, and vision--language--action (VLA) models. The stages
+describe overlapping capabilities, not disjoint model families.
 
-Mobile and edge networks are therefore changing roles. In the generative
-stage, a network primarily transports prompts, context, and output tokens to a
-remote accelerator. In the agentic stage, it also binds tools, model context,
-persistent memory, and multiple expert models into a reliable transaction.
-In the embodied stage, the network becomes part of the control loop: it carries
-camera, depth, point-cloud, inertial, joint-state, and action streams whose age
-and synchronization affect the next physical state. The ongoing 3GPP study on
-6G use cases explicitly includes AI-agent communication and network-supported
-AI/ML training and inference, illustrating this shift from generic
-connectivity toward AI, data, and computing service exposure
-\cite{3gpp22870}.
+Existing research provides foundations for this evolution. Autoregressive
+language and text--image models enable
+scalable token-based generation \cite{gpt3,dalle}, while MMLU and BIG-bench
+evaluate capabilities across diverse tasks \cite{mmlu,bigbench}. AgentBench
+extends evaluation to tool-using trajectories \cite{agentbench}, and ReAct
+and Reflexion incorporate reasoning, action, feedback, and retry
+\cite{react,reflexion}. Meta-World, RT-2, and LIBERO further bring
+manipulation and sensorimotor interaction into the evaluation of embodied
+systems \cite{metaworld,rt2,libero}. The unit of success thus changes from
+generated content to a completed task and then to a physical episode,
+motivating a corresponding comparison of network requirements.
 
-Prior work has largely examined the three stages in separate literatures.
-Autoregressive language and text--image models established scalable token-based
-generation \cite{gpt3,dalle}, while MMLU and BIG-bench broadened evaluation
-beyond a single task \cite{mmlu,bigbench}. AgentBench evaluates tool-using
-trajectories \cite{agentbench}, and ReAct and Reflexion study interleaved
-reasoning, acting, feedback, and retry \cite{react,reflexion}. Embodied research
-moves evaluation into manipulation and sensorimotor interaction through
-Meta-World, RT-2, and LIBERO \cite{metaworld,rt2,libero}. In parallel,
-communication-oriented studies cover mobile-edge LLM inference
-\cite{edgeLLMsurvey}, semantic and token communications
-\cite{semanticclassic,tokcom}, and integrated sensing and edge AI \cite{isea}.
-These streams provide essential components, but use different units of
-evaluation---content, task trajectory, and physical episode. A cross-stage
-synthesis is needed to relate these units to observable traffic, QoS
-requirements, architecture, and applicable communication mechanisms.
+Network measurements already indicate the importance of looking beyond
+downlink-dominated content delivery. Ericsson's June 2026 Mobility Report
+finds that uplink traffic grew faster than downlink traffic at 43 of 55
+measured service providers during 2025 \cite{ericssonuplink2026}. This is
+an aggregate network observation, not a measurement of LAM traffic alone.
+Separately, its urban-area scenario analysis projects 2031 uplink traffic
+at three and five times the 2025 level under medium and high AI-adoption
+assumptions, respectively \cite{ericssonuplink2026}. These conditional
+projections, rather than guaranteed growth rates, motivate examining how
+multimodal uploads, agent interactions, and sensor streams change network
+load and its temporal structure.
 
-This transition exposes a mismatch between conventional communication
-objectives and application value at every LAM stage. For a generative service,
-average throughput obscures modality-dependent uplink/downlink asymmetry and
-coincident bursts, while the delivered representation must still preserve
-content quality. For an agentic service, repeated context exchange, tool
-invocations, branching, and retries amplify traffic and broaden task-completion
-time; a stale result or failed step can invalidate the whole workflow. For an
-embodied service, sensor uplinks and action downlinks share an end-to-end loop
-budget with encoding and inference, so delay, jitter, and cross-modal skew
-must be evaluated together with control performance. The relevant QoS scales
-depend on the deployment and task, rather than constituting universal
-requirements for each model category. The central design question is therefore:
+Standardization is recognizing these changes. ITU-R Recommendation
+M.2160-0 identifies artificial intelligence and communication as one of
+six IMT-2030 usage scenarios, encompassing distributed inference,
+computation offloading, and computing-resource orchestration
+\cite{itu2160}. The 3GPP study on 6G use cases and service requirements
+includes AI-agent communication and network-supported AI/ML training and
+inference \cite{3gpp22870}. Together, these documents establish a direction
+for supporting distributed intelligence, while leaving the service-specific
+mapping from model behavior to end-to-end network requirements to be
+developed; they do not prescribe a universal latency budget for all LAMs.
+
+Collaborative research projects are translating this direction into
+system-design agendas. Hexa-X-II (2023--2025) targeted a 6G platform
+blueprint combining connectivity with sensing, computing, and trustworthy
+AI, together with system- and component-level validation
+\cite{hexaxii}. The 6G-GOALS project (2024--2026) investigates semantic and
+goal-oriented communication, including distributed reasoning and
+time-sensitive information exchange \cite{6ggoals}. Their complementary
+emphases on integrated infrastructure and task-relevant transmission
+motivate a joint view of what intelligence needs to communicate and how
+networks should support it.
+
+Industry initiatives further connect these research directions to
+deployment. The AI-RAN Alliance, which reported 132 members in February
+2026, distinguishes AI-based RAN optimization, shared AI/RAN computing,
+and edge-hosted AI applications through its AI-for-RAN, AI-and-RAN, and
+AI-on-RAN activities \cite{airan2026}. The latter two are particularly
+relevant to networks that host and carry LAM workloads, rather than only
+use AI to optimize radio operation. In parallel, the Linux Foundation's
+Agent2Agent (A2A) project promotes interoperability among agents across
+platforms and vendors \cite{a2aproject}, while NVIDIA's open GR00T N1
+model targets generalist humanoid capabilities \cite{groot}. These efforts
+motivate considering distributed inference, cross-agent exchanges, and
+physical interaction within a common service-oriented network perspective.
+
+Distributing these capabilities across devices, edge servers, and clouds
+creates distinct resource burdens.
+Generative services combine modality-dependent uplink/downlink asymmetry
+with bursty transfers whose volume depends on content fidelity. Agentic
+services repeatedly exchange context and tool results, so branching and
+retries increase traffic and task-completion time. Embodied services share
+a closed-loop deadline among sensing, communication, inference, and action;
+additional sensor detail can improve decisions while consuming the time
+available to execute them. These demands require network design to consider
+directional load, task-level reliability, and timely physical feedback
+alongside communication and computing costs, rather than average throughput
+alone.
+
+Several surveys provide complementary foundations. Xi \etal\ review
+LLM-based agent construction, applications, and agent societies
+\cite{agentsurvey}; Y. Liu \etal\ organize embodied AI around robots and
+simulators, perception, interaction, agents, and sim-to-real adaptation
+\cite{embodiedsurvey}. These model- and application-oriented perspectives
+explain how intelligence is constructed and evaluated. On the networking
+side, Qu \etal\ survey edge LLM caching, delivery, training, and inference
+\cite{edgeLLMsurvey}. Guo \etal\ examine semantic communication networks
+for multi-agent interaction, including architecture, security, and privacy
+\cite{semcomnetsurvey}; Z. Liu \etal\ survey integrated sensing and edge AI,
+including joint sensing--communication--computation design and its metrics
+\cite{isea}. Semantic and token communication frameworks further connect
+transmitted representations to information relevance
+\cite{semanticclassic,tokcom}.
+
+These works already address distributed intelligence and task-oriented
+communication, but organize the literature around different system
+boundaries: agent construction, model deployment, semantic networking, or
+intelligent perception. Our complementary focus is the change in the
+communication problem across LAM capabilities: from delivering generated
+content, through completing a branching tool-using workflow, to maintaining
+timely sensing and action. Efficient delivery of one generative response
+does not by itself ensure workflow completion or successful physical
+control. Comparing traffic structure, failure consequences, and evaluation
+criteria across these stages helps identify which existing mechanisms can
+be reused and which require adaptation.
+
+Motivated by this transition, we connect model objectives and benchmarks to
+traffic, quality of service (QoS), architectures, and enabling technologies
+within one generative--agentic--embodied framework. Numerical QoS scales are
+interpreted as deployment-dependent scenarios. This perspective supports
+both assessment of existing techniques and identification of research gaps.
+The central design question is:
 \emph{which information must be delivered, to which model or actuator, by
 what deadline, and with what task-level loss when resources are limited?}
 
@@ -1134,8 +1196,9 @@ application-controlled because confidence is not a safety certificate.
 
 \subsection{Enablers for Embodied-LAM Networks}
 \subsubsection{Control-loss-aware token selection}
-Existing VLA acceleration methods use task-related importance measures
-rather than a common analytical token-value metric.
+To meet the sensing and loop-delay constraints in Section~\ref{sec:qos},
+VLA acceleration reduces inference cost while preserving control-relevant
+information.
 FlashVLA selects visual tokens and reuses actions to reduce redundant
 inference \cite{flashvla}, whereas QVLA allocates precision according to
 channel sensitivity measured at the action output \cite{qvla}. DaDu-Corki
@@ -1147,7 +1210,8 @@ such empirical sensitivity measures to bounds on closed-loop control loss
 under dependent modalities and changing physical conditions.
 
 \subsubsection{Finite-blocklength and deterministic transport}
-URLLC techniques provide a foundation for short embodied messages.
+Short action packets must meet the tight reliability and deadline targets
+in Section~\ref{sec:qos}.
 For blocklength $n$, signal-to-noise ratio $\gamma$, and error target
 $\varepsilon$, the finite-blocklength rate is approximated by
 \begin{equation}
@@ -1162,7 +1226,8 @@ uplink/downlink allocation further expose hard-deadline and energy tradeoffs
 for multiple devices \cite{cellfree,resourceurlcc}. This exposes the
 bandwidth--latency--reliability tradeoff hidden by asymptotic capacity.
 
-Interface diversity, multi-connectivity, packet duplication, and optimized
+To sustain embodied-loop reliability, interface diversity, multi-connectivity,
+packet duplication, and optimized
 HARQ reduce outage or retransmission delay \cite{interfacediversity,harq}.
 Preemptive puncturing allows urgent traffic to overwrite scheduled broadband
 resources, while slicing isolates service classes
@@ -1172,7 +1237,8 @@ nonstationary demand \cite{unifiedqos}. Deterministic-delay work further
 optimizes jitter, hard-deadline violation, and high-order delay statistics
 under finite-blocklength transmission \cite{mixedjitter,deterministic}.
 
-However, direct transplantation to embodied traffic has two limitations.
+However, coupled modalities and end-to-end deadlines limit direct transfer
+to embodied traffic.
 First, traditional models often assume independent sources and a fixed
 utility loss for punctured broadband packets. Multimodal embodied sources are
 coupled, so simultaneous degradation can remove all views of a critical
@@ -1182,7 +1248,9 @@ sensing release times, encoder and accelerator queues, radio slots, receiver
 inference, and actuation.
 
 \subsubsection{Semantic and goal-oriented communication}
-Goal-oriented communication schedules information by its effect on a task.
+To relieve sensor-uplink congestion without losing control-relevant
+observations, goal-oriented communication prioritizes information by its
+task impact.
 Value and age of information have been applied to robotic waypoint delivery
 \cite{waypoint}. Integrated sensing and edge AI similarly co-designs sensing,
 communication, and inference around task performance \cite{isea}. For
@@ -1203,8 +1271,9 @@ representations to distributed sensing and control \cite{semanticclosedloop}.
 % failure.
 
 \subsubsection{Communication--control co-design and dynamic model sharing}
-Wireless networked control studies optimize bandwidth, power, uplink/downlink
-ratio, sampling period, and control policy jointly. Recent work considers
+To address the coupled loop budget in Section~\ref{sec:qos}, wireless
+networked control jointly optimizes bandwidth, power, uplink/downlink ratio,
+sampling period, and control policy. Recent work considers
 sensing--communication--computing--control loops for robotic digital twins
 \cite{fang}, communication--control codesign for large-scale systems
 \cite{pang}, and communication allocation for system identification
@@ -1214,9 +1283,10 @@ together \cite{energywncs}. These results show that optimizing physical
 control or identification can produce allocations very different from
 throughput maximization.
 
-Closed-loop resource allocation already links uplink/downlink transmission
-and edge computation to control cost \cite{fang}, while large-scale codesign
-jointly schedules communication and control for coupled loops \cite{pang}.
+The dynamic groups in Section~\ref{sec:architecture} require joint control
+and resource scheduling. Relevant foundations include closed-loop allocation
+of uplink/downlink and edge resources \cite{fang}, and communication--control
+scheduling for coupled loops \cite{pang}.
 Extending these foundations to embodied LAMs requires accounting for nonlinear
 learned policies, asynchronous sensing, and changing model-sharing groups.
 An important research direction is to coordinate token selection, model
@@ -1648,11 +1718,6 @@ distributed LAM intelligence to physical systems.
 NVIDIA, ``What is generative AI?'' Accessed: Oct. 1, 2026. [Online]. Available:
 \url{https://www.nvidia.com/en-us/glossary/generative-ai/}
 
-\bibitem{3gpp22870}
-3GPP, ``Study on 6G use cases and service requirements,'' 3rd Generation
-Partnership Project (3GPP), Tech. Rep. 22.870, ver. 20.0.0, Rel. 20,
-Mar. 2026.
-
 \bibitem{gpt3}
 T. B. Brown \etal, ``Language models are few-shot learners,'' in
 \emph{Proc. NeurIPS}, vol. 33, 2020, pp. 1877--1901.
@@ -1698,11 +1763,75 @@ B. Liu \etal, ``LIBERO:
 Benchmarking knowledge transfer for lifelong robot learning,'' in
 \emph{Proc. NeurIPS}, vol. 36, 2023, pp. 44776--44791.
 
+\bibitem{ericssonuplink2026}
+Ericsson, ``The rise of uplink demand in AI-driven mobile networks,''
+\emph{Ericsson Mobility Report}, Jun. 2026. Accessed: Oct. 1, 2026.
+[Online]. Available:
+\begingroup\def\UrlBreaks{\do\/\do-}%
+\url{https://www.ericsson.com/en/reports-and-papers/mobility-report/articles/rising-uplink-demand-ai-driven-mobile-networks}\endgroup
+
+\bibitem{itu2160}
+ITU-R, ``Framework and overall objectives of the future development of IMT
+for 2030 and beyond,'' Recommendation ITU-R M.2160-0, Nov. 2023.
+
+\bibitem{3gpp22870}
+3GPP, ``Study on 6G use cases and service requirements,'' 3rd Generation
+Partnership Project (3GPP), Tech. Rep. 22.870, ver. 20.0.0, Rel. 20,
+Mar. 2026.
+
+\bibitem{hexaxii}
+European Commission, ``Hexa-X-II,'' CORDIS project 101095759, 2023--2025.
+Accessed: Oct. 1, 2026. [Online]. Available:
+\url{https://cordis.europa.eu/project/id/101095759}
+
+\bibitem{6ggoals}
+European Commission, ``6G Goal-Oriented AI-enabled Learning and Semantic
+Communication Networks (6G-GOALS),'' CORDIS project 101139232, 2024--2026.
+Accessed: Oct. 1, 2026. [Online]. Available:
+\url{https://cordis.europa.eu/project/id/101139232}
+
+\bibitem{airan2026}
+AI-RAN Alliance, ``AI-RAN Alliance reaches major milestone, showcasing
+breakthrough momentum for AI-native networks,'' Feb. 26, 2026.
+Accessed: Oct. 1, 2026. [Online]. Available:
+\url{https://ai-ran.org/press-releases/mwc-2026-momentum}
+
+\bibitem{a2aproject}
+The Linux Foundation, ``Linux Foundation launches the Agent2Agent protocol
+project to enable secure, intelligent communication between AI agents,''
+Jun. 23, 2025. Accessed: Oct. 1, 2026. [Online]. Available:
+\begingroup\def\UrlBreaks{\do\/\do-}%
+\url{https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents}\endgroup
+
+\bibitem{groot}
+J. Bjorck \etal, ``GR00T N1: An open foundation model for generalist humanoid
+robots,'' arXiv:2503.14734, Mar. 2025.
+
+\bibitem{agentsurvey}
+Z. Xi \etal, ``The rise and potential of large language model based agents:
+A survey,'' \emph{Sci. China Inf. Sci.}, vol. 68, no. 2, Art. no. 121101,
+2025, doi: 10.1007/s11432-024-4222-0.
+
+\bibitem{embodiedsurvey}
+Y. Liu \etal, ``Aligning cyber space with physical world: A comprehensive
+survey on embodied AI,'' \emph{IEEE/ASME Trans. Mechatronics}, vol. 30,
+no. 6, pp. 7253--7274, Dec. 2025, doi: 10.1109/TMECH.2025.3574943.
+
 \bibitem{edgeLLMsurvey}
 G. Qu, Q. Chen, W. Wei, Z. Lin, X. Chen, and K. Huang, ``Mobile edge
 intelligence for large language models: A contemporary survey,'' \emph{IEEE
 Commun. Surveys Tuts.}, vol. 27, no. 6, pp. 3820--3860, Dec. 2025,
 doi: 10.1109/COMST.2025.3527641.
+
+\bibitem{semcomnetsurvey}
+S. Guo \etal, ``A survey on semantic communication networks: Architecture,
+security, and privacy,'' \emph{IEEE Commun. Surveys Tuts.}, vol. 27, no. 5,
+pp. 2860--2894, Oct. 2025, doi: 10.1109/COMST.2024.3516819.
+
+\bibitem{isea}
+Z. Liu \etal, ``Integrated sensing and edge AI: Realizing intelligent
+perception in 6G,'' \emph{IEEE Commun. Surveys Tuts.}, vol. 28,
+pp. 2725--2770, 2026, doi: 10.1109/COMST.2025.3592989.
 
 \bibitem{semanticclassic}
 H. Xie, Z. Qin, G. Y. Li, and B.-H. Juang, ``Deep learning enabled semantic
@@ -1714,11 +1843,6 @@ L. Qiao, M. B. Mashhadi, Z. Gao, R. Tafazolli, M. Bennis, and D. Niyato,
 ``Token communications: A large model-driven framework for cross-modal
 context-aware semantic communications,'' \emph{IEEE Wireless Commun.},
 vol. 32, no. 5, pp. 80--88, Oct. 2025.
-
-\bibitem{isea}
-Z. Liu \etal, ``Integrated sensing and edge AI: Realizing intelligent
-perception in 6G,'' \emph{IEEE Commun. Surveys Tuts.}, vol. 28,
-pp. 2725--2770, 2026, doi: 10.1109/COMST.2025.3592989.
 
 \bibitem{bleu}
 K. Papineni, S. Roukos, T. Ward, and W.-J. Zhu, ``BLEU: A method for
@@ -1776,10 +1900,6 @@ D. Driess \etal, ``PaLM-E: An embodied multimodal language model,'' in
 D. Hafner, J. Pasukonis, J. Ba, and T. Lillicrap, ``Mastering diverse control
 tasks through world models,'' \emph{Nature}, vol. 640, pp. 647--653,
 Apr. 2025, doi: 10.1038/s41586-025-08744-2.
-
-\bibitem{groot}
-J. Bjorck \etal, ``GR00T N1: An open foundation model for generalist humanoid
-robots,'' arXiv:2503.14734, Mar. 2025.
 
 \bibitem{humanoidbench}
 C. Sferrazza, D.-M. Huang, X. Lin, Y. Lee, and P. Abbeel,
