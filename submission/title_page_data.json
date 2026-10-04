@@ -1,0 +1,19 @@
+{
+  "title": "From Generative to Embodied Intelligence: Network Evolution for Large-AI-Model Agents",
+  "authors": [
+    {"name": "Jihong Li", "affiliation": "1", "membership": "Student Member, IEEE"},
+    {"name": "Changming Li", "affiliation": "1", "membership": ""},
+    {"name": "Bo Li", "affiliation": "1", "membership": "Student Member, IEEE"},
+    {"name": "Zisong Ma", "affiliation": "1", "membership": ""},
+    {"name": "Qingqing Wu", "affiliation": "2", "membership": "Senior Member, IEEE"},
+    {"name": "Shunqing Zhang", "affiliation": "1", "membership": "Senior Member, IEEE"}
+  ],
+  "affiliations": {
+    "1": "School of Communication and Information Engineering, Shanghai University, Shanghai 200444, China",
+    "2": "Department of Electronic Engineering, Shanghai Jiao Tong University, Shanghai 200240, China"
+  },
+  "corresponding_author": "Shunqing Zhang",
+  "corresponding_email": null,
+  "acknowledgement": "This work was supported in part by the National Natural Science Foundation of China under Grant 62571307, in part by the Science and Technology Commission Foundation of Shanghai under Grant 24DP1500703 and Grant 24DP1500500, and in part by the National Key Research and Development Program of China under Grant 2022YFB2902304.",
+  "biographies": []
+}
